@@ -120,8 +120,8 @@ function initCalculation(op) {
       addPunctualForcesContainer($('#r-paso-6'));
       $('#r-paso-7').html(
         '<div class="row">' +
-        '<div class="col-md-12" id="r-res-table-container"></div>' + 
-        '</div>' 
+        '<div class="col-md-12" id="r-res-table-container"></div>' +
+        '</div>'
       );
       $('#reticula').show();
       $('#reticula').smartWizard();
@@ -135,8 +135,8 @@ function initCalculation(op) {
       addForcesContainer($('#mp-paso-4'));
       $('#mp-paso-5').html(
         '<div class="row">' +
-        '<div class="col-md-12" id="mp-res-table-container"></div>' + 
-        '</div>' 
+        '<div class="col-md-12" id="mp-res-table-container"></div>' +
+        '</div>'
       );
       $('#marco-plano').show();
       $('#marco-plano').smartWizard();
@@ -246,7 +246,7 @@ function addForcesContainer(element) {
     '<div class="col-md-12">' +
     '<div id="nodes-forces-table-container">' +
     '</div>' +
-    '</div>' +                      
+    '</div>' +
     '</div>'
   );
 
@@ -261,7 +261,7 @@ function addForcesContainer(element) {
     '<div class="col-md-12">' +
     '<div id="bars-defects-table-container">' +
     '</div>' +
-    '</div>' +  
+    '</div>' +
     '</div>' +
 
     '<!--Fuerzas debidas a efectos térmicos-->' +
@@ -286,11 +286,11 @@ function addForcesContainer(element) {
     '<div class="col-md-12">' +
     '<div id="settlements-table-container">' +
     '</div>' +
-    '</div>' +  
+    '</div>' +
     '</div>'
     );
   }
-  
+
   $forcesContainer1 = $('#forces-container-1');
   $forcesContainer2 = $('#forces-container-2');
   $forcesContainer3 = $('#forces-container-3');
@@ -311,7 +311,7 @@ function addDistributedForcesContainer(element) {
     '<div class="col-md-12">' +
     '<div id="bars-distributed-forces-table-container">' +
     '</div>' +
-    '</div>' +                      
+    '</div>' +
     '</div>'
   );
 
@@ -330,7 +330,7 @@ function addPunctualForcesContainer(element) {
     '<div class="col-md-12">' +
     '<div id="bars-punctual-forces-table-container">' +
     '</div>' +
-    '</div>' +                      
+    '</div>' +
     '</div>'
   );
 
@@ -339,10 +339,10 @@ function addPunctualForcesContainer(element) {
 }
 
 function setArmaduraEvents() {
-  
+
   // Initialize the leaveStep event
   $("#armadura").on("leaveStep", function(e, anchorObject, stepNumber, stepDirection) {
-    
+
     //return confirm("Do you want to leave the step "+stepNumber+"?");
     var inputs = [];
     var validationType = 0;
@@ -384,7 +384,7 @@ function setArmaduraEvents() {
 
         break;
       }
-      
+
       return validateInputs(validateEmpty, inputs, validationType);
     }
 
@@ -394,7 +394,7 @@ function setArmaduraEvents() {
 
   // Initialize the showStep event
   $("#armadura").on("showStep", function(e, anchorObject, stepNumber, stepDirection) {
-    
+
     //alert("You are on step "+stepNumber+" now");
     if (parseInt(stepNumber) === 4) {
 
@@ -431,7 +431,7 @@ function setArmaduraEvents() {
 function setMarcoPlanoEvents() {
   // Initialize the leaveStep event
   $("#marco-plano").on("leaveStep", function(e, anchorObject, stepNumber, stepDirection) {
-    
+
     //return confirm("Do you want to leave the step "+stepNumber+"?");
     var inputs = [];
     var validationType = 0;
@@ -462,7 +462,7 @@ function setMarcoPlanoEvents() {
           return true;
         break;
       }
-      
+
       return validateInputs(validateEmpty, inputs, validationType);
     }
 
@@ -498,14 +498,14 @@ function setReticulaEvents() {
 }
 
 function validateInputs(validateEmpty, inputs, validationType) {
-  
+
   for (var i = 0; i < inputs.length; i++) {
 
     value = $(inputs[i]).val();
 
     if (!validateEmpty && value === '')
       return true;
-    
+
     if (validateEmpty && value === '') {
       alert('Falta llenar algunos campos.');
       return false;
@@ -629,7 +629,7 @@ function createTable(type) {
       if (nodes != '' && isInteger(nodes)) {
         $('#main-modal').modal('hide');
         $numberOfNodes.val(nodes);
-        html = createNodesTable(nodes);  
+        html = createNodesTable(nodes);
         $nodesTableContainer.html(html);
       }
       else
@@ -641,7 +641,7 @@ function createTable(type) {
       if (bars != '' && isInteger(bars)) {
         $('#main-modal').modal('hide');
         $numberOfBars.val(bars);
-        html = createBarsTable(bars);  
+        html = createBarsTable(bars);
         $barsTableContainer.html(html);
       }
       else
@@ -657,19 +657,19 @@ function createTable(type) {
         $numberOfSupports.val(supports);
         if (calculationType === '3') {
           html = '<p>Seleccione el número de nodo donde se encuentra el apoyo y marque el tipo de restricción de desplazamiento lineal y rotacional que posee.</p>';
-          html += createReticulaSupportsTable(supports);  
+          html += createReticulaSupportsTable(supports);
         }
         else if (calculationType === '4') {
           html = '<p>Seleccione el número de nodo donde se encuentra el apoyo y marque el tipo de restricción de desplazamiento lineal y rotacional que posee.</p>';
-          html += createMarcoPlanoSupportsTable(supports);  
+          html += createMarcoPlanoSupportsTable(supports);
         }
         else if (calculationType === '5') {
           html = '<p>Seleccione el número de nodo donde se encuentra el apoyo y marque el tipo de restricción de desplazamiento lineal y rotacional que posee.</p>';
-          html += createMarco3dSupportsTable(supports);  
+          html += createMarco3dSupportsTable(supports);
         }
         else {
           html = '<p>Seleccione el número de nodo donde se encuentra el apoyo y marque el tipo de restricción de desplazamiento lineal que posee.</p>';
-          html += createSupportsTable(supports);  
+          html += createSupportsTable(supports);
         }
         $supportsTableContainer.html(html);
       }
@@ -683,13 +683,13 @@ function createTable(type) {
       if (nodesForces != '' && isInteger(nodesForces)) {
         $('#main-modal').modal('hide');
         $numberOfNodesForces.val(nodesForces);
-        if (calculationType === '3') 
+        if (calculationType === '3')
           html = createReticulaNodesForcesTable(nodesForces);
-        else if (calculationType === '4') 
+        else if (calculationType === '4')
           html = createMarcoPlanoNodesForcesTable(nodesForces);
-        else if (calculationType === '5') 
+        else if (calculationType === '5')
           html = createMarco3dNodesForcesTable(nodesForces);
-        else 
+        else
           html = createNodesForcesTable(nodesForces);
         $nodesForcesTableContainer.html(html);
       }
@@ -703,7 +703,7 @@ function createTable(type) {
         $('#main-modal').modal('hide');
         $numberOfBarsDefects.val(barsDefects);
         html = '<p>Seleccione el número de barra e introduzca el alargamiento (+) o acortamiento (-) que presenta.</p>';
-        html += createBarsDefectsTable(barsDefects);  
+        html += createBarsDefectsTable(barsDefects);
         $barsDefectsTableContainer.html(html);
       }
       else
@@ -717,7 +717,7 @@ function createTable(type) {
         if (settlements <= supports) {
           $('#main-modal').modal('hide');
           $numberOfSettlements.val(settlements);
-          html += createSettlementsTable(settlements);  
+          html += createSettlementsTable(settlements);
           $settlementsTableContainer.html(html);
         }
         else
@@ -756,31 +756,31 @@ function createTable(type) {
       $('#main-modal').modal('hide');
 
   }
-}     
+}
 
 function createRowNodestable(index, calculationType) {
   html = '<tr>' +
             '<th scope="row">' + index + '</th>' +
             '<td><input type="text" class="x"></td>' +
             '<td><input type="text" class="y"></td>';
-  
+
   if (calculationType === '2' || calculationType === '3' || calculationType === '5')
     html += '<td><input type="text" class="z"></td>';
 
   html += '</tr>';
 
   return html;
-} 
+}
 
 function createNodesTable(nodes) {
-  
+
   var calculationType = $calculationType.val();
 
   var html = '<table class="table table-bordered">' +
             '<thead>' +
             '<tr>' +
             '<th scope="col"></th>';
-  
+
   if (calculationType === '2' || calculationType === '3' || calculationType === '5')
     html += '<th scope="col" colspan="3" class="text-center">Coordenadas</th>';
   else
@@ -799,7 +799,7 @@ function createNodesTable(nodes) {
         '</thead>' +
         '<tbody>';
 
-  for (var i = 1; i <= nodes; i++) 
+  for (var i = 1; i <= nodes; i++)
     html += createRowNodestable(i, calculationType);
 
   html += '</tbody>' +
@@ -821,13 +821,13 @@ function createRowBarsTable(index, calculationType, sHtmlIni, sHtmlFin) {
           '<input type="text" class="area">' +
           '<button type="button" class="btn btn-sm btn-outline-secondary btn-table" onclick="applyValue(1)">Aplicar a todo</button>' +
           '</td>' +
-          '<td>' + 
+          '<td>' +
           '<input type="text" class="elasticity">' +
           '<button type="button" class="btn btn-sm btn-outline-secondary btn-table" onclick="applyValue(2)">Aplicar a todo</button>' +
           '</td>';
 
     if (calculationType === '4')
-      html += '<td>' + 
+      html += '<td>' +
             '<input type="text" class="i">' +
             '<button type="button" class="btn btn-sm btn-outline-secondary btn-table" onclick="applyValue(3)">Aplicar a todo</button>' +
             '</td>' +
@@ -837,15 +837,15 @@ function createRowBarsTable(index, calculationType, sHtmlIni, sHtmlFin) {
             '</td>';
 
     if (calculationType === '3' || calculationType === '5')
-      html += '<td>' + 
+      html += '<td>' +
             '<input type="text" class="i">' +
             '<button type="button" class="btn btn-sm btn-outline-secondary btn-table" onclick="applyValue(3)">Aplicar a todo</button>' +
             '</td>' +
-            '<td>' + 
+            '<td>' +
             '<input type="text" class="g">' +
             '<button type="button" class="btn btn-sm btn-outline-secondary btn-table" onclick="applyValue(5)">Aplicar a todo</button>' +
             '</td>' +
-            '<td>' + 
+            '<td>' +
             '<input type="text" class="j">' +
             '<button type="button" class="btn btn-sm btn-outline-secondary btn-table" onclick="applyValue(6)">Aplicar a todo</button>' +
             '</td>' +
@@ -855,7 +855,7 @@ function createRowBarsTable(index, calculationType, sHtmlIni, sHtmlFin) {
             '</td>';
   }
   else {
-    
+
     html += '<td><input type="text" class="area"></td>' +
           '<td><input type="text" class="elasticity"></td>';
 
@@ -910,14 +910,14 @@ function createBarsTable(bars) {
   //Marco plano
   if (calculationType === '4')
     html += '<th scope="col">I (cm<sup>4</sup>)</th>' +
-      '<th scope="col">C</th>';  
+      '<th scope="col">C</th>';
 
-  //Retícula y Marco 3d 
+  //Retícula y Marco 3d
   if (calculationType === '3' || calculationType === '5')
     html += '<th scope="col">I (cm<sup>4</sup>)</th>' +
       '<th scope="col">G (ton/cm<sup>2</sup>)</th>' +
       '<th scope="col">J (cm<sup>4</sup>)</th>' +
-      '<th scope="col">C</th>';  
+      '<th scope="col">C</th>';
 
   html += '</tr>' +
           '</thead>' +
@@ -926,8 +926,8 @@ function createBarsTable(bars) {
   var sHtmlIni = getSelectNodesHtml('ini', true);
   var sHtmlFin = getSelectNodesHtml('fin', true);
 
-  for (var i = 1; i <= bars; i++) 
-    html += createRowBarsTable(i, calculationType, sHtmlIni, sHtmlFin);  
+  for (var i = 1; i <= bars; i++)
+    html += createRowBarsTable(i, calculationType, sHtmlIni, sHtmlFin);
 
   html += '</tbody>' +
           '</table> ';
@@ -936,7 +936,7 @@ function createBarsTable(bars) {
 }
 
 function createRowSupportsTable(shtml, calculationType) {
-  
+
   var html = '<tr>' +
         '<th scope="row">' + shtml + '</th>';
 
@@ -951,15 +951,15 @@ function createRowSupportsTable(shtml, calculationType) {
             '<input class="form-check-input rly" type="checkbox">' +
             '</div>' +
             '</td>';
-    
-  if (calculationType === '2' || calculationType === '3' || calculationType === '5')   
+
+  if (calculationType === '2' || calculationType === '3' || calculationType === '5')
     html += '<td>' +
           '<div class="form-check">' +
           '<input class="form-check-input rlz" type="checkbox">' +
           '</div>' +
           '</td>';
 
-  if (calculationType === '4')   
+  if (calculationType === '4')
     html += '<td>' +
           '<div class="form-check">' +
           '<input class="form-check-input rrz" type="checkbox">' +
@@ -987,7 +987,7 @@ function createRowSupportsTable(shtml, calculationType) {
 
   html += '</tr>';
 
-  return html;   
+  return html;
 }
 
 function createSupportsTable(supports) {
@@ -999,18 +999,18 @@ function createSupportsTable(supports) {
             '<tr>' +
             '<th scope="col"></th>';
 
-  if (calculationType === '2')          
+  if (calculationType === '2')
     html += '<th scope="col" colspan="3" class="text-center">Tipos de restricción</th>';
   else
     html += '<th scope="col" colspan="2" class="text-center">Tipos de restricción</th>';
-            
+
   html += '</tr>' +
         '<tr>' +
         '<th scope="col"># Nodo</th>' +
         '<th scope="col">En X (Δx=0)</th>' +
         '<th scope="col">En Y (Δy=0)</th>';
 
-  if (calculationType === '2')   
+  if (calculationType === '2')
     html += '<th scope="col">En Z (Δz=0)</th>';
 
   html += '</tr>' +
@@ -1019,7 +1019,7 @@ function createSupportsTable(supports) {
 
   var shtml = getSelectNodesHtml('support', true);
 
-  for (var i = 1; i <= supports; i++) 
+  for (var i = 1; i <= supports; i++)
     html += createRowSupportsTable(shtml, calculationType);
 
   html += '</tbody>' +
@@ -1052,7 +1052,7 @@ function createReticulaSupportsTable(supports) {
 
   var shtml = getSelectNodesHtml('support', true);
 
-  for (var i = 1; i <= supports; i++) 
+  for (var i = 1; i <= supports; i++)
     html += createRowSupportsTable(shtml, '3');
 
   html += '</tbody>' +
@@ -1085,7 +1085,7 @@ function createMarcoPlanoSupportsTable(supports) {
 
   var shtml = getSelectNodesHtml('support', true);
 
-  for (var i = 1; i <= supports; i++) 
+  for (var i = 1; i <= supports; i++)
     html += createRowSupportsTable(shtml, '4');
 
   html += '</tbody>' +
@@ -1121,7 +1121,7 @@ function createMarco3dSupportsTable(supports) {
 
   var shtml = getSelectNodesHtml('support', true);
 
-  for (var i = 1; i <= supports; i++) 
+  for (var i = 1; i <= supports; i++)
     html += createRowSupportsTable(shtml, '5');
 
   html += '</tbody>' +
@@ -1138,18 +1138,18 @@ function createNodesForcesTable(nodesForces) {
             '<tr>' +
             '<th scope="col"></th>';
 
-  if (calculationType === '2')          
+  if (calculationType === '2')
     html += '<th scope="col" colspan="3" class="text-center">Dirección de las fuerzas</th>';
   else
     html += '<th scope="col" colspan="2" class="text-center">Dirección de las fuerzas</th>';
-            
+
   html += '</tr>' +
         '<tr>' +
         '<th scope="col"># Nodo</th>' +
         '<th scope="col">Fx (ton)</th>' +
         '<th scope="col">Fy (ton)</th>';
 
-  if (calculationType === '2')   
+  if (calculationType === '2')
     html += '<th scope="col">Fz (ton)</th>';
 
   html += '</tr>' +
@@ -1158,7 +1158,7 @@ function createNodesForcesTable(nodesForces) {
 
   var shtml = getSelectNodesHtml('', true);
 
-  for (var i = 1; i <= nodesForces; i++) 
+  for (var i = 1; i <= nodesForces; i++)
     html += createRowNodesForcesTable(shtml, calculationType);
 
   html += '</tbody>' +
@@ -1192,7 +1192,7 @@ function createReticulaNodesForcesTable(nodesForces) {
 
   var shtml = getSelectNodesHtml('', true);
 
-  for (var i = 1; i <= nodesForces; i++) 
+  for (var i = 1; i <= nodesForces; i++)
     html += createRowNodesForcesTable(shtml, '3');
 
   html += '</tbody>' +
@@ -1226,7 +1226,7 @@ function createMarcoPlanoNodesForcesTable(nodesForces) {
 
   var shtml = getSelectNodesHtml('', true);
 
-  for (var i = 1; i <= nodesForces; i++) 
+  for (var i = 1; i <= nodesForces; i++)
     html += createRowNodesForcesTable(shtml, '4');
 
   html += '</tbody>' +
@@ -1236,7 +1236,7 @@ function createMarcoPlanoNodesForcesTable(nodesForces) {
 }
 
 function createRowNodesForcesTable(shtml, calculationType) {
-  
+
   html = '<tr>' +
         '<th scope="row">' + shtml + '</th>';
 
@@ -1244,13 +1244,13 @@ function createRowNodesForcesTable(shtml, calculationType) {
       html +='<td><input type="text" class="fx"></td>' +
         '<td><input type="text" class="fy"></td>';
 
-  if (calculationType === '2' || calculationType === '3' || calculationType === '5') 
+  if (calculationType === '2' || calculationType === '3' || calculationType === '5')
     html += '<td><input type="text" class="fz"></td>';
 
   if (calculationType === '4')
     html += '<td><input type="text" class="mz"></td>';
 
-  if (calculationType === '3' || calculationType === '5') 
+  if (calculationType === '3' || calculationType === '5')
     html += '<td><input type="text" class="mx"></td>' +
         '<td><input type="text" class="my"></td>';
 
@@ -1290,7 +1290,7 @@ function createMarco3dNodesForcesTable(nodesForces) {
 
   var shtml = getSelectNodesHtml('', true);
 
-  for (var i = 1; i <= nodesForces; i++) 
+  for (var i = 1; i <= nodesForces; i++)
     html += createRowNodesForcesTable(shtml, '5');
 
   html += '</tbody>' +
@@ -1334,18 +1334,18 @@ function createSettlementsTable(settlements) {
             '<tr>' +
             '<th scope="col"></th>';
 
-  if (calculationType === '2')          
+  if (calculationType === '2')
     html += '<th scope="col" colspan="3" class="text-center">Asentamiento en</th>';
   else
     html += '<th scope="col" colspan="2" class="text-center">Asentamiento en</th>';
-            
+
   html += '</tr>' +
         '<tr>' +
         '<th scope="col"># Apoyo</th>' +
         '<th scope="col">X (cm)</th>' +
         '<th scope="col">Y (cm)</th>';
 
-  if (calculationType === '2')   
+  if (calculationType === '2')
     html += '<th scope="col">Z (cm)</th>';
 
   html += '</tr>' +
@@ -1359,8 +1359,8 @@ function createSettlementsTable(settlements) {
             '<th scope="row">' + shtml + '</th>' +
             '<td><input type="text" class="sx"></td>' +
             '<td><input type="text" class="sy"></td>';
-    
-    if (calculationType === '2')   
+
+    if (calculationType === '2')
       html += '<td><input type="text" class="sz"></td>';
 
     html += '</tr>';
@@ -1377,7 +1377,7 @@ function createRowBarDistributedForcesTable(shtml) {
 
   html = '<tr>' +
         '<th scope="row">' + shtml + '</th>';
-  
+
   if (calculationType === '5')
     html += '<td><input type="text" class="wx"></td>' +
         '<td><input type="text" class="wy"></td>';
@@ -1401,7 +1401,7 @@ function createBarsDistributedForcesTable(barsForces) {
     html += '<th scope="col" colspan="3" class="text-center">Dirección de las fuerzas uniformemente repartidas</th>';
   else
     html += '<th scope="col" class="text-center">Fuerza uniformemente repartida</th>';
- 
+
   html += '</tr>' +
         '<tr>' +
         '<th scope="col"># Barra</th>';
@@ -1417,7 +1417,7 @@ function createBarsDistributedForcesTable(barsForces) {
 
   var shtml = getSelectBarsHtml('', true);
 
-  for (var i = 1; i <= barsForces; i++) 
+  for (var i = 1; i <= barsForces; i++)
     html += createRowBarDistributedForcesTable(shtml);
 
   html += '</tbody>' +
@@ -1473,8 +1473,8 @@ function createRowBarPunctualForcesTable(shtml, index) {
         '<td><input type="text" class="dmy"></td>' +
         '</tr>';
   }
-  
-  return html;  
+
+  return html;
 }
 
 function createBarsPunctualForcesTable(barsForces) {
@@ -1488,7 +1488,7 @@ function createBarsPunctualForcesTable(barsForces) {
 
   if (calculationType === '5')
     html += '<th scope="col" colspan="7" class="text-center">Dirección de las fuerzas puntuales</th>';
-  else 
+  else
     html += '<th scope="col" colspan="4" class="text-center">Dirección de las fuerzas puntuales</th>';
 
   html += '</tr>' +
@@ -1513,7 +1513,7 @@ function createBarsPunctualForcesTable(barsForces) {
 
   var shtml = getSelectBarsHtml('', true);
 
-  for (var i = 1; i <= barsForces; i++) 
+  for (var i = 1; i <= barsForces; i++)
     html += createRowBarPunctualForcesTable(shtml, i);
 
   html += '</tbody>' +
@@ -1525,7 +1525,7 @@ function createBarsPunctualForcesTable(barsForces) {
 function getSelectNodesHtml(sclass, withSupports) {
   var html = '<select class="form-control ' + sclass + '">';
   var nodes = $numberOfNodes.val();
-  
+
   for (var i = 1; i <= nodes; i++) {
 
     index = supports.indexOf(i);
@@ -1535,12 +1535,12 @@ function getSelectNodesHtml(sclass, withSupports) {
   html += '</select>';
 
   return html;
-} 
+}
 
 function getSelectBarsHtml() {
   var html = '<select class="form-control">';
   var bars = $numberOfBars.val();
-  
+
   for (var i = 1; i <= bars; i++) {
     html += '<option val="' + i + '">' + i + '</option>';
   }
@@ -1550,10 +1550,10 @@ function getSelectBarsHtml() {
 }
 
 function getSelectSupportsHtml() {
-  
+
   var html = '<select class="form-control">';
   var supports = $('select.support');
-  
+
   for (var i = 0; i < supports.length; i++) {
     node = $(supports[i]).val();
     html += '<option val="' + node + '">' + node + '</option>';
@@ -1631,7 +1631,7 @@ function addRow(type) {
               '<th scope="row">' + shtml + '</th>' +
               '<td><input type="text" class="sx"></td>' +
               '<td><input type="text" class="sy"></td>';
-        
+
         if (calculationType === '2')
           html += '<td><input type="text" class="sz"></td>';
 
@@ -1742,12 +1742,12 @@ function applyValue(type, index) {
  *************************************************************************************************/
 
 function isDecimalPositive(value) {
-  return /^\d*\.?\d*$/.test(value); 
+  return /^\d*\.?\d*$/.test(value);
 }
 
 function isDecimal(value) {
   var re = new RegExp('^-?\\d{1,9}(\\.\\d{1,3})?$');
-  return re.test(value); 
+  return re.test(value);
 }
 
 function isInteger(value) {
@@ -1767,18 +1767,18 @@ function createDisplacementTable() {
             '<tr>' +
             '<th scope="col"></th>';
 
-  if (calculationType === '2')          
+  if (calculationType === '2')
     html += '<th scope="col" colspan="3" class="text-center">Desplazamientos en</th>';
   else
     html += '<th scope="col" colspan="2" class="text-center">Desplazamientos en</th>';
-            
+
   html += '</tr>' +
         '<tr>' +
         '<th scope="col"># Nodo</th>' +
         '<th scope="col">X (cm)</th>' +
         '<th scope="col">Y (cm)</th>';
 
-  if (calculationType === '2')   
+  if (calculationType === '2')
     html += '<th scope="col">Z (cm)</th>';
 
   html += '</tr>' +
@@ -1794,15 +1794,15 @@ function createDisplacementTable() {
       indexF = (calculationType === '2') ? j * 3 : j * 2;
       dx = round(d[indexF][0], 3);
       dy = round(d[indexF + 1][0], 3);
-      if (calculationType === '2')   
+      if (calculationType === '2')
         dz = round(d[indexF + 2][0], 3);
 
       html += '<tr>' +
             '<th scope="row">' + i + '</th>' +
             '<td>' + dx + '</td>' +
             '<td>' + dy + '</td>';
-    
-      if (calculationType === '2')   
+
+      if (calculationType === '2')
         html += '<td>' + dz + '</td>';
 
       html += '</tr>';
@@ -1813,7 +1813,7 @@ function createDisplacementTable() {
   html += '</tbody>' +
           '</table> ';
 
-  $displacementTableContainer.html(html); 
+  $displacementTableContainer.html(html);
 }
 
 function createElongationTable() {
@@ -1827,10 +1827,10 @@ function createElongationTable() {
             '</thead>' +
             '<tbody>';
 
-  var size = $numberOfBars.val(); 
+  var size = $numberOfBars.val();
 
   for (var i = 1; i <= size; i++) {
-    
+
     val = round(e[i - 1], 3);
     html += '<tr>' +
             '<th scope="row">' + i + '</th>' +
@@ -1855,10 +1855,10 @@ function createAxialForceTable() {
             '</thead>' +
             '<tbody>';
 
-  var size = $numberOfBars.val(); 
+  var size = $numberOfBars.val();
 
   for (var i = 1; i <= size; i++) {
-    
+
     val = round(P[i - 1], 3);
     html += '<tr>' +
             '<th scope="row">' + i + '</th>' +
@@ -1878,7 +1878,7 @@ function createResReticulaTable() {
 
   var html = '<table class="table table-bordered">' +
             '<thead>' +
-            
+
             '<tr>' +
             '<th scope="col"></th>' +
             '<th scope="col" colspan="6" class="text-center">Tabla de Resultados</th>' +
@@ -1931,7 +1931,7 @@ function createResMarcoPlanoTable() {
 
   var html = '<table class="table table-bordered">' +
             '<thead>' +
-            
+
             '<tr>' +
             '<th scope="col"></th>' +
             '<th scope="col" colspan="6" class="text-center">Tabla de Resultados</th>' +

@@ -138,7 +138,7 @@ function calculate() {
 		//Estado II
 		calculateF2();
 		createResReticulaTable();
-	} 
+	}
 	//Marco Plano
 	else if (calculationType === '4') {
   		calculatekdByBar();
@@ -153,16 +153,16 @@ function calculate() {
 		//Estado II
 		calculateF2();
 		createResMarcoPlanoTable();
-	}  
+	}
 }
 
 /**
  * Obtiene las coordenadas de cada nodo de la estructura.
  */
 function getNodesCoordinates() {
-	var inputX = $('#nodes-table-container table input.x'); 
-	var inputY = $('#nodes-table-container table input.y'); 
-	var inputZ = $('#nodes-table-container table input.z'); 
+	var inputX = $('#nodes-table-container table input.x');
+	var inputY = $('#nodes-table-container table input.y');
+	var inputZ = $('#nodes-table-container table input.z');
 	var inputSize = inputX.length;
 	var calculationType = $calculationType.val();
 
@@ -188,12 +188,12 @@ function getNodesCoordinates() {
  */
 function getSupports() {
 	supports = [];
-	restrictionsLx = [];	
-	restrictionsLy = [];	
+	restrictionsLx = [];
+	restrictionsLy = [];
 	restrictionsLz = [];
-	restrictionsRx = [];	
-	restrictionsRy = [];	
-	restrictionsRz = [];	
+	restrictionsRx = [];
+	restrictionsRy = [];
+	restrictionsRz = [];
 
 	var selectS = $('#supports-table-container table select.support');
 	var inputLx = $('#supports-table-container table input.rlx');
@@ -203,7 +203,7 @@ function getSupports() {
 	var inputRy = $('#supports-table-container table input.rry');
 	var inputRz = $('#supports-table-container table input.rrz');
 	//var calculationType = $calculationType.val();
-	
+
 	var size = selectS.length;
 	for (i = 0; i < size; i++) {
 		support = parseInt($(selectS[i]).val());
@@ -249,7 +249,7 @@ function getSupports() {
 }
 
 function getAreas() {
-	var inputA = $('#bars-table-container table input.area'); 
+	var inputA = $('#bars-table-container table input.area');
 	var size = inputA.length;
 	areas = [];
 	for (var i = 0; i < size; i++) {
@@ -259,7 +259,7 @@ function getAreas() {
 }
 
 function getElasticity() {
-	var inputE = $('#bars-table-container table input.elasticity'); 
+	var inputE = $('#bars-table-container table input.elasticity');
 	var size = inputE.length;
 	elasticity = [];
 
@@ -270,44 +270,44 @@ function getElasticity() {
 }
 
 function getI() {
-	var inputI = $('#bars-table-container table input.i'); 
+	var inputI = $('#bars-table-container table input.i');
 	var size = inputI.length;
 	barsI = [];
 
 	for (var j = 0; j < size; j++) {
 		i = parseFloat($(inputI[j]).val());
 		barsI.push(i);
-	}	
+	}
 }
 
 function getG() {
-	var inputG = $('#bars-table-container table input.g'); 
+	var inputG = $('#bars-table-container table input.g');
 	var size = inputG.length;
 	barsG = [];
 	for (var i = 0; i < size; i++) {
 		g = parseFloat($(inputG[i]).val());
 		barsG.push(g);
-	}	
+	}
 }
 
 function getJ() {
-	var inputJ = $('#bars-table-container table input.j'); 
+	var inputJ = $('#bars-table-container table input.j');
 	var size = inputJ.length;
 	barsJ = [];
 	for (var i = 0; i < size; i++) {
 		j = parseFloat($(inputJ[i]).val());
 		barsJ.push(j);
-	}	
+	}
 }
 
 function getC() {
-	var inputC = $('#bars-table-container table input.c'); 
+	var inputC = $('#bars-table-container table input.c');
 	var size = inputC.length;
 	barsC = [];
 	for (var i = 0; i < size; i++) {
 		c = parseFloat($(inputC[i]).val());
 		barsC.push(c);
-	}	
+	}
 }
 
 function getBarsDefects() {
@@ -322,7 +322,7 @@ function getBarsDefects() {
 		barsD.push(bar);
 		defect = parseFloat($(inputD[i]).val());
 		dc.push(defect);
-	}	
+	}
 }
 
 /**
@@ -330,9 +330,9 @@ function getBarsDefects() {
  */
 function getSettlements() {
 	settlements = [];
-	dsX = [];	
-	dsY = [];	
-	dsZ = [];	
+	dsX = [];
+	dsY = [];
+	dsZ = [];
 
 	var selectS = $('#settlements-table-container table select');
 	var inputX = $('#settlements-table-container table input.sx');
@@ -344,13 +344,13 @@ function getSettlements() {
 	for (var i = 0; i < size; i++) {
 		settlement = parseInt($(selectS[i]).val());
 		settlements.push(settlement);
-		
+
 		sx = $(inputX[i]).val();
 		dsX.push(sx);
-		
+
 		sy = $(inputY[i]).val();
 		dsY.push(sy);
-		
+
 		if (calculationType === '2') {
 			sz = $(inputZ[i]).val();
 			dsZ.push(sz);
@@ -360,8 +360,8 @@ function getSettlements() {
 
 function calculateL() {
 
-	var nodesIni = $('#bars-table-container table select.ini'); 
-	var nodesFin = $('#bars-table-container table select.fin'); 
+	var nodesIni = $('#bars-table-container table select.ini');
+	var nodesFin = $('#bars-table-container table select.fin');
 	var barsSize = nodesIni.length;
 	var calculationType = $calculationType.val();
 
@@ -376,7 +376,7 @@ function calculateL() {
 		barsIni.push(nodeIni);
 		nodeFin = parseInt($(nodesFin[i]).val());
 		barsFin.push(nodeFin);
-		
+
 		posIni = nodeIni - 1;
 		posFin = nodeFin - 1;
 
@@ -418,7 +418,7 @@ function calculateA() {
 	//El número de columnas es igual al número de nodos por la cantidad de coordenadas (x, y, x)
 	var cols = parseInt($numberOfNodes.val()) * coordinates;
 	A = [];
-	
+
 	//Para cada barra
 	for (var i = 0; i < rows; i++) {
 
@@ -443,7 +443,7 @@ function calculateA() {
 			rxNodeIni = restrictionsLx[indexNodeIni];
 			ryNodeIni = restrictionsLy[indexNodeIni];
 
-			if (calculationType === '2') 
+			if (calculationType === '2')
 				rzNodeIni = restrictionsLz[indexNodeIni];
 		}
 		else {	//No es un apoyo
@@ -455,28 +455,28 @@ function calculateA() {
 			rxNodeFin = restrictionsLx[indexNodeFin];
 			ryNodeFin = restrictionsLy[indexNodeFin];
 
-			if (calculationType === '2') 
+			if (calculationType === '2')
 				rzNodeFin = restrictionsLz[indexNodeFin];
 		}
 		else {	//No es un apoyo
 			rxNodeFin = ryNodeFin = rzNodeFin = 0;
 		}
 
-		Ai = [];	
+		Ai = [];
 
 		//Se forma la fila con 0
-		for (var j = 0; j < cols; j++) 
-			Ai.push(0);		
+		for (var j = 0; j < cols; j++)
+			Ai.push(0);
 
 		//Calcula los cosenos directores del nodo inicial
 		uxIni = (rxNodeIni === 1) ? 0 : ((nodeX[posFin] - nodeX[posIni]) * 100) / L[i];
 		uyIni = (ryNodeIni === 1) ? 0 : ((nodeY[posFin] - nodeY[posIni]) * 100) / L[i];
 		//Multiplica por -1 los cosenos directores del nodo inicial
 		uxIni = (uxIni === 0) ? 0 : uxIni * -1;
-		uyIni = (uyIni === 0) ? 0 : uyIni * -1;	
+		uyIni = (uyIni === 0) ? 0 : uyIni * -1;
 		//Calcula los cosenos directores del nodo final
 		uxFin = (rxNodeFin === 1) ? 0 : ((nodeX[posFin] - nodeX[posIni]) * 100) / L[i];
-		uyFin = (ryNodeFin === 1) ? 0 : ((nodeY[posFin] - nodeY[posIni]) * 100) / L[i];	
+		uyFin = (ryNodeFin === 1) ? 0 : ((nodeY[posFin] - nodeY[posIni]) * 100) / L[i];
 
 		//Asigna los valores en la fila
 		Ai[posIni * coordinates] = uxIni;
@@ -585,7 +585,7 @@ function calculateAFromAi() {
 		if (rxNodeIni === 0 || ryNodeIni === 0 || rzNodeIni === 0) {
 			rowIniA = i * 4;			//i es el índice de la barra y 4 porque son 4 filas por barra
 			colIniA = posIni * 3;		//posIni es el índice del nodo y 3 porque son 3 coordenadas
-			rowIniAi = 0;				//En la matriz A de la barra siempre se toma desde la fila 0				
+			rowIniAi = 0;				//En la matriz A de la barra siempre se toma desde la fila 0
 			colIniAi = 0;				//Para el nodo inicial se toma la primera parte de la matriz A de la barra
 			copyMatrixA(rowIniA, colIniA, rowIniAi, colIniAi, a[i]);
 		}
@@ -594,12 +594,12 @@ function calculateAFromAi() {
 		if (rxNodeFin === 0 || ryNodeFin === 0 || rzNodeFin === 0) {
 			rowIniA = i * 4;			//i es el índice de la barra y 4 porque son 4 filas por barra
 			colIniA = posFin * 3;		//posIni es el índice del nodo y 3 porque son 3 coordenadas
-			rowIniAi = 0;				//En la matriz A de la barra siempre se toma desde la fila 0				
+			rowIniAi = 0;				//En la matriz A de la barra siempre se toma desde la fila 0
 			colIniAi = 3;				//Para el nodo final se toma la segunda parte de la matriz A de la barra
 			copyMatrixA(rowIniA, colIniA, rowIniAi, colIniAi, a[i]);
 		}
 
-		
+
 	}
 
 	//Remueve las columnas que se componen de sólo ceros
@@ -629,7 +629,7 @@ function copyMatrixA(rowIniA, colIniA, rowIniAi, colIniAi, Ai) {
 
 	for (var i = 0; i < 4; i++) {		//4 filas por barra
 		for (var j = 0; j < 3; j++) {	//3 dx por nodo
-			
+
 			rowA = rowIniA + i;
 			colA = colIniA + j;
 			rowAi = rowIniAi + i;
@@ -647,7 +647,7 @@ function calculateAByBar() {
 		//Se obtiene el valor de beta en grados
 		if (deltaY[i] >= 0) {
 			if (deltaX[i] > 0)
-				beta = radiansToDegrees(Math.atan(deltaY[i] / deltaX[i])); 
+				beta = radiansToDegrees(Math.atan(deltaY[i] / deltaX[i]));
 			else if (deltaX[i] == 0)
 				beta = 90;
 			else if (deltaX[i] < 0)
@@ -655,7 +655,7 @@ function calculateAByBar() {
 		}
 		else if (deltaY[i] < 0) {
 			if (deltaX[i] > 0)
-				beta = 360 + radiansToDegrees(Math.atan(deltaY[i] / deltaX[i])); 
+				beta = 360 + radiansToDegrees(Math.atan(deltaY[i] / deltaX[i]));
 			else if (deltaX[i] == 0)
 				beta = 270;
 			else if (deltaX[i] < 0)
@@ -663,34 +663,34 @@ function calculateAByBar() {
 		}
 		//Forma una matriz de continuidad con ceros para la barra
 		ai = [];
-		for (var j = 0; j < 4; j++) 
+		for (var j = 0; j < 4; j++)
 			ai.push([0, 0, 0, 0, 0, 0]);
-		
-		ai[0][0] = (Math.sin(degreesToRadians(beta)) / L[i] == 0) ? Math.sin(degreesToRadians(beta)) / L[i] : -(Math.sin(degreesToRadians(beta)) / L[i]); 
+
+		ai[0][0] = (Math.sin(degreesToRadians(beta)) / L[i] == 0) ? Math.sin(degreesToRadians(beta)) / L[i] : -(Math.sin(degreesToRadians(beta)) / L[i]);
 		ai[0][1] = Math.cos(degreesToRadians(beta)) / L[i];
 		ai[0][2] = 1;
 		ai[0][3] = Math.sin(degreesToRadians(beta)) / L[i];
 		ai[0][4] = (Math.cos(degreesToRadians(beta)) / L[i] == 0) ? Math.cos(degreesToRadians(beta)) / L[i] : -(Math.cos(degreesToRadians(beta)) / L[i]);
 		ai[0][5] = 0;
 
-		ai[1][0] = 2 * ai[0][0]; 
+		ai[1][0] = 2 * ai[0][0];
 		ai[1][1] = 2 * ai[0][1];
 		ai[1][2] = 1;
 		ai[1][3] = 2 * ai[0][3];
 		ai[1][4] = 2 * ai[0][4];
 		ai[1][5] = 1;
 
-		ai[2][0] = ai[0][0]; 
+		ai[2][0] = ai[0][0];
 		ai[2][1] = ai[0][1];
 		ai[2][2] = 0;
 		ai[2][3] = ai[0][3];
 		ai[2][4] = ai[0][4];
 		ai[2][5] = 1;
 
-		ai[3][0] = (Math.cos(degreesToRadians(beta)) == 0) ? Math.cos(degreesToRadians(beta)) : - Math.cos(degreesToRadians(beta)); 
-		ai[3][1] = (Math.sin(degreesToRadians(beta)) == 0) ? Math.sin(degreesToRadians(beta)) : - Math.sin(degreesToRadians(beta)); 
+		ai[3][0] = (Math.cos(degreesToRadians(beta)) == 0) ? Math.cos(degreesToRadians(beta)) : - Math.cos(degreesToRadians(beta));
+		ai[3][1] = (Math.sin(degreesToRadians(beta)) == 0) ? Math.sin(degreesToRadians(beta)) : - Math.sin(degreesToRadians(beta));
 		ai[3][2] = 0;
-		ai[3][3] = Math.cos(degreesToRadians(beta)); 
+		ai[3][3] = Math.cos(degreesToRadians(beta));
 		ai[3][4] = Math.sin(degreesToRadians(beta));
 		ai[3][5] = 0;
 
@@ -778,27 +778,27 @@ function calculateK() {
 function calculateFFromForcesTable() {
 
 	var nodesForces = [];
-	
+
 	var fX = [];
 	var fY = [];
 	var fZ = [];
-	
+
 	var mX = [];
 	var mY = [];
 	var mZ = [];
 
 	var selectF = $('#nodes-forces-table-container table select');
-	
+
 	var inputFx = $('#nodes-forces-table-container table input.fx');
 	var inputFy = $('#nodes-forces-table-container table input.fy');
 	var inputFz = $('#nodes-forces-table-container table input.fz');
-	
+
 	var inputMx = $('#nodes-forces-table-container table input.mx');
 	var inputMy = $('#nodes-forces-table-container table input.my');
 	var inputMz = $('#nodes-forces-table-container table input.mz');
 
 	var calculationType = $calculationType.val();
-	
+
 	//Obtiene los nodos que tienen fuerzas aplicadas
 	var size = selectF.length;
 	for (var i = 0; i < size; i++) {
@@ -961,7 +961,7 @@ function calculateF() {
 function calculateF2() {
 	var calculationType = $calculationType.val();
 	var bars = parseInt($numberOfBars.val());
-	
+
 	F2 = [];
 	for (var i = 0; i < bars; i++) {
 		posIniP = i * 4;
@@ -993,7 +993,7 @@ function calculateF2() {
 			f2 = [P[posIniP + 1][0] + P[posIniP + 2][0]];
 			F2.push(f2);
 		}
-	}	
+	}
 }
 
 function calculated() {
@@ -1056,13 +1056,13 @@ function calculateP13() {
 
 	var size = settlements.length;
 	var calculationType = $calculationType.val();
-	
+
 	//Para cada asentamiento
 	for (i = 0; i < size; i++) {
-		
+
 		//Obtiene las barras afectadas
 		bars = getBarsSettlements(settlements[i]);
-		
+
 		//Para cada barra
 		for (var j = 0; j < bars.length; j++) {
 			//Obtiene ui
@@ -1082,7 +1082,7 @@ function calculateP13() {
 			resB = (calculationType === '1') ? (dB[0] * ui[0]) + (dB[1] * ui[1]) : (dB[0] * ui[0]) + (dB[1] * ui[1]) + (dB[2] * ui[2]);
 			res = resB - resA;
 			e[bars[j] - 1][0] = res;
-		}	
+		}
 	}
 
 	P1 = math.multiply(kd, e);
@@ -1093,7 +1093,7 @@ function getBarsSettlements(node) {
 	bars = [];
 
 	for (var i = 0; i < numberOfBars; i++) {
-		
+
 		if (barsIni[i] === node && bars.indexOf(i) === -1)
 			bars.push(i + 1);
 
