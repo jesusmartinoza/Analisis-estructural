@@ -133,7 +133,9 @@ function initCalculation(op) {
       addBarsContainer($('#mp-paso-2'));
       addSupportsContainer($('#mp-paso-3'));
       addForcesContainer($('#mp-paso-4'));
-      $('#mp-paso-5').html(
+      addDistributedForcesContainer($('#mp-paso-5'));
+      addPunctualForcesContainer($('#mp-paso-6'));
+      $('#mp-paso7').html(
         '<div class="row">' +
         '<div class="col-md-12" id="mp-res-table-container"></div>' +
         '</div>'
@@ -474,7 +476,7 @@ function setMarcoPlanoEvents() {
   $("#marco-plano").on("showStep", function(e, anchorObject, stepNumber, stepDirection) {
 
     //alert("You are on step "+stepNumber+" now");
-    if (parseInt(stepNumber) === 4) {
+    if (parseInt(stepNumber) === 7) {
       calculate();
     }
 
@@ -1378,12 +1380,15 @@ function createRowBarDistributedForcesTable(shtml) {
   html = '<tr>' +
         '<th scope="row">' + shtml + '</th>';
 
-  if (calculationType === '5')
-    html += '<td><input type="text" class="wx"></td>' +
-        '<td><input type="text" class="wy"></td>';
+  if (calculationType === '4' || calculationType === '5') {
+      html += '<td><input type="text" class="wx"></td>' +
+            '<td><input type="text" class="wy"></td>';
+  }
 
-  html += '<td><input type="text" class="wz"></td>' +
-        '</tr>';
+  if (calculationType != '4') {
+      html += '<td><input type="text" class="wz"></td>' +
+            '</tr>';
+  }
 
   return html;
 }
@@ -1397,7 +1402,7 @@ function createBarsDistributedForcesTable(barsForces) {
             '<tr>' +
             '<th scope="col"></th>';
 
-  if (calculationType === '5')
+  if (calculationType === '4' || calculationType === '5')
     html += '<th scope="col" colspan="3" class="text-center">Dirección de las fuerzas uniformemente repartidas</th>';
   else
     html += '<th scope="col" class="text-center">Fuerza uniformemente repartida</th>';
@@ -1406,14 +1411,19 @@ function createBarsDistributedForcesTable(barsForces) {
         '<tr>' +
         '<th scope="col"># Barra</th>';
 
-  if (calculationType === '5')
-    html += '<th scope="col">Wx (ton/m)</th>' +
-        '<th scope="col">Wy (ton/m)</th>';
+  if (calculationType === '4' || calculationType === '5')
+  {
+      html += '<th scope="col">Wx (ton/m)</th>' +
+            '<th scope="col">Wy (ton/m)</th>';
+  }
 
-  html += '<th scope="col">Wz (ton/m)</th>' +
-        '</tr>' +
-        '</thead>' +
-        '<tbody>';
+  if(calculationType != '4' )
+  {
+      html += '<th scope="col">Wz (ton/m)</th>' +
+            '</tr>' +
+            '</thead>' +
+            '<tbody>';
+  }
 
   var shtml = getSelectBarsHtml('', true);
 
