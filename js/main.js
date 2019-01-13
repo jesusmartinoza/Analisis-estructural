@@ -127,7 +127,7 @@ function initCalculation(op) {
       $('#reticula').smartWizard();
       setReticulaEvents();
     break;
-    case 4:
+    case 4: // Marco Plano
       window.location.replace("index.html#mp-paso-1");
       addNodesContainer($('#mp-paso-1'));
       addBarsContainer($('#mp-paso-2'));
