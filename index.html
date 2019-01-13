@@ -1,0 +1,447 @@
+
+<!doctype html>
+
+<html lang="es">
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>Análisis Estructural</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="css/album.css" rel="stylesheet">
+
+    <link href="css/smart_wizard.css" rel="stylesheet">
+
+    <style type="text/css">
+      
+      .m-bottom-40 { margin-bottom: 40px; }
+      
+      .btn-table {     
+        margin-top: 10px; 
+      }
+
+      table input {
+        border: 1px solid #ced4da;
+        height: calc(2.25rem + 2px);
+        font-size: 1rem;
+        line-height: 1.5;
+        border-radius: .25rem;
+        color: #495057;
+        width: 100%;
+      }
+
+      table select {
+        min-width: 60px;
+      }
+
+      table .form-check-input {
+        height: 20px;
+        width: 20px;  
+      }
+
+      .sw-theme-default .step-content {
+        padding-top: 40px;
+      }
+
+      .card-img-top {
+        height: 150px;  
+      }
+      
+    </style>
+
+  </head>
+
+  <body>
+
+    <header>
+      <div class="collapse bg-dark" id="navbarHeader">
+        <div class="container">
+          <div class="row">
+            <div class="col-sm-8 col-md-7 py-4">
+              <h4 class="text-white">Acerca de</h4>
+              <p class="text-muted">Este programa fue diseñado con objetivos académicos para evaluar los casos estudiados en la materia de Teoría General de las Estructuras impartida en el Posgrado de Ingeniería Civil de la Universidad Nacional Autónoma de México.</p>
+            </div>
+            
+            <div class="col-sm-4 offset-md-1 py-4">
+              <h4 class="text-white">Contacto</h4>
+              <ul class="list-unstyled">
+                <li><a class="text-white">Ing. Luis Arnoldo González Castillo</a></li>
+                <li><a class="text-white">Mail: luis_arnoldo19@hotmail.com</a></li>
+              </ul>
+            </div>
+            
+          </div>
+        </div>
+      </div>
+      <div class="navbar navbar-dark bg-dark shadow-sm">
+        <div class="container d-flex justify-content-between">
+          <a href="#" class="navbar-brand d-flex align-items-center">
+            <img src="img/building-3.png" height="20" width="20" style="margin-right: 10px;"/>
+            <strong>Teoría general de las estructuras</strong>
+          </a>
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarHeader" aria-controls="navbarHeader" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main role="main">
+
+      <section class="jumbotron text-center">
+        <div class="container">
+        	<h1 class="jumbotron-heading">Análisis estructural</h1>
+          	<p id="text-heading" class="lead text-muted">¿Qué tipo de estructura desea modelar?</p>
+        </div>
+      </section>
+
+      <input type="hidden" id="calculation-type" value="0">
+      <input type="hidden" id="number-of-nodes" value="0">
+      <input type="hidden" id="number-of-bars" value="0">
+      <input type="hidden" id="number-of-supports" value="0">
+      <input type="hidden" id="number-of-nodes-forces" value="0">
+      <input type="hidden" id="number-of-bars-defects" value="0">
+      <input type="hidden" id="number-of-settlements" value="0">
+      <input type="hidden" id="number-of-bars-distributed-forces" value="0">
+      <input type="hidden" id="number-of-bars-punctual-forces" value="0">
+
+
+      <div class="album py-5 bg-light">
+
+        <div class="container">
+
+          <div id="selection-container">
+            <div class="row">
+
+              <div class="offset-lg-1 col-lg-2 col-md-4">
+                <div class="card mb-4 shadow-sm">
+                  <img class="card-img-top" src="img/armadura.jpeg" alt="Card image cap">
+                  <div class="card-body">
+                    <p class="card-text text-center">Armadura plana</p>
+                    <div class="justify-content-between align-items-center text-center">
+                      <div class="btn-group">
+                        <button type="button" class="btn btn-sm btn-outline-secondary" onclick="initCalculation(1)">Comenzar</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-lg-2 col-md-4">
+                <div class="card mb-4 shadow-sm">
+                  <img class="card-img-top" src="img/armadura-3d.jpeg" alt="Card image cap">
+                  <div class="card-body">
+                    <p class="card-text text-center">Armadura 3D</p>
+                    <div class="justify-content-between align-items-center text-center">
+                      <div class="btn-group">
+                        <button type="button" class="btn btn-sm btn-outline-secondary" onclick="initCalculation(2)">Comenzar</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-lg-2 col-md-4">
+                <div class="card mb-4 shadow-sm">
+                  <img class="card-img-top" src="img/reticula.png" alt="Card image cap">
+                  <div class="card-body">
+                    <p class="card-text text-center">Retícula plana</p>
+                    <div class="justify-content-between align-items-center text-center">
+                      <div class="btn-group">
+                        <button type="button" class="btn btn-sm btn-outline-secondary" onclick="initCalculation(3)">Comenzar</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="offset-lg-0 col-lg-2 col-md-4 offset-md-2">
+                <div class="card mb-4 shadow-sm">
+                  <img class="card-img-top" src="img/marco_plano.png" alt="Card image cap">
+                  <div class="card-body">
+                    <p class="card-text text-center">Marco plano</p>
+                    <div class="justify-content-between align-items-center text-center">
+                      <div class="btn-group">
+                        <button type="button" class="btn btn-sm btn-outline-secondary" onclick="initCalculation(4)">Comenzar</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-lg-2 col-md-4">
+                <div class="card mb-4 shadow-sm">
+                  <img class="card-img-top" src="img/marco-3d.png" alt="Card image cap">
+                  <div class="card-body">
+                    <p class="card-text text-center">Marco 3D</p>
+                    <div class="justify-content-between align-items-center text-center">
+                      <div class="btn-group">
+                        <button type="button" class="btn btn-sm btn-outline-secondary" onclick="initCalculation(5)">Comenzar</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+            </div>
+          </div>
+
+          <div class="row" id="process-container">
+            <div class="col-sm-12">
+
+              <div id="armadura">
+                <ul>
+                  <li><a href="#a-paso-1">Paso 1<br/><small>Nodos</small></a></li>
+                  <li><a href="#a-paso-2">Paso 2<br/><small>Barras</small></a></li>
+                  <li><a href="#a-paso-3">Paso 3<br/><small>Apoyos</small></a></li>
+                  <li><a href="#a-paso-4">Paso 4<br/><small>Fuerzas</small></a></li>
+                  <li><a href="#a-paso-5">Paso 5<br/><small>Datos</small></a></li>
+                  <li><a href="#a-paso-6">Paso 6<br/><small>Resultado</small></a></li>
+                </ul>
+
+                <div>
+                  <!--Nodos-->
+                  <div id="a-paso-1" class="row"></div>
+                  <!--Barras-->
+                  <div id="a-paso-2" class="row"></div>
+                  <!--Apoyos-->
+                  <div id="a-paso-3" class="row"></div>
+                  <div id="a-paso-4" class="row"></div>
+                  <div id="a-paso-5" class="row"></div>
+                  <div id="a-paso-6">
+                    <div class="row">
+                      <div class="col-md-12" id="displacement-table-container">
+                      </div>
+                      <div class="col-md-6" id="elongation-table-container">
+                      </div>
+                      <div class="col-md-6" id="axial-force-table-container">
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+
+              <div id="reticula">
+                <ul>
+                  <li><a href="#r-paso-1">Paso 1<br /><small>Nodos</small></a></li>
+                  <li><a href="#r-paso-2">Paso 2<br /><small>Barras</small></a></li>
+                  <li><a href="#r-paso-3">Paso 3<br /><small>Apoyos</small></a></li>
+                  <li><a href="#r-paso-4">Paso 4<br /><small>Fuerzas en nodos</small></a></li>
+                  <li><a href="#r-paso-5">Paso 5<br /><small>Fuerzas repartidas en barras</small></a></li>
+                  <li><a href="#r-paso-6">Paso 6<br /><small>Fuerzas puntuales en barras</small></a></li>
+                  <li><a href="#r-paso-7">Paso 7<br/><small>Resultado</small></a></li>
+                </ul>
+
+                <div>
+                  <!--Nodos-->
+                  <div id="r-paso-1" class="row"></div>
+                  <!--Barras-->
+                  <div id="r-paso-2" class="row"></div>
+                  <!--Apoyos-->
+                  <div id="r-paso-3" class="row"></div>
+                  <!--Fuerzas en nodos-->
+                  <div id="r-paso-4" class="row"></div>
+                  <!--Fuerzas repartidas en barras-->
+                  <div id="r-paso-5" class="row"></div>
+                  <!--Fuerzas puntuales en barras-->
+                  <div id="r-paso-6" class="row"></div>
+                  <div id="r-paso-7"></div>
+                </div>
+              </div>
+
+              <div id="marco-plano">
+                <ul>
+                  <li><a href="#mp-paso-1">Paso 1<br /><small>Nodos</small></a></li>
+                  <li><a href="#mp-paso-2">Paso 2<br /><small>Barras</small></a></li>
+                  <li><a href="#mp-paso-3">Paso 3<br /><small>Apoyos</small></a></li>
+                  <li><a href="#mp-paso-4">Paso 4<br /><small>Fuerzas en nodos</small></a></li>
+                  <li><a href="#mp-paso-5">Paso 5<br/><small>Resultado</small></a></li>
+                </ul>
+
+                <div>
+                  <!--Nodos-->
+                  <div id="mp-paso-1" class="row"></div>
+                  <!--Barras-->
+                  <div id="mp-paso-2" class="row"></div>
+                  <!--Apoyos-->
+                  <div id="mp-paso-3" class="row"></div>
+                  <!--Fuerzas-->
+                  <div id="mp-paso-4" class="row"></div>
+                  <div id="mp-paso-5"></div>
+                </div>
+              </div>
+
+              <div id="marco-3d">
+                <ul>
+                  <li><a href="#m3d-paso-1">Paso 1<br /><small>Nodos</small></a></li>
+                  <li><a href="#m3d-paso-2">Paso 2<br /><small>Barras</small></a></li>
+                  <li><a href="#m3d-paso-3">Paso 3<br /><small>Apoyos</small></a></li>
+                  <li><a href="#m3d-paso-4">Paso 4<br /><small>Fuerzas en nodos</small></a></li>
+                  <li><a href="#m3d-paso-5">Paso 5<br /><small>Fuerzas repartidas en barras</small></a></li>
+                  <li><a href="#m3d-paso-6">Paso 6<br /><small>Fuerzas puntuales en barras</small></a></li>
+                  <li><a href="#m3d-paso-7">Paso 7<br/><small>Resultado</small></a></li>
+                </ul>
+
+                <div>
+                  <!--Nodos-->
+                  <div id="m3d-paso-1" class="row"></div>
+                  <!--Barras-->
+                  <div id="m3d-paso-2" class="row"></div>
+                  <!--Apoyos-->
+                  <div id="m3d-paso-3" class="row"></div>
+                  <!--Fuerzas en nodos-->
+                  <div id="m3d-paso-4" class="row"></div>
+                  <!--Fuerzas repartidas en barras-->
+                  <div id="m3d-paso-5" class="row"></div>
+                  <!--Fuerzas puntuales en barras-->
+                  <div id="m3d-paso-6" class="row"></div>
+                  <div id="m3d-paso-7"></div>
+                </div>
+
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </main>
+
+  	<!-- Modal -->
+  	<div class="modal fade" id="main-modal" tabindex="-1" role="dialog" aria-labelledby="modal-title" aria-hidden="true">
+    	<div class="modal-dialog" role="document">
+    		<div class="modal-content">
+    		  <div class="modal-header">
+    				<h5 class="modal-title" id="modal-title"></h5>
+    				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+    				<span aria-hidden="true">&times;</span>
+    				</button>
+    			</div>
+    			<div class="modal-body">
+    				<div class="row">
+
+    					<div id="number-of-nodes-container" class="col-md-12 form-group">
+    						<label for="m-number-of-nodes" class="col-form-label">¿Cuántos nodos tiene la estructura?</label>
+    						<input type="text" class="form-control" id="m-number-of-nodes">
+    					</div>
+
+              <div id="number-of-bars-container" class="col-md-12 form-group">
+                <label for="m-number-of-bars" class="col-form-label">¿Cuántas barras tiene la estructura?</label>
+                <input type="text" class="form-control" id="m-number-of-bars">
+              </div>
+
+              <div id="number-of-supports-container" class="col-md-12 form-group">
+                <label for="m-number-of-supports" class="col-form-label">¿Cuántos apoyos tiene la estructura?</label>
+                <input type="text" class="form-control" id="m-number-of-supports">
+              </div>
+
+              <div id="number-of-nodes-forces-container" class="col-md-12 form-group">
+                <label for="m-number-of-nodes-forces" class="col-form-label">¿En cuántos nodos se aplican fuerzas?</label>
+                <input type="text" class="form-control" id="m-number-of-nodes-forces">
+              </div>
+
+              <div id="number-of-bars-defects-container" class="col-md-12 form-group">
+                <label for="m-number-of-bars-defects" class="col-form-label">¿Cuántas barras presentan defectos constructivos?</label>
+                <input type="text" class="form-control" id="m-number-of-bars-defects">
+              </div>
+
+              <div id="number-of-settlements-container" class="col-md-12 form-group">
+                <label for="m-number-of-settlements" class="col-form-label">¿En cuántos apoyos hay asentamientos?</label>
+                <input type="text" class="form-control" id="m-number-of-settlements">
+              </div>
+
+              <div id="number-of-bars-distributed-forces-container" class="col-md-12 form-group">
+                <label for="m-number-of-bars-distributed-forces" class="col-form-label">¿En cuántas barras se aplican fuerzas?</label>
+                <input type="text" class="form-control" id="m-number-of-bars-distributed-forces">
+              </div>
+
+              <div id="number-of-bars-punctual-forces-container" class="col-md-12 form-group">
+                <label for="m-number-of-bars-punctual-forces" class="col-form-label">¿Cuántas fuerzas punctuales se aplican en las barras?</label>
+                <input type="text" class="form-control" id="m-number-of-bars-punctual-forces">
+              </div>
+    				</div>
+    			</div>
+
+    			<div class="modal-footer">
+    				<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+
+            <div id="nodes-button">
+              <button type="button" class="btn btn-primary" onclick="createTable(1)">OK</button>
+            </div>
+
+            <div id="bars-button">
+              <button type="button" class="btn btn-primary" onclick="createTable(2)">OK</button>
+            </div>
+
+            <div id="supports-button">
+              <button type="button" class="btn btn-primary" onclick="createTable(3)">OK</button>
+            </div>
+
+            <div id="nodes-forces-button">
+              <button type="button" class="btn btn-primary" onclick="createTable(4)">OK</button>
+            </div>
+
+            <div id="bars-defects-button">
+              <button type="button" class="btn btn-primary" onclick="createTable(5)">OK</button>
+            </div>
+
+            <div id="settlements-button">
+              <button type="button" class="btn btn-primary" onclick="createTable(6)">OK</button>
+            </div>
+
+            <div id="bars-distributed-forces-button">
+              <button type="button" class="btn btn-primary" onclick="createTable(7)">OK</button>
+            </div>
+
+            <div id="bars-punctual-forces-button">
+              <button type="button" class="btn btn-primary" onclick="createTable(8)">OK</button>
+            </div>
+
+    			</div>
+    		</div>
+    	</div>
+  	</div>
+
+    <footer class="text-muted">
+
+      <div class="container" id="footer-container">
+        <div class="row">
+          <div class="col-sm-12 text-right">
+              <button type="button" class="btn btn-primary" onclick="goIndex()">Menú Principal</button>
+          </div>
+        </div>
+      </div>
+
+    </footer>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="js/jquery-3.3.1.min.js"></script>
+    <script src="js/popper.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/holder.min.js"></script>
+
+    <!--Wizard-->
+    <script src="js/jquery.smartWizard.js"></script>
+
+    <!--Funciones principales-->
+    <script src="js/main.js"></script>
+    <!--Cálculos-->
+    <script src="js/calculate.js"></script>
+    <script src="js/math.js"></script>
+
+    <script type="application/javascript">
+    </script>
+
+  </body>
+
+</html>
