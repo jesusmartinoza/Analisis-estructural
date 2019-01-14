@@ -489,7 +489,7 @@ function setMarcoPlanoEvents() {
 function setMarco3dEvents() {
     // Initialize the showStep event
     $("#marco-3d").on("showStep", function(e, anchorObject, stepNumber, stepDirection) {
-      if (parseInt(stepNumber) === 3) {
+      if (parseInt(stepNumber) === 6) {
         calculate();
       }
 

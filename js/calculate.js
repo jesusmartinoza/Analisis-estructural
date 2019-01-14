@@ -69,6 +69,8 @@ var jNodes = [];
 var jBars = [];
 
 function calculate() {
+	jNodes = [];
+	jBars = [];
 	for(var i = 0; i < parseInt($mNumberOfBars.val()); i++) {
 		jBars.push(new Bar());
 	}
@@ -166,6 +168,9 @@ function calculate() {
 	}
 	// Marco 3D
 	else if (calculationType === '5') {
+		calculateFFromForcesTable();
+		getBarForces();
+		getBarPuntualForces();
 		calculate3dFrame();
 	}
 }
@@ -191,7 +196,7 @@ function calculate3dFrame() {
 				var lib = jBar.startNode.barCount == 1 ? jBar.startNode : jBar.endNode; // Nodo con una barra
 				var emp = lib == jBar.startNode ? jBar.endNode : jBar.startNode; // Nodo con más de una barra
 
-
+				// Paso 4
 			}
 		}
 	});
@@ -853,6 +858,135 @@ function calculateK() {
 	Kt = math.transpose(K);
 }
 
+function getBarPuntualForces() {
+	var selectF = $('#bars-punctual-forces-table-container table select');
+
+	var inputPPx = $('#bars-punctual-forces-table-container table input.ppx');
+	var inputPPy = $('#bars-punctual-forces-table-container table input.ppy');
+	var inputPPz = $('#bars-punctual-forces-table-container table input.ppz');
+	var inputPMx = $('#bars-punctual-forces-table-container table input.pmx');
+	var inputPMy = $('#bars-punctual-forces-table-container table input.pmy');
+	var inputPMz = $('#bars-punctual-forces-table-container table input.pmz');
+
+	//Obtiene los nodos que tienen fuerzas aplicadas
+	var size = selectF.length;
+
+	size = inputPPx.length;
+	for (i = 0; i < size; i++) {
+		wx = parseFloat($(inputPPx[i]).val());
+		jBars[i].pPx = wx;
+	}
+
+	size = inputPPy.length;
+	for (i = 0; i < size; i++) {
+		wy = parseFloat($(inputPPy[i]).val());
+		jBars[i].pPy = wy;
+	}
+
+	size = inputPPz.length;
+	for (i = 0; i < size; i++) {
+		wz = parseFloat($(inputPPz[i]).val());
+		jBars[i].pPz = wZ;
+	}
+
+  // -------
+	size = inputPMx.length;
+	for (i = 0; i < size; i++) {
+		wx = parseFloat($(inputPMx[i]).val());
+		jBars[i].pMx = wx;
+	}
+
+	size = inputPMy.length;
+	for (i = 0; i < size; i++) {
+		wy = parseFloat($(inputPMy[i]).val());
+		jBars[i].pMy = wy;
+	}
+
+	size = inputPMz.length;
+	for (i = 0; i < size; i++) {
+		wz = parseFloat($(inputPMz[i]).val());
+		jBars[i].pMz = wZ;
+	}
+
+	var inputDPx = $('#bars-punctual-forces-table-container table input.dpx');
+	var inputDPy = $('#bars-punctual-forces-table-container table input.dpy');
+	var inputDPz = $('#bars-punctual-forces-table-container table input.dpz');
+	var inputDMx = $('#bars-punctual-forces-table-container table input.dmx');
+	var inputDMy = $('#bars-punctual-forces-table-container table input.dmy');
+	var inputDMz = $('#bars-punctual-forces-table-container table input.dmz');
+
+	//Obtiene los nodos que tienen fuerzas aplicadas
+	var size = selectF.length;
+
+	size = inputDPx.length;
+	for (i = 0; i < size; i++) {
+		wx = parseFloat($(inputDPx[i]).val());
+		jBars[i].dPx = wx;
+	}
+
+	size = inputDPy.length;
+	for (i = 0; i < size; i++) {
+		wy = parseFloat($(inputDPy[i]).val());
+		jBars[i].dPy = wy;
+	}
+
+	size = inputDPz.length;
+	for (i = 0; i < size; i++) {
+		wz = parseFloat($(inputDPz[i]).val());
+		jBars[i].dPz = wz;
+	}
+
+	// -------
+	size = inputDMx.length;
+	for (i = 0; i < size; i++) {
+		wx = parseFloat($(inputDMx[i]).val());
+		jBars[i].dMx = wx;
+	}
+
+	size = inputDMy.length;
+	for (i = 0; i < size; i++) {
+		wy = parseFloat($(inputDMy[i]).val());
+		jBars[i].dMy = wy;
+	}
+
+	size = inputDMz.length;
+	for (i = 0; i < size; i++) {
+		wz = parseFloat($(inputDMz[i]).val());
+		jBars[i].dMz = wz;
+	}
+}
+
+function getBarForces() {
+	var selectF = $('#bars-distributed-forces-table-container table select');
+
+	var inputWx = $('#bars-distributed-forces-table-container table input.wx');
+	var inputWy = $('#bars-distributed-forces-table-container table input.wy');
+	var inputWz = $('#bars-distributed-forces-table-container table input.wz');
+
+	var calculationType = $calculationType.val();
+
+	//Obtiene los nodos que tienen fuerzas aplicadas
+	var size = selectF.length;
+
+	size = inputWx.length;
+	for (i = 0; i < size; i++) {
+		wx = parseFloat($(inputWx[i]).val());
+		jBars[i].wX = wx;
+	}
+
+	size = inputWy.length;
+	for (i = 0; i < size; i++) {
+		wy = parseFloat($(inputWy[i]).val());
+		jBars[i].wY = wy;
+	}
+
+	size = inputWz.length;
+	for (i = 0; i < size; i++) {
+		wz = parseFloat($(inputWz[i]).val());
+		jBars[i].wZ = wz;
+	}
+}
+
 function calculateFFromForcesTable() {
 
 	var nodesForces = [];
@@ -888,36 +1022,42 @@ function calculateFFromForcesTable() {
 	for (i = 0; i < size; i++) {
 		fx = parseFloat($(inputFx[i]).val());
 		fX.push(fx);
+		jNodes[i].fX = fx;
 	}
 
 	size = inputFy.length;
 	for (i = 0; i < size; i++) {
 		fy = parseFloat($(inputFy[i]).val());
 		fY.push(fy);
+		jNodes[i].fY = fy;
 	}
 
 	size = inputFz.length;
 	for (i = 0; i < size; i++) {
 		fz = parseFloat($(inputFz[i]).val());
 		fZ.push(fz);
+		jNodes[i].fZ = fz;
 	}
 
 	size = inputMx.length;
 	for (i = 0; i < size; i++) {
 		mx = parseFloat($(inputMx[i]).val());
 		mX.push(mx);
+		jNodes[i].mX = mx;
 	}
 
 	size = inputMy.length;
 	for (i = 0; i < size; i++) {
 		my = parseFloat($(inputMy[i]).val());
 		mY.push(my);
+		jNodes[i].mY = my;
 	}
 
 	size = inputMz.length;
 	for (i = 0; i < size; i++) {
 		mz = parseFloat($(inputMz[i]).val());
 		mZ.push(mz);
+		jNodes[i].mZ = mz;
 	}
 
 	F = [];
