@@ -190,13 +190,41 @@ function calculate3dFrame() {
 		console.log(jBar);
 
 		// Si ninguno nodo es apoyo
-		if(!jBar.startNode.isSupport && jBar.endNode.isSupport) {
+		if(!jBar.startNode.isSupport && !jBar.endNode.isSupport) {
 			// Cualquier nodo conecta solo una barra
 			if(jBar.startNode.barCount == 1 || jBar.endNode.barCount == 1) {
-				var lib = jBar.startNode.barCount == 1 ? jBar.startNode : jBar.endNode; // Nodo con una barra
-				var emp = lib == jBar.startNode ? jBar.endNode : jBar.startNode; // Nodo con más de una barra
+				var lib = jBar.startNode.barCount == 1 ? copyInstance(jBar.startNode) : copyInstance(jBar.endNode); // Nodo con una barra
+				var emp = _.isEqual(lib, jBar.startNode) ? copyInstance(jBar.endNode) : copyInstance(jBar.startNode); // Nodo con más de una barra
+				var jDeltaX = jBar.deltaX();
+				var jDeltaY = jBar.deltaY();
+				var jL = jBar.calculateL()
 
-				// Paso 4
+				if(jDeltaX != 0 && jDeltaY == 0) {
+					// Condiciones del cálculo
+					if(emp.x > lib.x) {
+						jBar.pPy *= -1;
+						jBar.wY *= -1;
+					}
+
+					emp.fX += jBar.pPx;
+					emp.fY += jBar.pPy + (jBar.wY / jL);
+					emp.mZ += jBar.pMx + (jBar.pPy * jD) + (jBar.wY * (Math.pow(jL, 2) / 2));
+				} else if(jDeltaX == 0 && jDeltaY != 0) {
+					if(emp.y < lib.y) {
+						jBar.pPx *= -1;
+						jBar.wX *= -1;
+					}
+
+					emp.fX += jBar.pPx + (jBar.wX / jL);
+					emp.fY += jBar.pPy;
+					emp.mZ += jBar.pMx + (jBar.pPx * jD) + (jBar.wX * (Math.pow(jL, 2) / 2));
+				} else {
+					var alpha = Math.abs(Math.atan(jDeltaX / jDeltaY));
+					var jDx = jD * Math.cos(alpha);
+					var jDy = jD * Math.sen(alpha);
+					var jLx = jL * Math.cos(alpha);
+					var jLy = jL * Math.sen(alpha);
+				}
 			}
 		}
 	});
@@ -886,7 +914,7 @@ function getBarPuntualForces() {
 	size = inputPPz.length;
 	for (i = 0; i < size; i++) {
 		wz = parseFloat($(inputPPz[i]).val());
-		jBars[i].pPz = wZ;
+		jBars[i].pPz = wz;
 	}
 
   // -------
@@ -905,7 +933,7 @@ function getBarPuntualForces() {
 	size = inputPMz.length;
 	for (i = 0; i < size; i++) {
 		wz = parseFloat($(inputPMz[i]).val());
-		jBars[i].pMz = wZ;
+		jBars[i].pMz = wz;
 	}
 
 	var inputDPx = $('#bars-punctual-forces-table-container table input.dpx');
@@ -1388,4 +1416,14 @@ function degreesToRadians(degrees)
 {
 	var pi = Math.PI;
 	return degrees * (pi/180);
+}
+
+function copyInstance (original) {
+  var copied = Object.assign(
+    Object.create(
+      Object.getPrototypeOf(original)
+    ),
+    original
+  );
+  return copied;
 }
