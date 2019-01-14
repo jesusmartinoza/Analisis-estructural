@@ -1506,15 +1506,18 @@ function createBarsPunctualForcesTable(barsForces) {
           '<th scope="col"># Barra</th>' +
           '<th scope="col" style="min-width: 66px;"></th>';
 
-  if (calculationType === '5')
+  if (calculationType === '4' || calculationType === '5') {
     html += '<th scope="col">Px (ton)</th>' +
             '<th scope="col">Py (ton)</th>';
+  }
 
-  html += '<th scope="col">Pz (ton)</th>' +
-            '<th scope="col">M\'x (ton-m)</th>' +
-            '<th scope="col">M\'y (ton-m)</th>';
+  if (calculationType != '4') {
+    html += '<th scope="col">Pz (ton)</th>' +
+              '<th scope="col">M\'x (ton-m)</th>' +
+              '<th scope="col">M\'y (ton-m)</th>';
+  }
 
-  if (calculationType === '5')
+  if (calculationType === '4' || calculationType === '5')
     html += '<th scope="col">M\'z (ton-m)</th>';
 
   html += '</tr>' +
