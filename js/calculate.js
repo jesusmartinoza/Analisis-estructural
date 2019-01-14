@@ -191,13 +191,16 @@ function calculate3dFrame() {
 
 		// Si ninguno nodo es apoyo
 		if(!jBar.startNode.isSupport && !jBar.endNode.isSupport) {
+			var jD = jBar.dPx;
+			var jDeltaX = jBar.deltaX();
+			var jDeltaY = jBar.deltaY();
+			var jL = jBar.calculateL();
+
 			// Cualquier nodo conecta solo una barra
 			if(jBar.startNode.barCount == 1 || jBar.endNode.barCount == 1) {
 				var lib = jBar.startNode.barCount == 1 ? copyInstance(jBar.startNode) : copyInstance(jBar.endNode); // Nodo con una barra
 				var emp = _.isEqual(lib, jBar.startNode) ? copyInstance(jBar.endNode) : copyInstance(jBar.startNode); // Nodo con más de una barra
-				var jDeltaX = jBar.deltaX();
-				var jDeltaY = jBar.deltaY();
-				var jL = jBar.calculateL()
+				jD = _.isEqual(jBar.startNode, emp) ? jD: jL - jD;
 
 				if(jDeltaX != 0 && jDeltaY == 0) {
 					// Condiciones del cálculo
@@ -224,6 +227,61 @@ function calculate3dFrame() {
 					var jDy = jD * Math.sen(alpha);
 					var jLx = jL * Math.cos(alpha);
 					var jLy = jL * Math.sen(alpha);
+
+					if(emp.x > lib.x) {
+						jBar.pPy *= -1;
+						jBar.wY *= -1;
+					}
+
+					if(emp.y < lib.y) {
+						jBar.pPx *= -1;
+						jBar.wX *= -1;
+					}
+
+					emp.fX += jBar.pPx + (jBar.wX / jLy);
+					emp.fY += jBar.pPy + (jBar.wY / jLx);
+					emp.mZ += jBar.pMz + (jBar.pPy * jDx) + (jBar.pPx * jDy)
+					 				+ (jBar.wY * (Math.pow(jLx, 2) / 2))
+									+ (jBar.wX * (Math.pow(jLy, 2) / 2));
+				}
+			}
+			// Si se conectan más de una barra a los nodos
+			else {
+				var jDc = jL - jD; // D cousin xD
+				var nodeA = copyInstance(jBar.startNode);
+				var nodeB = copyInstance(jBar.endNode);
+
+				if(jDeltaX != 0 && jDeltaY == 0) {
+					var signEndNode = jDeltaX > 0 ? -1 : 1;
+					var signStartNode = jDeltaX < 0 ? -1 : 1;
+					var aux = 0;
+
+					// Nodo A
+					nodeA.fX += jBar.pPx / 2;
+					aux = (jBar.pPy * jDc * jDc) / Math.pow(jL, 3);
+					aux *= jL + (2 * jD);
+					nodeA.fY += aux + (jBar.wY * jL) / 2;
+					nodeA.mZ += jBar.pMz / 2;
+					nodeA.mZ += ( (jBar.pPy * jD * Math.pow(jDc, 2)) / (jL * jL) ) * signStartNode;
+					nodeA.mZ += ( (jBar.wY * jL * jL) / (jBar.I * jBar.I) ) * signStartNode;
+
+					// Nodo B
+					nodeB.fX += jBar.pPx / 2;
+					// ...
+
+				} else if(jDeltaX == 0 && jDeltaY != 0) {
+					var signStartNode = jDeltaY > 0 ? -1 : 1;
+					var signEndNode = jDeltaX < 0 ? -1 : 1;
+
+					// Nodo A
+					// ....
+
+					// Nodo B
+					// ....
+				} else {
+					var alpha = Math.abs(Math.atan(jDeltaX / jDeltaY));
+
+					// Aquí voy
 				}
 			}
 		}
