@@ -135,7 +135,7 @@ function initCalculation(op) {
       addForcesContainer($('#mp-paso-4'));
       addDistributedForcesContainer($('#mp-paso-5'));
       addPunctualForcesContainer($('#mp-paso-6'));
-      $('#mp-paso7').html(
+      $('#mp-paso-7').html(
         '<div class="row">' +
         '<div class="col-md-12" id="mp-res-table-container"></div>' +
         '</div>'
@@ -475,16 +475,25 @@ function setMarcoPlanoEvents() {
   // Initialize the showStep event
   $("#marco-plano").on("showStep", function(e, anchorObject, stepNumber, stepDirection) {
 
-    //alert("You are on step "+stepNumber+" now");
-    if (parseInt(stepNumber) === 7) {
-      calculate();
+    if (parseInt(stepNumber) === 6) {
+      try {
+        calculate();
+      } catch(err) {
+        alert(err);
+      }
     }
 
   });
 }
 
 function setMarco3dEvents() {
+    // Initialize the showStep event
+    $("#marco-3d").on("showStep", function(e, anchorObject, stepNumber, stepDirection) {
+      if (parseInt(stepNumber) === 3) {
+        calculate();
+      }
 
+    });
 }
 
 function setReticulaEvents() {

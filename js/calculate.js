@@ -46,6 +46,7 @@ var kd = [];
 var kArray = [];
 var K = [];
 var Kt = [];
+var T = []; // Matriz
 //Fuerzas aplicadas en nodos
 var F = [];
 var F1 = [];
@@ -61,7 +62,16 @@ var P2 = [];
 var deltaX = [];
 var deltaY = [];
 
+// Variables Jesús
+// NOTA: Variables tienen prefijo j para no causar conflictos con
+// variables Gaby
+var jNodes = [];
+var jBars = [];
+
 function calculate() {
+	for(var i = 0; i < parseInt($mNumberOfBars.val()); i++) {
+		jBars.push(new Bar());
+	}
 
 	var calculationType = $calculationType.val();
 	getNodesCoordinates();
@@ -141,12 +151,12 @@ function calculate() {
 	}
 	//Marco Plano
 	else if (calculationType === '4') {
-  		calculatekdByBar();
-  		calculatekdFromki();
-  		calculateAByBar();
-  		calculateAFromAi();
-  		calculateK();
-  		calculateFFromForcesTable();
+		calculatekdByBar();
+		calculatekdFromki();
+		calculateAByBar();
+		calculateAFromAi();
+		calculateK();
+		calculateFFromForcesTable();
 		calculated();
 		calculatee();
 		calculateP();
@@ -154,6 +164,38 @@ function calculate() {
 		calculateF2();
 		createResMarcoPlanoTable();
 	}
+	// Marco 3D
+	else if (calculationType === '5') {
+		calculate3dFrame();
+	}
+}
+
+/**
+ * Calcular marco 3d usando apuntes de Rodolfo.
+ * Este método incluye todo los pasos de nuevo porque necesito
+ * familiarizarme con el algoritmo.
+
+ * NOTA: Variables tienen prefijo j para no causar conflictos con
+ *			 variables Gaby
+ */
+function calculate3dFrame() {
+
+	// Iterar sobre cada barra
+	jBars.forEach(jBar => {
+		console.log(jBar);
+
+		// Si ninguno nodo es apoyo
+		if(!jBar.startNode.isSupport && jBar.endNode.isSupport) {
+			// Cualquier nodo conecta solo una barra
+			if(jBar.startNode.barCount == 1 || jBar.endNode.barCount == 1) {
+				var lib = jBar.startNode.barCount == 1 ? jBar.startNode : jBar.endNode; // Nodo con una barra
+				var emp = lib == jBar.startNode ? jBar.endNode : jBar.startNode; // Nodo con más de una barra
+
+
+			}
+		}
+	});
+
 }
 
 /**
@@ -176,10 +218,14 @@ function getNodesCoordinates() {
 		nodeX.push(x);
 		y = parseFloat($(inputY[i]).val());
 		nodeY.push(y);
+
+		z = null;
 		if (calculationType === '2' || calculationType === '3' || calculationType === '5') {
 			z = parseFloat($(inputZ[i]).val());
 			nodeZ.push(z);
 		}
+
+		jNodes.push(new Node(x, y, z));
 	}
 }
 
@@ -208,42 +254,56 @@ function getSupports() {
 	for (i = 0; i < size; i++) {
 		support = parseInt($(selectS[i]).val());
 		supports.push(support);
+
+		jNodes[i].isSupport = true;
 	}
 
 	size = inputLx.length;
 	for (i = 0; i < size; i++) {
 		rx = ($(inputLx[i]).is(':checked')) ? 1 : 0;
 		restrictionsLx.push(rx);
+
+		jNodes[i].lX = Boolean(rx);
 	}
 
 	size = inputLy.length;
 	for (i = 0; i < size; i++) {
 		ry = ($(inputLy[i]).is(':checked')) ? 1 : 0;
 		restrictionsLy.push(ry);
+
+		jNodes[i].lY = Boolean(ry);
 	}
 
 	size = inputLz.length;
 	for (i = 0; i < size; i++) {
 		rz = ($(inputLz[i]).is(':checked')) ? 1 : 0;
 		restrictionsLz.push(rz);
+
+		jNodes[i].lZ = Boolean(rz);
 	}
 
 	size = inputRx.length;
 	for (i = 0; i < size; i++) {
 		rx = ($(inputRx[i]).is(':checked')) ? 1 : 0;
 		restrictionsRx.push(rx);
+
+		jNodes[i].rX = Boolean(rx);
 	}
 
 	size = inputRy.length;
 	for (i = 0; i < size; i++) {
 		ry = ($(inputRy[i]).is(':checked')) ? 1 : 0;
 		restrictionsRy.push(ry);
+
+		jNodes[i].rY = Boolean(ry);
 	}
 
 	size = inputRz.length;
 	for (i = 0; i < size; i++) {
 		rz = ($(inputRz[i]).is(':checked')) ? 1 : 0;
 		restrictionsRz.push(rz);
+
+		jNodes[i].rZ = Boolean(rz);
 	}
 
 }
@@ -255,6 +315,8 @@ function getAreas() {
 	for (var i = 0; i < size; i++) {
 		ar = parseFloat($(inputA[i]).val());
 		areas.push(ar);
+
+		jBars[i].area = ar;
 	}
 }
 
@@ -266,6 +328,8 @@ function getElasticity() {
 	for (var i = 0; i < size; i++) {
 		e = parseFloat($(inputE[i]).val());
 		elasticity.push(e);
+
+		jBars[i].elasticity = e;
 	}
 }
 
@@ -277,6 +341,8 @@ function getI() {
 	for (var j = 0; j < size; j++) {
 		i = parseFloat($(inputI[j]).val());
 		barsI.push(i);
+
+		jBars[j].I = i;
 	}
 }
 
@@ -287,6 +353,8 @@ function getG() {
 	for (var i = 0; i < size; i++) {
 		g = parseFloat($(inputG[i]).val());
 		barsG.push(g);
+
+		jBars[i].G = g;
 	}
 }
 
@@ -297,6 +365,8 @@ function getJ() {
 	for (var i = 0; i < size; i++) {
 		j = parseFloat($(inputJ[i]).val());
 		barsJ.push(j);
+
+		jBars[i].J = j;
 	}
 }
 
@@ -307,6 +377,7 @@ function getC() {
 	for (var i = 0; i < size; i++) {
 		c = parseFloat($(inputC[i]).val());
 		barsC.push(c);
+		jBars[i].C = c;
 	}
 }
 
@@ -374,11 +445,18 @@ function calculateL() {
 
 		nodeIni = parseInt($(nodesIni[i]).val());
 		barsIni.push(nodeIni);
+
 		nodeFin = parseInt($(nodesFin[i]).val());
 		barsFin.push(nodeFin);
 
 		posIni = nodeIni - 1;
 		posFin = nodeFin - 1;
+
+		jBars[i].startNode = jNodes[posIni];
+		jBars[i].startNode.barCount++;
+
+		jBars[i].endNode = jNodes[posFin];
+		jBars[i].endNode.barCount++;
 
 		difX = parseFloat(nodeX[posFin]) - parseFloat(nodeX[posIni]);
 		deltaX[i] = difX;
@@ -956,6 +1034,16 @@ function calculateFFromForcesTable() {
 
 function calculateF() {
 	F = math.multiply(negative(At), P1);
+}
+
+function calculateF1() {
+	var calculationType = $calculationType.val();
+	var bars = parseInt($numberOfBars.val());
+
+	F1 = [];
+	for (var i = 0; i < bars; i++) {
+		posIniP = i * 4;
+	}
 }
 
 function calculateF2() {
