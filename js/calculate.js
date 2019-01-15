@@ -188,13 +188,13 @@ function calculate3dFrame() {
 	// Iterar sobre cada barra
 	jBars.forEach(jBar => {
 		console.log(jBar);
+		var jD = jBar.dPx;
+		var jDeltaX = jBar.deltaX();
+		var jDeltaY = jBar.deltaY();
+		var jL = jBar.calculateL();
 
 		// Si ninguno nodo es apoyo
 		if(!jBar.startNode.isSupport && !jBar.endNode.isSupport) {
-			var jD = jBar.dPx;
-			var jDeltaX = jBar.deltaX();
-			var jDeltaY = jBar.deltaY();
-			var jL = jBar.calculateL();
 
 			// Cualquier nodo conecta solo una barra
 			if(jBar.startNode.barCount == 1 || jBar.endNode.barCount == 1) {
@@ -203,15 +203,15 @@ function calculate3dFrame() {
 				jD = _.isEqual(jBar.startNode, emp) ? jD: jL - jD;
 
 				if(jDeltaX != 0 && jDeltaY == 0) {
-					// Condiciones del cálculo
-					if(emp.x > lib.x) {
+				  // Condiciones del cálculo
+				  if(emp.x > lib.x) {
 						jBar.pPy *= -1;
 						jBar.wY *= -1;
-					}
+				  }
 
-					emp.fX += jBar.pPx;
-					emp.fY += jBar.pPy + (jBar.wY / jL);
-					emp.mZ += jBar.pMx + (jBar.pPy * jD) + (jBar.wY * (Math.pow(jL, 2) / 2));
+				  emp.fX += jBar.pPx;
+				  emp.fY += jBar.pPy + (jBar.wY / jL);
+				  emp.mZ += jBar.pMx + (jBar.pPy * jD) + (jBar.wY * (Math.pow(jL, 2) / 2));
 				} else if(jDeltaX == 0 && jDeltaY != 0) {
 					if(emp.y < lib.y) {
 						jBar.pPx *= -1;
@@ -267,23 +267,88 @@ function calculate3dFrame() {
 
 					// Nodo B
 					nodeB.fX += jBar.pPx / 2;
-					// ...
-
-				} else if(jDeltaX == 0 && jDeltaY != 0) {
+					aux = (jBar.pPy * jD * jD) / Math.pow(jL, 3);
+					aux *= jL + (2 * jDc);
+					nodeB.fY += aux + (jBar.wY * jL) / 2;
+					nodeB.mZ += jBar.pMz / 2;
+					nodeB.mZ += ( (jBar.pPy * Math.pow(jD, 2) * jDc) / (jL * jL) ) * signStartNode;
+					nodeB.mZ += ( (jBar.wY * jL * jL) / (jBar.I * jBar.I) ) * signStartNode;
+				} else if (jDeltaX == 0 && jDeltaY != 0) {
 					var signStartNode = jDeltaY > 0 ? -1 : 1;
 					var signEndNode = jDeltaX < 0 ? -1 : 1;
 
 					// Nodo A
-					// ....
+					aux = (jBar.pPx * jDc * jDc) / Math.pow(jL, 3);
+					aux *= jL + (2 * jD);
+					nodeA.fX += aux + (jBar.wX * jL) / 2;
+					nodeA.fY += jBar.pPY / 2;
+					nodeA.mZ += jBar.pMz / 2;
+					nodeA.mZ += ( (jBar.pPx * jD * Math.pow(jDc, 2)) / (jL * jL) ) * signStartNode;
+					nodeA.mZ += ( (jBar.wX * jL * jL) / (jBar.I * jBar.I) ) * signStartNode;
 
 					// Nodo B
-					// ....
+					aux = (jBar.pPx * jDc * jDc) / Math.pow(jL, 3);
+					aux *= jL + (2 * jD);
+					nodeB.fX += aux + (jBar.wX * jL) / 2;
+					nodeB.fY += jBar.pPY / 2;
+					nodeB.mZ += jBar.pMz / 2;
+					nodeB.mZ += ( (jBar.pPx * Math.pow(jD, 2) * jDc) / (jL * jL) ) * signStartNode;
+					nodeB.mZ += ( (jBar.wX * jL * jL) / (jBar.I * jBar.I) ) * signStartNode;
 				} else {
 					var alpha = Math.abs(Math.atan(jDeltaX / jDeltaY));
+					var jDx = jD * Math.cos(alpha);
+					var jDy = jD * Math.sen(alpha);
+					var jLx = jL * Math.cos(alpha);
+					var jLy = jL * Math.sen(alpha);
+					var jDcx = jDc * Math.cos(alpha);
+					var jDcy = jDc * Math.sen(alpha);
 
-					// Aquí voy
+					var nodeASign = jDeltaX < 0 && jDeltaY > 0 ? 1 : -1;
+					var nodeBSign = jDeltaX > 0 && jDeltaY < 0 ? 1 : -1;
+
+					// Nodo A
+					nodeA.fX += ((jBar.pPx * jDcy * jDcy) / (Math.pow(jLy, 3))) * (jLy + 2 * jDy);
+					nodeA.fX += (jBar.wX * jLy) / 2;
+
+					nodeA.fY += ((jBar.pPy * jDcx * jDcx) / (Math.pow(jLx, 3))) * (jLx + 2 * jDx);
+					nodeA.fY += (jBar.wY * jLx) / 2;
+
+					nodeA.Mz += jBar.pMz / 2;
+					nodeA.Mz += (jBar.pPx * jDy * jDcy * jDcy) / Math.pow(jLy, 2);
+					nodeA.Mz += (jBar.wX * Math.pow(jLy, 2) ) / Math.pow(jBar.I, 2) * nodeASign;
+					nodeA.Mz += (jBar.pPy * jDx * jDcx * jDcx) / Math.pow(jLx, 2) * nodeASign;
+					nodeA.Mz += (jBar.wY * Math.pow(jLx, 2) ) / Math.pow(jBar.I, 2) * nodeASign;
+
+					// Nodo B
+					nodeB.fX += ((jBar.pPx * jDy * jDy) / (Math.pow(jLy, 3))) * (jLy + 2 * jDcy);
+					nodeB.fX += (jBar.wX * jLy) / 2;
+
+					nodeB.fY += ((jBar.pPy * jDx * jDx) / (Math.pow(jLx, 3))) * (jLx + 2 * jDcx);
+					nodeB.fY += (jBar.wY * jLx) / 2;
+
+					nodeB.Mz += jBar.pMz / 2;
+					nodeB.Mz += (jBar.pPx * jDy * jDy * jDcy) / Math.pow(jLy, 2);
+					nodeB.Mz += (jBar.wX * Math.pow(jLy, 2) ) / Math.pow(jBar.I, 2) * nodeBSign;
+					nodeB.Mz += (jBar.pPy * jDx * jDx * jDcx) / Math.pow(jLx, 2) * nodeBSign;
+					nodeB.Mz += (jBar.wY * Math.pow(jLx, 2) ) / Math.pow(jBar.I, 2) * nodeBSign;
 				}
 			}
+		}
+		// II. Si 1 nodo es apoyo
+		else {
+			var supportNode = jBar.startNode.isSupport ? jBar.startNode : jBar.endNode;
+
+			// 1.
+			// Si el nodo tiene restricciones se realiza el mismo procedimiento
+			// que en I 2
+			if(supportNode.lX || supportNode.lY || supportNode.Z) {
+
+			}
+
+			// 2.
+			// A)
+
+			// B) Parte de Arnoldo
 		}
 	});
 
