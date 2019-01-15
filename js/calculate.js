@@ -336,17 +336,41 @@ function calculate3dFrame() {
 		}
 		// II. Si 1 nodo es apoyo
 		else {
-			var supportNode = jBar.startNode.isSupport ? jBar.startNode : jBar.endNode;
+			var jDc = jL - jD; // D cousin xD
+			var art;
+			var emp;
+
+			if(jBar.startNode.isSupport) {
+				art = copyInstance(jBar.startNode);
+				emp = copyInstance(jBar.endNode);
+			} else {
+				art = copyInstance(jBar.endNode);
+				emp = copyInstance(jBar.startNode);
+			}
 
 			// 1.
 			// Si el nodo tiene restricciones se realiza el mismo procedimiento
 			// que en I 2
-			if(supportNode.lX || supportNode.lY || supportNode.Z) {
+			if(art.lX || art.lY || art.Z) {
 
 			}
 
 			// 2.
-			// A)
+			if(!art.lX && !art.lY && art.rZ) {
+				// A)
+				// ¡Más signos! D;
+
+				emp.fX += jBar.pPx / 2;
+				emp.fY += ( (jBar.pPy * jDc) / (2 * Math.pow(jL, 3)) ) * ((3 * jL * jL) - jDc * jDc);
+				emp.fY += 5 * jBar.wY * jL / 8;
+				emp.mZ += jBar.pMz;
+				emp.mZ += (jBar.pPy * jDc) / (2 * jL * jL) * (jL * jL - Math.pow(jDc, 2));
+				emp.mZ += jBar.wY * jL * jL / 8;
+
+				art.fX += jBar.pPx / 2;
+				art.fY += ( (jBar.pPy * jD * jD) / (2 * Math.pow(jL, 3)) ) * ((3 * jL * jL) - jD);
+				art.fY += 3 * jBar.wY * jL / 8;
+			}
 
 			// B) Parte de Arnoldo
 		}
