@@ -1533,7 +1533,7 @@ function calculateAByBar() {
 	//Para cada barra
 	for (var i = 0; i < size; i++) {
 		//Se obtiene el valor de beta en grados
-		if (deltaY[i] >= 0) {
+		if (deltaY[i] > 0) {
 			if (deltaX[i] > 0)
 				beta = radiansToDegrees(Math.atan(deltaY[i] / deltaX[i]));
 			else if (deltaX[i] == 0)
@@ -1541,6 +1541,7 @@ function calculateAByBar() {
 			else if (deltaX[i] < 0)
 				beta = 180 + radiansToDegrees(Math.atan(deltaY[i] / deltaX[i]));
 		}
+
 		else if (deltaY[i] < 0) {
 			if (deltaX[i] > 0)
 				beta = 360 + radiansToDegrees(Math.atan(deltaY[i] / deltaX[i]));
@@ -1549,6 +1550,13 @@ function calculateAByBar() {
 			else if (deltaX[i] < 0)
 				beta = 180 + radiansToDegrees(Math.atan(deltaY[i] / deltaX[i]));
 		}
+		
+		else if (deltaY[i] == 0) {
+			if (deltaX[i] > 0)
+				beta = 0;
+			else if (deltaX[i] < 0)
+				beta = 180;
+		}
 		//Forma una matriz de continuidad con ceros para la barra
 		ai = [];
 		for (var j = 0; j < 4; j++)
@@ -1556,30 +1564,30 @@ function calculateAByBar() {
 
 		ai[0][0] = (Math.sin(degreesToRadians(beta)) / L[i] == 0) ? Math.sin(degreesToRadians(beta)) / L[i] : -(Math.sin(degreesToRadians(beta)) / L[i]);
 		ai[0][1] = Math.cos(degreesToRadians(beta)) / L[i];
-		ai[0][2] = 1;
+		ai[0][2] = 0.01;
 		ai[0][3] = Math.sin(degreesToRadians(beta)) / L[i];
 		ai[0][4] = (Math.cos(degreesToRadians(beta)) / L[i] == 0) ? Math.cos(degreesToRadians(beta)) / L[i] : -(Math.cos(degreesToRadians(beta)) / L[i]);
 		ai[0][5] = 0;
 
 		ai[1][0] = 2 * ai[0][0];
 		ai[1][1] = 2 * ai[0][1];
-		ai[1][2] = 1;
+		ai[1][2] = 0.01;
 		ai[1][3] = 2 * ai[0][3];
 		ai[1][4] = 2 * ai[0][4];
-		ai[1][5] = 1;
+		ai[1][5] = 0.01;
 
 		ai[2][0] = ai[0][0];
 		ai[2][1] = ai[0][1];
 		ai[2][2] = 0;
 		ai[2][3] = ai[0][3];
 		ai[2][4] = ai[0][4];
-		ai[2][5] = 1;
+		ai[2][5] = 0.01;
 
-		ai[3][0] = (Math.cos(degreesToRadians(beta)) == 0) ? Math.cos(degreesToRadians(beta)) : - Math.cos(degreesToRadians(beta));
-		ai[3][1] = (Math.sin(degreesToRadians(beta)) == 0) ? Math.sin(degreesToRadians(beta)) : - Math.sin(degreesToRadians(beta));
+		ai[3][0] = (Math.cos(degreesToRadians(beta)) == 0) ? Math.cos(degreesToRadians(beta)) / 100 : - Math.cos(degreesToRadians(beta)) / 100;
+		ai[3][1] = (Math.sin(degreesToRadians(beta)) == 0) ? Math.sin(degreesToRadians(beta)) / 100 : - Math.sin(degreesToRadians(beta)) / 100;
 		ai[3][2] = 0;
-		ai[3][3] = Math.cos(degreesToRadians(beta));
-		ai[3][4] = Math.sin(degreesToRadians(beta));
+		ai[3][3] = Math.cos(degreesToRadians(beta)) / 100;
+		ai[3][4] = Math.sin(degreesToRadians(beta)) / 100;
 		ai[3][5] = 0;
 
 		a.push(ai);
