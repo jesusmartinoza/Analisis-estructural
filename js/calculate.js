@@ -202,8 +202,8 @@ function calculateF1 () {
 		
 		console.log(jBar);
 		var jD = jBar.dPx;
-		var jDeltaX = jBar.deltaX();
-		var jDeltaY = jBar.deltaY();
+		var jDeltaX = jBar.deltaX;
+		var jDeltaY = jBar.deltaY;
 		var jL = jBar.calculateL();
 
 		//I. Si ningún nodo es apoyo
