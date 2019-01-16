@@ -476,11 +476,11 @@ function setMarcoPlanoEvents() {
   $("#marco-plano").on("showStep", function(e, anchorObject, stepNumber, stepDirection) {
 
     if (parseInt(stepNumber) === 6) {
-      try {
+      //try {
         calculate();
-      } catch(err) {
-        alert(err);
-      }
+      //} catch(err) {
+      //  alert(err);
+      // }
     }
 
   });
@@ -1974,17 +1974,17 @@ function createResMarcoPlanoTable() {
 
   for (var i = 0; i < bars; i++) {
 
-    posIniF2 = i * 6;
+    posIniFSol = i * 6;
     number = i + 1;
 
     html += '<tr>' +
             '<th scope="row">' + number + '</th>' +
-            '<td>' + round(F2[posIniF2][0], 3) + '</td>' +
-            '<td>' + round(F2[posIniF2 + 1][0], 3) + '</td>' +
-            '<td>' + round(F2[posIniF2 + 2][0], 3) + '</td>' +
-            '<td>' + round(F2[posIniF2 + 3][0], 3) + '</td>' +
-            '<td>' + round(F2[posIniF2 + 4][0], 3) + '</td>' +
-            '<td>' + round(F2[posIniF2 + 5][0], 3) + '</td>' +
+            '<td>' + round(FSol[posIniFSol][0], 3) + '</td>' +
+            '<td>' + round(FSol[posIniFSol + 1][0], 3) + '</td>' +
+            '<td>' + round(FSol[posIniFSol + 2][0], 3) + '</td>' +
+            '<td>' + round(FSol[posIniFSol + 3][0], 3) + '</td>' +
+            '<td>' + round(FSol[posIniFSol + 4][0], 3) + '</td>' +
+            '<td>' + round(FSol[posIniFSol + 5][0], 3) + '</td>' +
             '</tr>' +
 
             '<tr>' +
