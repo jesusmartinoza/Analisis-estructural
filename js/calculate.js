@@ -204,7 +204,7 @@ function calculateF1 () {
 		var jD = jBar.dPx;
 		var jDeltaX = jBar.deltaX;
 		var jDeltaY = jBar.deltaY;
-		var jL = jBar.calculateL();
+		var jL = jBar.calculateL;
 
 		//I. Si ningún nodo es apoyo
 		if (!jBar.startNode.isSupport && !jBar.endNode.isSupport) {
@@ -243,9 +243,9 @@ function calculateF1 () {
 				else {
 					var alpha = Math.abs(Math.atan(jDeltaX / jDeltaY));
 					var jDx = jD * Math.cos(alpha);
-					var jDy = jD * Math.sen(alpha);
+					var jDy = jD * Math.sin(alpha);
 					var jLx = jL * Math.cos(alpha);
-					var jLy = jL * Math.sen(alpha);
+					var jLy = jL * Math.sin(alpha);
 
 					//Si la coordenada x del nodo empotrado es menor que la del nodo libre, wY y pPy no se alteran, si no, se multiplican por -1
 					var nodeASign1 = (emp.x < lib.x) ? 1 : -1;
@@ -345,11 +345,11 @@ function calculateF1 () {
 				else {
 					var alpha = Math.abs(Math.atan(jDeltaX / jDeltaY));
 					var jDx = jD * Math.cos(alpha);
-					var jDy = jD * Math.sen(alpha);
+					var jDy = jD * Math.sin(alpha);
 					var jLx = jL * Math.cos(alpha);
-					var jLy = jL * Math.sen(alpha);
+					var jLy = jL * Math.sin(alpha);
 					var jDcx = jDc * Math.cos(alpha);
-					var jDcy = jDc * Math.sen(alpha);
+					var jDcy = jDc * Math.sin(alpha);
 
 					//Si delta x es positivo, las fórmulas con * se multiplican por -1 para el nodo final, si no se multiplican por -1 para el nodo inicial
 					var nodeASign = jDeltaX < 0 && jDeltaY > 0 ? 1 : -1;
@@ -494,11 +494,11 @@ function calculateF1 () {
 				else {
 					var alpha = Math.abs(Math.atan(jDeltaX / jDeltaY));
 					var jDx = jD * Math.cos(alpha);
-					var jDy = jD * Math.sen(alpha);
+					var jDy = jD * Math.sin(alpha);
 					var jLx = jL * Math.cos(alpha);
-					var jLy = jL * Math.sen(alpha);
+					var jLy = jL * Math.sin(alpha);
 					var jDcx = jDc * Math.cos(alpha);
-					var jDcy = jDc * Math.sen(alpha);
+					var jDcy = jDc * Math.sin(alpha);
 
 					//Si delta x es positivo, las fórmulas con * se multiplican por -1 para el nodo final, si no se multiplican por -1 para el nodo inicial
 					var nodeASign = jDeltaX < 0 && jDeltaY > 0 ? 1 : -1;
@@ -635,11 +635,11 @@ function calculateF1 () {
 
 					var alpha = Math.abs(Math.atan(jDeltaX / jDeltaY));
 					var jDx = jD * Math.cos(alpha);
-					var jDy = jD * Math.sen(alpha);
+					var jDy = jD * Math.sin(alpha);
 					var jLx = jL * Math.cos(alpha);
-					var jLy = jL * Math.sen(alpha);
+					var jLy = jL * Math.sin(alpha);
 					var jDcx = jDc * Math.cos(alpha);
-					var jDcy = jDc * Math.sen(alpha);
+					var jDcy = jDc * Math.sin(alpha);
 
 					//Si delta x es positivo, las fórmulas con * se multiplican por -1 para el nodo final, si no se multiplican por -1 para el nodo inicial
 					var nodeASign = jDeltaX < 0 && jDeltaY > 0 ? 1 : -1;
@@ -703,8 +703,24 @@ function calculateF1 () {
 					art.fY += (jBar.wY*jLx*3)/8;
 
 				}
+
+				if (jBar.startNode.isSupport) {
+					nodeA = art;
+					nodeB = emp;
+				}
+				else {
+					nodeA = emp;
+					nodeB = art;
+				}
 				
-			}
+				F1.push([nodeA.fX]);
+				F1.push([nodeA.fY]);
+				F1.push([nodeA.mZ]);
+				F1.push([nodeB.fX]);
+				F1.push([nodeB.fY]);
+				F1.push([nodeB.mZ]);
+					
+				}
 
 			//3. Si el apoyo tiene restricción lineal en X y restricción rotacional en Z
 			else if (art.lX && !art.lY && art.rZ) {
@@ -772,11 +788,11 @@ function calculateF1 () {
 
 					var alpha = Math.abs(Math.atan(jDeltaX / jDeltaY));
 					var jDx = jD * Math.cos(alpha);
-					var jDy = jD * Math.sen(alpha);
+					var jDy = jD * Math.sin(alpha);
 					var jLx = jL * Math.cos(alpha);
-					var jLy = jL * Math.sen(alpha);
+					var jLy = jL * Math.sin(alpha);
 					var jDcx = jDc * Math.cos(alpha);
-					var jDcy = jDc * Math.sen(alpha);
+					var jDcy = jDc * Math.sin(alpha);
 
 					//Si delta x es positivo, las fórmulas con * se multiplican por -1 para el nodo final, si no se multiplican por -1 para el nodo inicial
 					var nodeASign = jDeltaX < 0 && jDeltaY > 0 ? 1 : -1;
@@ -819,6 +835,22 @@ function calculateF1 () {
 					art.fY+=(jBar.wY*jLx*3)/8;
 
 				}
+
+				if (jBar.startNode.isSupport) {
+					nodeA = art;
+					nodeB = emp;
+				}
+				else {
+					nodeA = emp;
+					nodeB = art;
+				}
+				
+				F1.push([nodeA.fX]);
+				F1.push([nodeA.fY]);
+				F1.push([nodeA.mZ]);
+				F1.push([nodeB.fX]);
+				F1.push([nodeB.fY]);
+				F1.push([nodeB.mZ]);
 				
 			}
 
@@ -891,11 +923,11 @@ function calculateF1 () {
 
 					var alpha = Math.abs(Math.atan(jDeltaX / jDeltaY));
 					var jDx = jD * Math.cos(alpha);
-					var jDy = jD * Math.sen(alpha);
+					var jDy = jD * Math.sin(alpha);
 					var jLx = jL * Math.cos(alpha);
-					var jLy = jL * Math.sen(alpha);
+					var jLy = jL * Math.sin(alpha);
 					var jDcx = jDc * Math.cos(alpha);
-					var jDcy = jDc * Math.sen(alpha);
+					var jDcy = jDc * Math.sin(alpha);
 
 					//Si delta x es positivo, las fórmulas con * se multiplican por -1 para el nodo final, si no se multiplican por -1 para el nodo inicial
 					var nodeASign = jDeltaX < 0 && jDeltaY > 0 ? 1 : -1;
@@ -941,32 +973,30 @@ function calculateF1 () {
 					art.fX+=(jBar.wX*jLy*3)/8;
 
 				}
-			}
 
-			if (jBar.startNode.isSupport) {
-				nodeA = art;
-				nodeB = emp;
+				if (jBar.startNode.isSupport) {
+					nodeA = art;
+					nodeB = emp;
+				}
+				else {
+					nodeA = emp;
+					nodeB = art;
+				}
+				
+				F1.push([nodeA.fX]);
+				F1.push([nodeA.fY]);
+				F1.push([nodeA.mZ]);
+				F1.push([nodeB.fX]);
+				F1.push([nodeB.fY]);
+				F1.push([nodeB.mZ]);
 			}
-			else {
-				nodeA = emp;
-				nodeB = art;
-			}
-			
-			F1.push([nodeA.fX]);
-			F1.push([nodeA.fY]);
-			F1.push([nodeA.mZ]);
-			F1.push([nodeB.fX]);
-			F1.push([nodeB.fY]);
-			F1.push([nodeB.mZ]);
 
 		}
-
 	});
 }
 
-
 /**
- * Calcular marco 3d usando apuntes de Rodolfo.
+ * Calcular marco 3d usando apuntes de Arnoldo.
  * Este método incluye todo los pasos de nuevo porque necesito
  * familiarizarme con el algoritmo.
 
@@ -1034,7 +1064,7 @@ function getSupports() {
 	for (i = 0; i < size; i++) {
 		support = parseInt($(selectS[i]).val());
 		supports.push(support);
-
+		indexNode = parseInt($(selectS[i]).val()) - 1;
 		jNodes[i].isSupport = true;
 	}
 
@@ -1042,7 +1072,7 @@ function getSupports() {
 	for (i = 0; i < size; i++) {
 		rx = ($(inputLx[i]).is(':checked')) ? 1 : 0;
 		restrictionsLx.push(rx);
-
+		indexNode = parseInt($(selectS[i]).val()) - 1;
 		jNodes[i].lX = Boolean(rx);
 	}
 
@@ -1050,7 +1080,7 @@ function getSupports() {
 	for (i = 0; i < size; i++) {
 		ry = ($(inputLy[i]).is(':checked')) ? 1 : 0;
 		restrictionsLy.push(ry);
-
+		indexNode = parseInt($(selectS[i]).val()) - 1;
 		jNodes[i].lY = Boolean(ry);
 	}
 
@@ -1058,7 +1088,7 @@ function getSupports() {
 	for (i = 0; i < size; i++) {
 		rz = ($(inputLz[i]).is(':checked')) ? 1 : 0;
 		restrictionsLz.push(rz);
-
+		indexNode = parseInt($(selectS[i]).val()) - 1;
 		jNodes[i].lZ = Boolean(rz);
 	}
 
@@ -1066,7 +1096,7 @@ function getSupports() {
 	for (i = 0; i < size; i++) {
 		rx = ($(inputRx[i]).is(':checked')) ? 1 : 0;
 		restrictionsRx.push(rx);
-
+		indexNode = parseInt($(selectS[i]).val()) - 1;
 		jNodes[i].rX = Boolean(rx);
 	}
 
@@ -1074,7 +1104,7 @@ function getSupports() {
 	for (i = 0; i < size; i++) {
 		ry = ($(inputRy[i]).is(':checked')) ? 1 : 0;
 		restrictionsRy.push(ry);
-
+		indexNode = parseInt($(selectS[i]).val()) - 1;
 		jNodes[i].rY = Boolean(ry);
 	}
 
@@ -1082,7 +1112,7 @@ function getSupports() {
 	for (i = 0; i < size; i++) {
 		rz = ($(inputRz[i]).is(':checked')) ? 1 : 0;
 		restrictionsRz.push(rz);
-
+		indexNode = parseInt($(selectS[i]).val()) - 1;
 		jNodes[i].rZ = Boolean(rz);
 	}
 
@@ -1585,17 +1615,19 @@ function calculatekdByBar() {
 
 		//Calcula la diagonal
 		switch (calculationType) {
+			//Retícula
 			case '3':
-				ki[0][0] = (2 * elasticity[i] * barsI[i]) / LD[i];
-				ki[1][1] = ((2 * elasticity[i] * barsI[i]) * (1 - (2 * barsC[i]))) / (LD[i] * (1 + (4 * barsC[i])));
-				ki[2][2] = (2 * elasticity[i] * barsI[i]) / LD[i];
-				ki[3][3] = (elasticity[i] * areas[i]) / LD[i];
-			break;
-			case '4':
 				ki[0][0] = (2 * elasticity[i] * barsI[i]) / LD[i];
 				ki[1][1] = (2 * elasticity[i] * barsI[i]) / LD[i];
 				ki[2][2] = (2 * elasticity[i] * barsI[i]) / LD[i];
 				ki[3][3] = (barsG[i] * barsJ[i]) / LD[i];
+			break;
+			//Marco plano
+			case '4':
+				ki[0][0] = (2 * elasticity[i] * barsI[i]) / LD[i];
+				ki[1][1] = ((2 * elasticity[i] * barsI[i]) * (1 - (2 * barsC[i]))) / (LD[i] * (1 + (4 * barsC[i])));
+				ki[2][2] = (2 * elasticity[i] * barsI[i]) / LD[i];
+				ki[3][3] = (elasticity[i] * areas[i]) / LD[i];
 			break;
 		}
 		kArray.push(ki);
@@ -1649,37 +1681,42 @@ function getBarPuntualForces() {
 	size = inputPPx.length;
 	for (i = 0; i < size; i++) {
 		wx = parseFloat($(inputPPx[i]).val());
+		indexBar = parseInt($(selectF[i]).val()) - 1;
 		jBars[i].pPx = wx;
 	}
 
 	size = inputPPy.length;
 	for (i = 0; i < size; i++) {
 		wy = parseFloat($(inputPPy[i]).val());
+		indexBar = parseInt($(selectF[i]).val()) - 1;
 		jBars[i].pPy = wy;
 	}
 
 	size = inputPPz.length;
 	for (i = 0; i < size; i++) {
 		wz = parseFloat($(inputPPz[i]).val());
+		indexBar = parseInt($(selectF[i]).val()) - 1;
 		jBars[i].pPz = wz;
 	}
 
-  // -------
 	size = inputPMx.length;
 	for (i = 0; i < size; i++) {
 		wx = parseFloat($(inputPMx[i]).val());
+		indexBar = parseInt($(selectF[i]).val()) - 1;
 		jBars[i].pMx = wx;
 	}
 
 	size = inputPMy.length;
 	for (i = 0; i < size; i++) {
 		wy = parseFloat($(inputPMy[i]).val());
+		indexBar = parseInt($(selectF[i]).val()) - 1;
 		jBars[i].pMy = wy;
 	}
 
 	size = inputPMz.length;
 	for (i = 0; i < size; i++) {
 		wz = parseFloat($(inputPMz[i]).val());
+		indexBar = parseInt($(selectF[i]).val()) - 1;
 		jBars[i].pMz = wz;
 	}
 
@@ -1696,37 +1733,42 @@ function getBarPuntualForces() {
 	size = inputDPx.length;
 	for (i = 0; i < size; i++) {
 		wx = parseFloat($(inputDPx[i]).val());
+		indexBar = parseInt($(selectF[i]).val()) - 1;
 		jBars[i].dPx = wx;
 	}
 
 	size = inputDPy.length;
 	for (i = 0; i < size; i++) {
 		wy = parseFloat($(inputDPy[i]).val());
+		indexBar = parseInt($(selectF[i]).val()) - 1;
 		jBars[i].dPy = wy;
 	}
 
 	size = inputDPz.length;
 	for (i = 0; i < size; i++) {
 		wz = parseFloat($(inputDPz[i]).val());
+		indexBar = parseInt($(selectF[i]).val()) - 1;
 		jBars[i].dPz = wz;
 	}
 
-	// -------
 	size = inputDMx.length;
 	for (i = 0; i < size; i++) {
 		wx = parseFloat($(inputDMx[i]).val());
+		indexBar = parseInt($(selectF[i]).val()) - 1;
 		jBars[i].dMx = wx;
 	}
 
 	size = inputDMy.length;
 	for (i = 0; i < size; i++) {
 		wy = parseFloat($(inputDMy[i]).val());
+		indexBar = parseInt($(selectF[i]).val()) - 1;
 		jBars[i].dMy = wy;
 	}
 
 	size = inputDMz.length;
 	for (i = 0; i < size; i++) {
 		wz = parseFloat($(inputDMz[i]).val());
+		indexBar = parseInt($(selectF[i]).val()) - 1;
 		jBars[i].dMz = wz;
 	}
 }
@@ -1746,18 +1788,21 @@ function getBarForces() {
 	size = inputWx.length;
 	for (i = 0; i < size; i++) {
 		wx = parseFloat($(inputWx[i]).val());
+		indexBar = parseInt($(selectF[i]).val()) - 1;
 		jBars[i].wX = wx;
 	}
 
 	size = inputWy.length;
 	for (i = 0; i < size; i++) {
 		wy = parseFloat($(inputWy[i]).val());
+		indexBar = parseInt($(selectF[i]).val()) - 1;
 		jBars[i].wY = wy;
 	}
 
 	size = inputWz.length;
 	for (i = 0; i < size; i++) {
 		wz = parseFloat($(inputWz[i]).val());
+		indexBar = parseInt($(selectF[i]).val()) - 1;
 		jBars[i].wZ = wz;
 	}
 }
