@@ -75,6 +75,6 @@ class Bar {
   }
 
   get calculateL() {
-    return Math.sqrt(Math.pow(this.deltaX, 2) + Math.pow(this.deltaY, 2));
+    return (Math.sqrt(Math.pow(this.deltaX, 2) + Math.pow(this.deltaY, 2))) * 100;
   }
 }

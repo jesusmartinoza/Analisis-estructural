@@ -47,6 +47,7 @@ var kArray = [];
 var K = [];
 var Kt = [];
 var T = []; // Matriz
+
 //Fuerzas aplicadas en nodos
 var F = [];
 var F1 = [];
@@ -391,7 +392,7 @@ function calculateF1 () {
 				F1.push([nodeB.mZ]);
 			}
 		}
-		//II. Si 1 nodo es apoyo - Aquí voy revisando
+		//II. Si 1 nodo es apoyo 
 		else {
 			
 			//Se calcula D'
@@ -1065,7 +1066,7 @@ function getSupports() {
 		support = parseInt($(selectS[i]).val());
 		supports.push(support);
 		indexNode = parseInt($(selectS[i]).val()) - 1;
-		jNodes[i].isSupport = true;
+		jNodes[indexNode].isSupport = true;
 	}
 
 	size = inputLx.length;
@@ -1073,7 +1074,7 @@ function getSupports() {
 		rx = ($(inputLx[i]).is(':checked')) ? 1 : 0;
 		restrictionsLx.push(rx);
 		indexNode = parseInt($(selectS[i]).val()) - 1;
-		jNodes[i].lX = Boolean(rx);
+		jNodes[indexNode].lX = Boolean(rx);
 	}
 
 	size = inputLy.length;
@@ -1081,7 +1082,7 @@ function getSupports() {
 		ry = ($(inputLy[i]).is(':checked')) ? 1 : 0;
 		restrictionsLy.push(ry);
 		indexNode = parseInt($(selectS[i]).val()) - 1;
-		jNodes[i].lY = Boolean(ry);
+		jNodes[indexNode].lY = Boolean(ry);
 	}
 
 	size = inputLz.length;
@@ -1089,7 +1090,7 @@ function getSupports() {
 		rz = ($(inputLz[i]).is(':checked')) ? 1 : 0;
 		restrictionsLz.push(rz);
 		indexNode = parseInt($(selectS[i]).val()) - 1;
-		jNodes[i].lZ = Boolean(rz);
+		jNodes[indexNode].lZ = Boolean(rz);
 	}
 
 	size = inputRx.length;
@@ -1097,7 +1098,7 @@ function getSupports() {
 		rx = ($(inputRx[i]).is(':checked')) ? 1 : 0;
 		restrictionsRx.push(rx);
 		indexNode = parseInt($(selectS[i]).val()) - 1;
-		jNodes[i].rX = Boolean(rx);
+		jNodes[indexNode].rX = Boolean(rx);
 	}
 
 	size = inputRy.length;
@@ -1105,7 +1106,7 @@ function getSupports() {
 		ry = ($(inputRy[i]).is(':checked')) ? 1 : 0;
 		restrictionsRy.push(ry);
 		indexNode = parseInt($(selectS[i]).val()) - 1;
-		jNodes[i].rY = Boolean(ry);
+		jNodes[indexNode].rY = Boolean(ry);
 	}
 
 	size = inputRz.length;
@@ -1113,7 +1114,7 @@ function getSupports() {
 		rz = ($(inputRz[i]).is(':checked')) ? 1 : 0;
 		restrictionsRz.push(rz);
 		indexNode = parseInt($(selectS[i]).val()) - 1;
-		jNodes[i].rZ = Boolean(rz);
+		jNodes[indexNode].rZ = Boolean(rz);
 	}
 
 }
@@ -1550,7 +1551,7 @@ function calculateAByBar() {
 			else if (deltaX[i] < 0)
 				beta = 180 + radiansToDegrees(Math.atan(deltaY[i] / deltaX[i]));
 		}
-		
+
 		else if (deltaY[i] == 0) {
 			if (deltaX[i] > 0)
 				beta = 0;
@@ -1690,42 +1691,42 @@ function getBarPuntualForces() {
 	for (i = 0; i < size; i++) {
 		wx = parseFloat($(inputPPx[i]).val());
 		indexBar = parseInt($(selectF[i]).val()) - 1;
-		jBars[i].pPx = wx;
+		jBars[indexBar].pPx = wx;
 	}
 
 	size = inputPPy.length;
 	for (i = 0; i < size; i++) {
 		wy = parseFloat($(inputPPy[i]).val());
 		indexBar = parseInt($(selectF[i]).val()) - 1;
-		jBars[i].pPy = wy;
+		jBars[indexBar].pPy = wy;
 	}
 
 	size = inputPPz.length;
 	for (i = 0; i < size; i++) {
 		wz = parseFloat($(inputPPz[i]).val());
 		indexBar = parseInt($(selectF[i]).val()) - 1;
-		jBars[i].pPz = wz;
+		jBars[indexBar].pPz = wz;
 	}
 
 	size = inputPMx.length;
 	for (i = 0; i < size; i++) {
 		wx = parseFloat($(inputPMx[i]).val());
 		indexBar = parseInt($(selectF[i]).val()) - 1;
-		jBars[i].pMx = wx;
+		jBars[indexBar].pMx = wx;
 	}
 
 	size = inputPMy.length;
 	for (i = 0; i < size; i++) {
 		wy = parseFloat($(inputPMy[i]).val());
 		indexBar = parseInt($(selectF[i]).val()) - 1;
-		jBars[i].pMy = wy;
+		jBars[indexBar].pMy = wy;
 	}
 
 	size = inputPMz.length;
 	for (i = 0; i < size; i++) {
 		wz = parseFloat($(inputPMz[i]).val());
 		indexBar = parseInt($(selectF[i]).val()) - 1;
-		jBars[i].pMz = wz;
+		jBars[indexBar].pMz = wz;
 	}
 
 	var inputDPx = $('#bars-punctual-forces-table-container table input.dpx');
@@ -1742,42 +1743,42 @@ function getBarPuntualForces() {
 	for (i = 0; i < size; i++) {
 		wx = parseFloat($(inputDPx[i]).val());
 		indexBar = parseInt($(selectF[i]).val()) - 1;
-		jBars[i].dPx = wx;
+		jBars[indexBar].dPx = wx;
 	}
 
 	size = inputDPy.length;
 	for (i = 0; i < size; i++) {
 		wy = parseFloat($(inputDPy[i]).val());
 		indexBar = parseInt($(selectF[i]).val()) - 1;
-		jBars[i].dPy = wy;
+		jBars[indexBar].dPy = wy;
 	}
 
 	size = inputDPz.length;
 	for (i = 0; i < size; i++) {
 		wz = parseFloat($(inputDPz[i]).val());
 		indexBar = parseInt($(selectF[i]).val()) - 1;
-		jBars[i].dPz = wz;
+		jBars[indexBar].dPz = wz;
 	}
 
 	size = inputDMx.length;
 	for (i = 0; i < size; i++) {
 		wx = parseFloat($(inputDMx[i]).val());
 		indexBar = parseInt($(selectF[i]).val()) - 1;
-		jBars[i].dMx = wx;
+		jBars[indexBar].dMx = wx;
 	}
 
 	size = inputDMy.length;
 	for (i = 0; i < size; i++) {
 		wy = parseFloat($(inputDMy[i]).val());
 		indexBar = parseInt($(selectF[i]).val()) - 1;
-		jBars[i].dMy = wy;
+		jBars[indexBar].dMy = wy;
 	}
 
 	size = inputDMz.length;
 	for (i = 0; i < size; i++) {
 		wz = parseFloat($(inputDMz[i]).val());
 		indexBar = parseInt($(selectF[i]).val()) - 1;
-		jBars[i].dMz = wz;
+		jBars[indexBar].dMz = wz;
 	}
 }
 
@@ -1797,21 +1798,21 @@ function getBarForces() {
 	for (i = 0; i < size; i++) {
 		wx = parseFloat($(inputWx[i]).val());
 		indexBar = parseInt($(selectF[i]).val()) - 1;
-		jBars[i].wX = wx;
+		jBars[indexBar].wX = wx;
 	}
 
 	size = inputWy.length;
 	for (i = 0; i < size; i++) {
 		wy = parseFloat($(inputWy[i]).val());
 		indexBar = parseInt($(selectF[i]).val()) - 1;
-		jBars[i].wY = wy;
+		jBars[indexBar].wY = wy;
 	}
 
 	size = inputWz.length;
 	for (i = 0; i < size; i++) {
 		wz = parseFloat($(inputWz[i]).val());
 		indexBar = parseInt($(selectF[i]).val()) - 1;
-		jBars[i].wZ = wz;
+		jBars[indexBar].wZ = wz;
 	}
 }
 
