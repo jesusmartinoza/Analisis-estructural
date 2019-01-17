@@ -1,4 +1,3 @@
-
 var $calculationType = $('#calculation-type');
 
 var $mNumberOfNodes = $('#m-number-of-nodes');
