@@ -2589,31 +2589,37 @@ function calculateAByBar() {
 			ai.push([0, 0, 0, 0, 0, 0]);
 
 		ai[0][0] = (Math.sin(degreesToRadians(beta)) / L[i] == 0) ? Math.sin(degreesToRadians(beta)) / L[i] : -(Math.sin(degreesToRadians(beta)) / L[i]);
+		ai[0][0] = round(ai[0][0] * 100, 3);
 		ai[0][1] = Math.cos(degreesToRadians(beta)) / L[i];
-		ai[0][2] = 0.01;
+		ai[0][1] = round(ai[0][1] * 100, 3);
+		ai[0][2] = 1;
 		ai[0][3] = Math.sin(degreesToRadians(beta)) / L[i];
+		ai[0][3] = round(ai[0][3] * 100, 3);
 		ai[0][4] = (Math.cos(degreesToRadians(beta)) / L[i] == 0) ? Math.cos(degreesToRadians(beta)) / L[i] : -(Math.cos(degreesToRadians(beta)) / L[i]);
+		ai[0][4] = round(ai[0][4] * 100, 3);
 		ai[0][5] = 0;
 
 		ai[1][0] = 2 * ai[0][0];
 		ai[1][1] = 2 * ai[0][1];
-		ai[1][2] = 0.01;
+		ai[1][2] = 1;
 		ai[1][3] = 2 * ai[0][3];
 		ai[1][4] = 2 * ai[0][4];
-		ai[1][5] = 0.01;
+		ai[1][5] = 1;
 
 		ai[2][0] = ai[0][0];
 		ai[2][1] = ai[0][1];
 		ai[2][2] = 0;
 		ai[2][3] = ai[0][3];
 		ai[2][4] = ai[0][4];
-		ai[2][5] = 0.01;
+		ai[2][5] = 1;
 
-		ai[3][0] = (Math.cos(degreesToRadians(beta)) == 0) ? Math.cos(degreesToRadians(beta)) / 100 : - Math.cos(degreesToRadians(beta)) / 100;
-		ai[3][1] = (Math.sin(degreesToRadians(beta)) == 0) ? Math.sin(degreesToRadians(beta)) / 100 : - Math.sin(degreesToRadians(beta)) / 100;
+		ai[3][0] = (Math.cos(degreesToRadians(beta)) == 0) ? Math.cos(degreesToRadians(beta)) : - Math.cos(degreesToRadians(beta));
+		ai[3][0] = round(ai[3][0], 3);
+		ai[3][1] = (Math.sin(degreesToRadians(beta)) == 0) ? Math.sin(degreesToRadians(beta)) : - Math.sin(degreesToRadians(beta));
+		ai[3][1] = round(ai[3][1], 3);
 		ai[3][2] = 0;
-		ai[3][3] = Math.cos(degreesToRadians(beta)) / 100;
-		ai[3][4] = Math.sin(degreesToRadians(beta)) / 100;
+		ai[3][3] = round(Math.cos(degreesToRadians(beta)), 3);
+		ai[3][4] = round(Math.sin(degreesToRadians(beta)), 3);
 		ai[3][5] = 0;
 
 		a.push(ai);
@@ -2658,12 +2664,16 @@ function calculatekdByBar() {
 			break;
 			//Marco plano
 			case '4':
-				ki[0][0] = (2 * elasticity[i] * barsI[i]) / LD[i];
-				ki[1][1] = ((2 * elasticity[i] * barsI[i]) * (1 - (2 * barsC[i]))) / (LD[i] * (1 + (4 * barsC[i])));
-				ki[2][2] = (2 * elasticity[i] * barsI[i]) / LD[i];
-				ki[3][3] = (elasticity[i] * areas[i]) / LD[i];
+				ki[0][0] = ( (2 * elasticity[i] * barsI[i]) / LD[i] ) * 100;
+				ki[1][1] = ( ((2 * elasticity[i] * barsI[i]) * (1 - (2 * barsC[i]))) / (LD[i] * (1 + (4 * barsC[i]))) ) * 100;
+				ki[2][2] = ( (2 * elasticity[i] * barsI[i]) / LD[i] ) * 100;
+				ki[3][3] = ( (elasticity[i] * areas[i]) / LD[i] ) * 100;
 			break;
 		}
+		ki[0][0] = round(ki[0][0], 3);
+		ki[1][1] = round(ki[1][1], 3);
+		ki[2][2] = round(ki[2][2], 3);
+		ki[3][3] = round(ki[3][3], 3);
 		kArray.push(ki);
 	}
 }
@@ -3058,16 +3068,19 @@ function calculateF2() {
 			f2 = [(P[posIniP][0] + (2 * P[posIniP + 1][0]) + P[posIniP + 2][0]) / L[i]];
 			F2.push(f2);
 		}
+		//Marco plano
 		else if (calculationType === '4') {
 			f2 = [P[posIniP + 3][0]];
 			F2.push(f2);
-			f2 = [(P[posIniP][0] + (2 * P[posIniP + 1][0]) + P[posIniP + 2][0]) / L[i]];
+			f2 = (P[posIniP][0] + (2 * P[posIniP + 1][0]) + P[posIniP + 2][0]) / L[i];
+			f2 = [round(f2, 3)];
 			F2.push(f2);
 			f2 = [P[posIniP][0] + P[posIniP + 1][0]];
 			F2.push(f2);
 			f2 = [P[posIniP + 3][0]];
 			F2.push(f2);
-			f2 = [-(P[posIniP][0] + (2 * P[posIniP + 1][0]) + P[posIniP + 2][0]) / L[i]];
+			f2 = -(P[posIniP][0] + (2 * P[posIniP + 1][0]) + P[posIniP + 2][0]) / L[i];
+			f2 = [round(f2, 3)];
 			F2.push(f2);
 			f2 = [P[posIniP + 1][0] + P[posIniP + 2][0]];
 			F2.push(f2);
