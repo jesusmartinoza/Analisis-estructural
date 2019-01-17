@@ -775,7 +775,7 @@ function createRowNodestable(index, calculationType) {
             '<td><input type="text" class="x"></td>' +
             '<td><input type="text" class="y"></td>';
 
-  if (calculationType === '2' || calculationType === '3' || calculationType === '5')
+  if (calculationType === '2' || calculationType === '5')
     html += '<td><input type="text" class="z"></td>';
 
   html += '</tr>';
@@ -803,7 +803,7 @@ function createNodesTable(nodes) {
   '<th scope="col">X</th>' +
   '<th scope="col">Y</th>';
 
-  if (calculationType === '2' || calculationType === '3' || calculationType === '5')
+  if (calculationType === '2' || calculationType === '5')
     html += '<th scope="col">Z</th>';
 
   html += '</tr>' +
@@ -828,14 +828,29 @@ function createRowBarsTable(index, calculationType, sHtmlIni, sHtmlFin) {
 
   if (index === 1) {
 
-    html += '<td>' +
-          '<input type="text" class="area">' +
-          '<button type="button" class="btn btn-sm btn-outline-secondary btn-table" onclick="applyValue(1)">Aplicar a todo</button>' +
+    if(calculationType != '3')
+      html += '<td>' +
+            '<input type="text" class="area">' +
+            '<button type="button" class="btn btn-sm btn-outline-secondary btn-table" onclick="applyValue(1)">Aplicar a todo</button>' +
+            '</td>' +
+            '<td>' +
+            '<input type="text" class="elasticity">' +
+            '<button type="button" class="btn btn-sm btn-outline-secondary btn-table" onclick="applyValue(2)">Aplicar a todo</button>' +
+            '</td>';
+
+    if (calculationType === '3')  {
+        html += '<td>'
+          + '<input type="text" class="i">' +
+          '<button type="button" class="btn btn-sm btn-outline-secondary btn-table" onclick="applyValue(3)">Aplicar a todo</button>' +
           '</td>' +
           '<td>' +
-          '<input type="text" class="elasticity">' +
-          '<button type="button" class="btn btn-sm btn-outline-secondary btn-table" onclick="applyValue(2)">Aplicar a todo</button>' +
-          '</td>';
+          '<input type="text" class="g">' +
+          '<button type="button" class="btn btn-sm btn-outline-secondary btn-table" onclick="applyValue(5)">Aplicar a todo</button>' +
+          '</td>' +
+          '<td>' +
+          '<input type="text" class="j">' +
+          '<button type="button" class="btn btn-sm btn-outline-secondary btn-table" onclick="applyValue(6)">Aplicar a todo</button>';
+    }
 
     if (calculationType === '4')
       html += '<td>' +
@@ -847,34 +862,39 @@ function createRowBarsTable(index, calculationType, sHtmlIni, sHtmlFin) {
             '<button type="button" class="btn btn-sm btn-outline-secondary btn-table" onclick="applyValue(4)">Aplicar a todo</button>' +
             '</td>';
 
-    if (calculationType === '3' || calculationType === '5')
-      html += '<td>' +
-            '<input type="text" class="i">' +
-            '<button type="button" class="btn btn-sm btn-outline-secondary btn-table" onclick="applyValue(3)">Aplicar a todo</button>' +
-            '</td>' +
-            '<td>' +
-            '<input type="text" class="g">' +
-            '<button type="button" class="btn btn-sm btn-outline-secondary btn-table" onclick="applyValue(5)">Aplicar a todo</button>' +
-            '</td>' +
-            '<td>' +
-            '<input type="text" class="j">' +
-            '<button type="button" class="btn btn-sm btn-outline-secondary btn-table" onclick="applyValue(6)">Aplicar a todo</button>' +
-            '</td>' +
-            '<td>' +
-            '<input type="text" class="c">' +
-            '<button type="button" class="btn btn-sm btn-outline-secondary btn-table" onclick="applyValue(4)">Aplicar a todo</button>' +
-            '</td>';
+    if (calculationType === '5')
+      html += '<td>'
+        + '<input type="text" class="i">' +
+        '<button type="button" class="btn btn-sm btn-outline-secondary btn-table" onclick="applyValue(3)">Aplicar a todo</button>' +
+        '</td>' +
+        '<td>' +
+        '<input type="text" class="g">' +
+        '<button type="button" class="btn btn-sm btn-outline-secondary btn-table" onclick="applyValue(5)">Aplicar a todo</button>' +
+        '</td>' +
+        '<td>' +
+        '<input type="text" class="j">' +
+        '<button type="button" class="btn btn-sm btn-outline-secondary btn-table" onclick="applyValue(6)">Aplicar a todo</button>' +
+        '</td>' +
+        '<td>' +
+        '<input type="text" class="c">' +
+        '<button type="button" class="btn btn-sm btn-outline-secondary btn-table" onclick="applyValue(4)">Aplicar a todo</button>' +
+        '</td>';
   }
   else {
 
     html += '<td><input type="text" class="area"></td>' +
           '<td><input type="text" class="elasticity"></td>';
 
+    if (calculationType === '3')
+      html += '<td><input type="text" class="i"></td>' +
+            '<td><input type="text" class="g"></td>' +
+            '<td><input type="text" class="j"></td>';
+
     if (calculationType === '4')
       html += '<td><input type="text" class="i"></td>' +
             '<td><input type="text" class="c"></td>';
 
-    if (calculationType === '3' || calculationType === '5')
+    if (calculationType === '5')
       html += '<td><input type="text" class="i"></td>' +
             '<td><input type="text" class="g"></td>' +
             '<td><input type="text" class="j"></td>' +
@@ -898,13 +918,17 @@ function createBarsTable(bars) {
             '<th scope="col"></th>' +
             '<th scope="col"></th>';
 
+  //Reticula
+  if (calculationType === '3')
+    html += '<th scope="col"></th>';
+
   //Marco plano
   if (calculationType === '4')
     html += '<th scope="col"></th>' +
             '<th scope="col"></th>';
 
-  //Retícula y Marco 3d
-  if (calculationType === '3' || calculationType === '5')
+  //Marco 3d
+  if (calculationType === '5')
     html += '<th scope="col"></th>' +
             '<th scope="col"></th>' +
             '<th scope="col"></th>' +
@@ -914,8 +938,10 @@ function createBarsTable(bars) {
           '<tr>' +
           '<th scope="col"># Barra</th>' +
           '<th scope="col">Nodo inicial</th>' +
-          '<th scope="col">Nodo final</th>' +
-          '<th scope="col">Área (cm<sup>2</sup>)</th>' +
+          '<th scope="col">Nodo final</th>';
+
+  if (calculationType != '3')
+    html += '<th scope="col">Área (cm<sup>2</sup>)</th>' +
           '<th scope="col">Elasticidad (ton/cm<sup>2</sup>)</th>';
 
   //Marco plano
@@ -923,8 +949,14 @@ function createBarsTable(bars) {
     html += '<th scope="col">I (cm<sup>4</sup>)</th>' +
       '<th scope="col">C</th>';
 
-  //Retícula y Marco 3d
-  if (calculationType === '3' || calculationType === '5')
+  //Reticula
+  if (calculationType === '3')
+    html += '<th scope="col">I (cm<sup>4</sup>)</th>' +
+      '<th scope="col">G (ton/cm<sup>2</sup>)</th>' +
+      '<th scope="col">J (cm<sup>4</sup>)</th>';
+
+  //Marco 3d
+  if (calculationType === '5')
     html += '<th scope="col">I (cm<sup>4</sup>)</th>' +
       '<th scope="col">G (ton/cm<sup>2</sup>)</th>' +
       '<th scope="col">J (cm<sup>4</sup>)</th>' +
