@@ -1,4 +1,5 @@
 
+
 //Coordenadas de los nodos
 var nodeX = [];
 var nodeY = [];
@@ -202,7 +203,7 @@ function updateF() {
 			switch (calculationType) {
 				//Marco plano
 				case '4':
-					F.push([jNode.fx]);
+					F.push([jNode.fX]);
 					F.push([jNode.fY]);
 					F.push([jNode.mZ]);
 				break;
@@ -218,14 +219,14 @@ function calculateF1() {
 	//Para cada barra se analiza el nodo inicial y el nodo final
 	jBars.forEach(jBar => {
 		var t = calculateT(jBar);
-		var f1 = math.multiply([[jBar.fX1], [jBar.fY1], [jBar.mZ1]], T)
-		var f2 = math.multiply([[jBar.fX2], [jBar.fY2], [jBar.mZ2]], T)
-		F1.push(f1[0][0]);  
-		F1.push(f1[0][1]);  
-		F1.push(f1[0][2]);  
-		F1.push(f2[0][0]);  
-		F1.push(f2[0][1]);  
-		F1.push(f2[0][2]);  
+		var f1 = math.multiply(t, [[jBar.fX1], [jBar.fY1], [jBar.mZ1]])
+		var f2 = math.multiply(t, [[jBar.fX2], [jBar.fY2], [jBar.mZ2]])
+		F1.push([f1[0][0]]);  
+		F1.push([f1[1][0]]);  
+		F1.push([f1[2][0]]);  
+		F1.push([f2[0][0]]);  
+		F1.push([f2[1][0]]);  
+		F1.push([f2[2][0]]);  
 	});
 
 }
@@ -233,17 +234,10 @@ function calculateF1() {
 function calculateT(jBar) {
 
 	var T = []
-	var alpha = Math.abs(Math.atan(jDeltaX / jDeltaY));
-	T[0][0] = Math.cos(alpha);
-	T[0][1] = Math.sin(alpha);
-	T[0][2] = 0;
-	T[1][0] = -Math.sin(alpha);
-	T[1][1] = Math.cos(alpha);
-	T[1][2] = 0;
-	T[2][0] = 0;
-	T[2][1] = 0;
-	T[2][2] = 1;
-
+	var alpha = Math.abs(Math.atan(jBar.deltaX / jBar.deltaY));
+	T.push([Math.cos(alpha), Math.sin(alpha), 0]);
+	T.push([-Math.sin(alpha), Math.cos(alpha), 0]);
+	T.push([0, 0, 1]);
 	return T;
 }
 
@@ -405,7 +399,7 @@ function calculateNodesForces() {
 					aux *= (jL + (2 * jD));
 					nodeA.fX += aux + ((jBar.wX * jL) / 2);
 
-					nodeA.fY += jBar.pPY / 2;
+					nodeA.fY += jBar.pPy / 2;
 
 					nodeA.mZ += jBar.pMz / 2;
 					nodeA.mZ += ( (jBar.pPx * jD * Math.pow(jDc, 2)) / (jL * jL) ) * nodeASign;
@@ -416,7 +410,7 @@ function calculateNodesForces() {
 					aux *= (jL + (2 * jD));
 					nodeB.fX += aux + (jBar.wX * jL) / 2;
 
-					nodeB.fY += jBar.pPY / 2;
+					nodeB.fY += jBar.pPy / 2;
 					nodeB.mZ += jBar.pMz / 2;
 					nodeB.mZ += ( (jBar.pPx * Math.pow(jD, 2) * jDc) / (jL * jL) ) * nodeBSign;
 					nodeB.mZ += ( (jBar.wX * jL * jL) / (jBar.I * jBar.I) ) * nodeBSign;
@@ -582,7 +576,7 @@ function calculateNodesForces() {
 					aux *= (jL + (2 * jD));
 					nodeA.fX += aux + ((jBar.wX * jL) / 2);
 
-					nodeA.fY += jBar.pPY / 2;
+					nodeA.fY += jBar.pPy / 2;
 
 					nodeA.mZ += jBar.pMz / 2;
 					nodeA.mZ += ( (jBar.pPx * jD * Math.pow(jDc, 2)) / (jL * jL) ) * nodeASign;
@@ -598,7 +592,7 @@ function calculateNodesForces() {
 					aux *= (jL + (2 * jD));
 					nodeB.fX += aux + (jBar.wX * jL) / 2;
 
-					nodeB.fY += jBar.pPY / 2;
+					nodeB.fY += jBar.pPy / 2;
 					nodeB.mZ += jBar.pMz / 2;
 					nodeB.mZ += ( (jBar.pPx * Math.pow(jD, 2) * jDc) / (jL * jL) ) * nodeBSign;
 					nodeB.mZ += ( (jBar.wX * jL * jL) / (jBar.I * jBar.I) ) * nodeBSign;
@@ -1522,7 +1516,7 @@ function calculate3dFrame() {
 						aux *= (jL + (2 * jD));
 						nodeA.fX += aux + ((jBar.wX * jL) / 2);
 
-						nodeA.fY += jBar.pPY / 2;
+						nodeA.fY += jBar.pPy / 2;
 
 						nodeA.mZ += jBar.pMz / 2;
 						nodeA.mZ += ( (jBar.pPx * jD * Math.pow(jDc, 2)) / (jL * jL) ) * nodeASign;
@@ -1533,7 +1527,7 @@ function calculate3dFrame() {
 						aux *= (jL + (2 * jD));
 						nodeB.fX += aux + (jBar.wX * jL) / 2;
 
-						nodeB.fY += jBar.pPY / 2;
+						nodeB.fY += jBar.pPy / 2;
 						nodeB.mZ += jBar.pMz / 2;
 						nodeB.mZ += ( (jBar.pPx * Math.pow(jD, 2) * jDc) / (jL * jL) ) * nodeBSign;
 						nodeB.mZ += ( (jBar.wX * jL * jL) / (jBar.I * jBar.I) ) * nodeBSign;
@@ -1667,7 +1661,7 @@ function calculate3dFrame() {
 							aux *= (jL + (2 * jD));
 							nodeA.fX += aux + ((jBar.wX * jL) / 2);
 
-							nodeA.fY += jBar.pPY / 2;
+							nodeA.fY += jBar.pPy / 2;
 
 							nodeA.mZ += jBar.pMz / 2;
 							nodeA.mZ += ( (jBar.pPx * jD * Math.pow(jDc, 2)) / (jL * jL) ) * nodeASign;
@@ -1681,7 +1675,7 @@ function calculate3dFrame() {
 							aux *= (jL + (2 * jD));
 							nodeB.fX += aux + (jBar.wX * jL) / 2;
 
-							nodeB.fY += jBar.pPY / 2;
+							nodeB.fY += jBar.pPy / 2;
 							nodeB.mZ += jBar.pMz / 2;
 							nodeB.mZ += ( (jBar.pPx * Math.pow(jD, 2) * jDc) / (jL * jL) ) * nodeBSign;
 							nodeB.mZ += ( (jBar.wX * jL * jL) / (jBar.I * jBar.I) ) * nodeBSign;
@@ -3232,14 +3226,14 @@ function calculateF2() {
 			f2 = [P[posIniP + 3][0]];
 			F2.push(f2);
 			f2 = (P[posIniP][0] + (2 * P[posIniP + 1][0]) + P[posIniP + 2][0]) / L[i];
-			f2 = [round(f2, 3)];
+			f2 = [round(f2 * 100, 3)];
 			F2.push(f2);
 			f2 = [P[posIniP][0] + P[posIniP + 1][0]];
 			F2.push(f2);
 			f2 = [P[posIniP + 3][0]];
 			F2.push(f2);
 			f2 = -(P[posIniP][0] + (2 * P[posIniP + 1][0]) + P[posIniP + 2][0]) / L[i];
-			f2 = [round(f2, 3)];
+			f2 = [round(f2 * 100, 3)];
 			F2.push(f2);
 			f2 = [P[posIniP + 1][0] + P[posIniP + 2][0]];
 			F2.push(f2);
