@@ -37,6 +37,8 @@ class Bar {
   constructor(start, end, area, elasticity, I, G, J, C) {
     this.startNode = start;
     this.endNode = end;
+    
+    //Propiedades
     this.area = area;
     this.elasticity = elasticity;
     this.I = I;
@@ -64,6 +66,16 @@ class Bar {
     this.dMx = 0;
     this.dMy = 0;
     this.dMz = 0;
+
+    //Fuerzas en barras
+    this.fX1 = 0;
+    this.fY1 = 0;
+    this.mZ1 = 0;
+
+    this.fX2 = 0;
+    this.fY2 = 0;
+    this.mZ2 = 0;
+
   }
 
   get deltaX() {
