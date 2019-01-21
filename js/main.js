@@ -881,13 +881,13 @@ function createRowBarsTable(index, calculationType, sHtmlIni, sHtmlFin) {
   }
   else {
 
-    html += '<td><input type="text" class="area"></td>' +
-          '<td><input type="text" class="elasticity"></td>';
-
     if (calculationType === '3')
       html += '<td><input type="text" class="i"></td>' +
             '<td><input type="text" class="g"></td>' +
             '<td><input type="text" class="j"></td>';
+    else
+      html += '<td><input type="text" class="area"></td>' +
+          '<td><input type="text" class="elasticity"></td>'; 
 
     if (calculationType === '4')
       html += '<td><input type="text" class="i"></td>' +
@@ -2030,6 +2030,10 @@ function createResMarcoPlanoTable() {
           '</table> ';
 
   $('#mp-res-table-container').html(html);
+}
+
+function showErrorMessage(container, message) {
+  container.html('<p><b>' + message + '</b></p>');
 }
 
 /*************************************************************************************************

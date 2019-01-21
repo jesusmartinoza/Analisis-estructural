@@ -1,5 +1,4 @@
 
-
 //Coordenadas de los nodos
 var nodeX = [];
 var nodeY = [];
@@ -47,7 +46,6 @@ var kd = [];
 var kArray = [];
 var K = [];
 var Kt = [];
-//var T = []; // Matriz
 
 //Fuerzas aplicadas en nodos
 var F = [];
@@ -64,9 +62,8 @@ var P2 = [];
 var deltaX = [];
 var deltaY = [];
 
-// Variables Jesús
-// NOTA: Variables tienen prefijo j para no causar conflictos con
-// variables Gaby
+var calculationType = 0;
+
 var jNodes = [];
 var jBars = [];
 
@@ -77,7 +74,7 @@ function calculate() {
 		jBars.push(new Bar());
 	}
 
-	var calculationType = $calculationType.val();
+	calculationType = $calculationType.val();
 	getNodesCoordinates();
 	getSupports();
 	getAreas();
@@ -106,7 +103,7 @@ function calculate() {
 			break;
 			//Defectos constructivos
 			case 2:
-				calculateP11();
+				calculateP1ForBarsDefects();
 				calculateF();
 				calculated();
 				calculatee();
@@ -115,7 +112,7 @@ function calculate() {
 			break;
 			//Efectos térmicos
 			case 3:
-				calculateP12();
+				calculateP1ForThermalEffects()();
 				calculateF();
 				calculated();
 				calculatee();
@@ -125,7 +122,7 @@ function calculate() {
 			//Asentamientos diferenciales
 			case 4:
 				//Estado I
-				calculateP13();
+				calculateP1ForSettlements();
 				//Estado II
 				calculateF();
 				calculated();
@@ -140,49 +137,49 @@ function calculate() {
 	}
 	//Retícula
 	else if (calculationType === '3') {
-
   		calculatekdByBar();
   		calculatekdFromki();
   		calculateAByBar();
   		calculateAFromAi();
   		calculateK();
   		getNodesForces();
-		calculated();
-		calculatee();
-		calculateP();
-		//Estado II
-		calculateF2();
-		createResReticulaTable();
-
+  		getBarDistributedForces();
+		getBarPuntualForces();
+		if (calculateNodesForcesForReticula()) {
+			updateF();
+			calculated();
+			calculatee();
+			calculateP();
+			calculateF2();
+			calculateF1();
+			calculateFSol();
+			//Resultado
+			createResReticulaTable();
+		}
 	}
 	//Marco Plano
 	else if (calculationType === '4') {
-		
 		calculatekdByBar();
 		calculatekdFromki();
 		calculateAByBar();
 		calculateAFromAi();
 		calculateK();
-		
 		getNodesForces();
 		getBarDistributedForces();
 		getBarPuntualForces();
-		
-		calculateNodesForces();
-		
-		updateF();
-		calculated();
-		calculatee();
-		calculateP();
-		calculateF2();
-
-		calculateF1();
-		calculateFSol();
-
-		//Resultado
-		createResMarcoPlanoTable();
+		if (calculateNodesForcesForMarcoPlano()) {
+			updateF();
+			calculated();
+			calculatee();
+			calculateP();
+			calculateF2();
+			calculateF1();
+			calculateFSol();
+			//Resultado
+			createResMarcoPlanoTable();
+		}
 	}
-	// Marco 3D
+	//Marco 3D
 	else if (calculationType === '5') {
 		/*
 		getNodesForces();
@@ -194,13 +191,18 @@ function calculate() {
 }
 
 function updateF() {
-	var calculationType = $calculationType.val();
 	F = [];
 
 	jNodes.forEach(jNode => {
 		//Si el nodo no es un apoyo
 		if (!jNode.isSupport) {
 			switch (calculationType) {
+				//Retícula
+				case '3':
+					F.push([jNode.mX]);
+					F.push([jNode.mY]);
+					F.push([jNode.fZ]);
+				break;
 				//Marco plano
 				case '4':
 					F.push([jNode.fX]);
@@ -219,8 +221,8 @@ function calculateF1() {
 	//Para cada barra se analiza el nodo inicial y el nodo final
 	jBars.forEach(jBar => {
 		var t = calculateT(jBar);
-		var f1 = math.multiply(t, [[jBar.fX1], [jBar.fY1], [jBar.mZ1]])
-		var f2 = math.multiply(t, [[jBar.fX2], [jBar.fY2], [jBar.mZ2]])
+		var f1 = math.multiply(t, [[jBar.fX1], [jBar.fY1], [jBar.mZ1]]);
+		var f2 = math.multiply(t, [[jBar.fX2], [jBar.fY2], [jBar.mZ2]]);
 		F1.push([f1[0][0]]);  
 		F1.push([f1[1][0]]);  
 		F1.push([f1[2][0]]);  
@@ -245,10 +247,8 @@ function calculateFSol() {
 	FSol = math.add(F1, F2);
 }
 
-function calculateNodesForces() {
-
-	//F1 = [];
-
+function calculateNodesForcesForMarcoPlano() {
+	var cont = 1;
 	//Para cada barra se analiza el nodo inicial y el nodo final
 	jBars.forEach(jBar => {
 
@@ -262,18 +262,14 @@ function calculateNodesForces() {
 		if (!jBar.startNode.isSupport && !jBar.endNode.isSupport) {
 
 			//En la tabla del paso 4 (Fuerzas en nodos) se suman las fuerzas a los respectivos nodos (Por eso no se crean instancias)
-			//var nodeA = jBar.startNode; 
-			//var nodeB = jBar.endNode; 
 
 			//1. A cualquier nodo se conecta sólo una barra
 			if (jBar.startNode.barCount == 1 || jBar.endNode.barCount == 1) {
 
 				//Nodo con una barra
-				//var lib = jBar.startNode.barCount == 1 ? copyInstance(jBar.startNode) : copyInstance(jBar.endNode);
 				var lib = jBar.startNode.barCount == 1 ? jBar.startNode : jBar.endNode;
 
 				//Nodo con más de una barra
-				//var emp = _.isEqual(lib, jBar.startNode) ? copyInstance(jBar.endNode) : copyInstance(jBar.startNode);
 				var emp = _.isEqual(lib, jBar.startNode) ? jBar.endNode : jBar.startNode;
 
 				//Si el nodo inicial es el nodo empotrado, se utiliza D (Distancia ingresada en la tabla Paso 6), si no se calcula D'
@@ -321,34 +317,21 @@ function calculateNodesForces() {
 							+ (jBar.wX * (Math.pow(jLy, 2) / 2) * sign2);
 				  	//Para el nodo libre los valores son cero
 				}
-
-				/*
-				F1.push([lib.fX]);
-				F1.push([lib.fY]);
-				F1.push([lib.mZ]);
-				F1.push([emp.fX]);
-				F1.push([emp.fY]);
-				F1.push([emp.mZ]);
-				*/
 			}
 
 			//2. Si se conectan más de una barra a los nodos
 			else {
 
 				//Se calcula D'
-				var jDc = jL - jD; // D cousin xD
+				var jDc = jL - jD; 
 
 				var nodeA;
 				var nodeB;
 
 				if (jD <= jDc) {
-					//nodeA = copyInstance(jBar.startNode);
-					//nodeB = copyInstance(jBar.endNode);
 					nodeA = jBar.startNode;
 					nodeB = jBar.endNode;
 				} else {
-					//nodeA = copyInstance(jBar.endNode);
-					//nodeB = copyInstance(jBar.startNode);
 					nodeA = jBar.endNode;
 					nodeB = jBar.startNode;
 				}
@@ -372,7 +355,7 @@ function calculateNodesForces() {
 
 					nodeA.mZ += jBar.pMz / 2;
 					nodeA.mZ += ( (jBar.pPy * jD * Math.pow(jDc, 2) ) / (jL * jL) ) * nodeASign ;
-					nodeA.mZ += ( (jBar.wY * jL * jL) / (jBar.I * jBar.I) ) * nodeASign;
+					nodeA.mZ += ( (jBar.wY * jL * jL) / 12 ) * nodeASign;
 
 					// Nodo B
 					nodeB.fX += jBar.pPx / 2;
@@ -383,7 +366,7 @@ function calculateNodesForces() {
 
 					nodeB.mZ += jBar.pMz / 2;
 					nodeB.mZ += ( (jBar.pPy * Math.pow(jD, 2) * jDc) / (jL * jL) ) * nodeBSign;
-					nodeB.mZ += ( (jBar.wY * jL * jL) / (jBar.I * jBar.I) ) * nodeBSign;
+					nodeB.mZ += ( (jBar.wY * jL * jL) / 12 ) * nodeBSign;
 				}
 
 				//B
@@ -403,7 +386,7 @@ function calculateNodesForces() {
 
 					nodeA.mZ += jBar.pMz / 2;
 					nodeA.mZ += ( (jBar.pPx * jD * Math.pow(jDc, 2)) / (jL * jL) ) * nodeASign;
-					nodeA.mZ += ( (jBar.wX * jL * jL) / (jBar.I * jBar.I) ) * nodeASign;
+					nodeA.mZ += ( (jBar.wX * jL * jL) / 12 ) * nodeASign;
 
 					//Nodo B
 					aux = (jBar.pPx * jDc * jDc) / Math.pow(jL, 3);
@@ -413,7 +396,7 @@ function calculateNodesForces() {
 					nodeB.fY += jBar.pPy / 2;
 					nodeB.mZ += jBar.pMz / 2;
 					nodeB.mZ += ( (jBar.pPx * Math.pow(jD, 2) * jDc) / (jL * jL) ) * nodeBSign;
-					nodeB.mZ += ( (jBar.wX * jL * jL) / (jBar.I * jBar.I) ) * nodeBSign;
+					nodeB.mZ += ( (jBar.wX * jL * jL) / 12 ) * nodeBSign;
 				}
 
 				//C
@@ -440,9 +423,9 @@ function calculateNodesForces() {
 
 					nodeA.mZ += jBar.pMz / 2;
 					nodeA.mZ += ( (jBar.pPx * jDy * jDcy * jDcy) / Math.pow(jLy, 2) ) * nodeASign;
-					nodeA.mZ += ( (jBar.wX * Math.pow(jLy, 2) ) / Math.pow(jBar.I, 2) ) * nodeASign;
+					nodeA.mZ += ( (jBar.wX * Math.pow(jLy, 2) ) / 12 ) * nodeASign;
 					nodeA.mZ += ( (jBar.pPy * jDx * jDcx * jDcx) / Math.pow(jLx, 2) ) * nodeASign;
-					nodeA.mZ += ( (jBar.wY * Math.pow(jLx, 2) ) / Math.pow(jBar.I, 2) ) * nodeASign;
+					nodeA.mZ += ( (jBar.wY * Math.pow(jLx, 2) ) / 12 ) * nodeASign;
 
 					// Nodo B
 					nodeB.fX += ((jBar.pPx * jDy * jDy) / (Math.pow(jLy, 3))) * (jLy + (2 * jDcy));
@@ -453,19 +436,11 @@ function calculateNodesForces() {
 
 					nodeB.mZ += jBar.pMz / 2;
 					nodeB.mZ += ( (jBar.pPx * jDy * jDy * jDcy) / Math.pow(jLy, 2) ) * nodeBSign;
-					nodeB.mZ += ( (jBar.wX * Math.pow(jLy, 2) ) / Math.pow(jBar.I, 2) ) * nodeBSign;
+					nodeB.mZ += ( (jBar.wX * Math.pow(jLy, 2) ) / 12 ) * nodeBSign;
 					nodeB.mZ += ( (jBar.pPy * jDx * jDx * jDcx) / Math.pow(jLx, 2) ) * nodeBSign;
-					nodeB.mZ += ( (jBar.wY * Math.pow(jLx, 2) ) / Math.pow(jBar.I, 2) ) * nodeBSign;
+					nodeB.mZ += ( (jBar.wY * Math.pow(jLx, 2) ) / 12 ) * nodeBSign;
 				}
 
-				/*
-				F1.push([nodeA.fX]);
-				F1.push([nodeA.fY]);
-				F1.push([nodeA.mZ]);
-				F1.push([nodeB.fX]);
-				F1.push([nodeB.fY]);
-				F1.push([nodeB.mZ]);
-				*/
 			}
 
 			//Se guardan las fuerzas de la barra
@@ -480,7 +455,7 @@ function calculateNodesForces() {
 		else {
 
 			//Se calcula D'
-			var jDc = jL - jD; // D cousin xD
+			var jDc = jL - jD; 
 			
 			//Nodo que es apoyo
 			var art;
@@ -494,25 +469,17 @@ function calculateNodesForces() {
 				art = copyInstance(jBar.endNode);
 				emp = jBar.startNode;
 			}
-			
 
 			//1. Si el apoyo tiene restricciones en X, Y y Z se realiza el mismo procedimiento que en I.2
 			if (art.lX && art.lY && art.rZ) {
-
-				//var nodeA = copyInstance(jBar.startNode);
-				//var nodeB = copyInstance(jBar.endNode);
 
 				var nodeA;
 				var nodeB;
 
 				if (jD <= jDc) {
-					//nodeA = copyInstance(jBar.startNode);
-					//nodeB = copyInstance(jBar.endNode);
 					nodeA = (jBar.startNode.isSupport) ? copyInstance(jBar.startNode) : jBar.startNode;
 					nodeB = (jBar.endNode.isSupport) ? copyInstance(jBar.endNode) : jBar.endNode;
 				} else {
-					//nodeA = copyInstance(jBar.endNode);
-					//nodeB = copyInstance(jBar.startNode);
 					nodeA = (jBar.endNode.isSupport) ? copyInstance(jBar.endNode) : jBar.endNode;
 					nodeB = (jBar.startNode.isSupport) ? copyInstance(jBar.startNode) : jBar.startNode;
 				}
@@ -527,9 +494,6 @@ function calculateNodesForces() {
 
 					var aux = 0;
 
-					//El nodo que es apoyo no aporta nada a la tabla del Paso 4
-					//if (!nodeA.isSupport) {
-
 					// Nodo A
 					nodeA.fX += jBar.pPx / 2;
 
@@ -539,12 +503,7 @@ function calculateNodesForces() {
 
 					nodeA.mZ += jBar.pMz / 2;
 					nodeA.mZ += ( (jBar.pPy * jD * Math.pow(jDc, 2) ) / (jL * jL) ) * nodeASign ;
-					nodeA.mZ += ( (jBar.wY * jL * jL) / (jBar.I * jBar.I) ) * nodeASign;
-
-					//
-
-					//El nodo que es apoyo no aporta nada a la tabla del Paso 4
-					//if (!nodeB.isSupport) {
+					nodeA.mZ += ( (jBar.wY * jL * jL) / 12 ) * nodeASign;
 
 					// Nodo B
 					nodeB.fX += jBar.pPx / 2;
@@ -555,9 +514,8 @@ function calculateNodesForces() {
 
 					nodeB.mZ += jBar.pMz / 2;
 					nodeB.mZ += ( (jBar.pPy * Math.pow(jD, 2) * jDc) / (jL * jL) ) * nodeBSign;
-					nodeB.mZ += ( (jBar.wY * jL * jL) / (jBar.I * jBar.I) ) * nodeBSign;
+					nodeB.mZ += ( (jBar.wY * jL * jL) / 12 ) * nodeBSign;
 
-					//}
 				}
 
 				//B
@@ -568,9 +526,6 @@ function calculateNodesForces() {
 					//Si delta y es negativo, las fórmulas con * se multiplican por -1 para el nodo final
 					var nodeBSign = jDeltaX < 0 ? -1 : 1;
 
-					//El nodo que es apoyo no aporta nada a la tabla del Paso 4
-					//if (!nodeA.isSupport) {
-						
 					//Nodo A
 					aux = (jBar.pPx * jDc * jDc) / Math.pow(jL, 3);
 					aux *= (jL + (2 * jD));
@@ -580,13 +535,8 @@ function calculateNodesForces() {
 
 					nodeA.mZ += jBar.pMz / 2;
 					nodeA.mZ += ( (jBar.pPx * jD * Math.pow(jDc, 2)) / (jL * jL) ) * nodeASign;
-					nodeA.mZ += ( (jBar.wX * jL * jL) / (jBar.I * jBar.I) ) * nodeASign;
+					nodeA.mZ += ( (jBar.wX * jL * jL) / 12 ) * nodeASign;
 					
-					//}
-
-					//El nodo que es apoyo no aporta nada a la tabla del Paso 4
-					//if (!nodeB.isSupport) {
-						
 					//Nodo B
 					aux = (jBar.pPx * jDc * jDc) / Math.pow(jL, 3);
 					aux *= (jL + (2 * jD));
@@ -595,9 +545,8 @@ function calculateNodesForces() {
 					nodeB.fY += jBar.pPy / 2;
 					nodeB.mZ += jBar.pMz / 2;
 					nodeB.mZ += ( (jBar.pPx * Math.pow(jD, 2) * jDc) / (jL * jL) ) * nodeBSign;
-					nodeB.mZ += ( (jBar.wX * jL * jL) / (jBar.I * jBar.I) ) * nodeBSign;
+					nodeB.mZ += ( (jBar.wX * jL * jL) / 12 ) * nodeBSign;
 
-					//}
 				}
 
 				//C
@@ -615,9 +564,6 @@ function calculateNodesForces() {
 					//Si delta y es positivo, las fórmulas con * se multiplican por -1 para el nodo inicial, si no se multiplican por -1 para el nodo final
 					var nodeBSign = jDeltaX > 0 && jDeltaY < 0 ? 1 : -1;
 
-					//El nodo que es apoyo no aporta nada a la tabla del Paso 4
-					//if (!nodeA.isSupport) {
-						
 					// Nodo A
 					nodeA.fX += ((jBar.pPx * jDcy * jDcy) / (Math.pow(jLy, 3))) * (jLy + (2 * jDy));
 					nodeA.fX += (jBar.wX * jLy) / 2;
@@ -627,15 +573,10 @@ function calculateNodesForces() {
 
 					nodeA.mZ += jBar.pMz / 2;
 					nodeA.mZ += ( (jBar.pPx * jDy * jDcy * jDcy) / Math.pow(jLy, 2) ) * nodeASign;
-					nodeA.mZ += ( (jBar.wX * Math.pow(jLy, 2) ) / Math.pow(jBar.I, 2) ) * nodeASign;
+					nodeA.mZ += ( (jBar.wX * Math.pow(jLy, 2) ) / 12 ) * nodeASign;
 					nodeA.mZ += ( (jBar.pPy * jDx * jDcx * jDcx) / Math.pow(jLx, 2) ) * nodeASign;
-					nodeA.mZ += ( (jBar.wY * Math.pow(jLx, 2) ) / Math.pow(jBar.I, 2) ) * nodeASign;
+					nodeA.mZ += ( (jBar.wY * Math.pow(jLx, 2) ) / 12 ) * nodeASign;
 
-					//}
-
-					//El nodo que es apoyo no aporta nada a la tabla del Paso 4
-					//if (!nodeB.isSupport) {
-						
 					// Nodo B
 					nodeB.fX += ((jBar.pPx * jDy * jDy) / (Math.pow(jLy, 3))) * (jLy + (2 * jDcy));
 					nodeB.fX += (jBar.wX * jLy) / 2;
@@ -645,11 +586,10 @@ function calculateNodesForces() {
 
 					nodeB.mZ += jBar.pMz / 2;
 					nodeB.mZ += ( (jBar.pPx * jDy * jDy * jDcy) / Math.pow(jLy, 2) ) * nodeBSign;
-					nodeB.mZ += ( (jBar.wX * Math.pow(jLy, 2) ) / Math.pow(jBar.I, 2) ) * nodeBSign;
+					nodeB.mZ += ( (jBar.wX * Math.pow(jLy, 2) ) / 12 ) * nodeBSign;
 					nodeB.mZ += ( (jBar.pPy * jDx * jDx * jDcx) / Math.pow(jLx, 2) ) * nodeBSign;
-					nodeB.mZ += ( (jBar.wY * Math.pow(jLx, 2) ) / Math.pow(jBar.I, 2) ) * nodeBSign;
+					nodeB.mZ += ( (jBar.wY * Math.pow(jLx, 2) ) / 12 ) * nodeBSign;
 
-					//}
 				}
 
 				//El nodo A es el nodo inicial y el nodo B el final
@@ -672,18 +612,9 @@ function calculateNodesForces() {
 					jBar.fY2 = nodeA.fY;
 					jBar.mZ2 = nodeA.mZ;
 				}
-
-				/*
-				F1.push([nodeA.fX]);
-				F1.push([nodeA.fY]);
-				F1.push([nodeA.mZ]);
-				F1.push([nodeB.fX]);
-				F1.push([nodeB.fY]);
-				F1.push([nodeB.mZ]);
-				*/
 			}
 
-			//2. Si el apoyo tiene restricciones en X y Y  - Aquí estoy revisando
+			//2. Si el apoyo tiene restricciones en X y Y  
 			else if (art.lX && art.lY && !art.rZ) {
 
 				//A
@@ -715,7 +646,6 @@ function calculateNodesForces() {
 						emp.mZ += ((jBar.wY * jL * jL) / 8) * nodeBSign;
 					else
 						emp.mZ += ((jBar.wY * jL * jL) / 8) * nodeASign;
-
 
 					art.fX += jBar.pPx / 2;
 
@@ -858,20 +788,10 @@ function calculateNodesForces() {
 				jBar.fX2 = nodeB.fX;
 				jBar.fY2 = nodeB.fY;
 				jBar.mZ2 = nodeB.mZ;
-
-				/*
-				F1.push([nodeA.fX]);
-				F1.push([nodeA.fY]);
-				F1.push([nodeA.mZ]);
-				F1.push([nodeB.fX]);
-				F1.push([nodeB.fY]);
-				F1.push([nodeB.mZ]);
-				*/
 			}
 
 			//3. Si el apoyo tiene restricción lineal en Y
 			else if (!art.lX && art.lY && !art.rZ) {
-
 
 				//A
 				if (jDeltaX != 0 && jDeltaY == 0) {
@@ -999,15 +919,6 @@ function calculateNodesForces() {
 				jBar.fX2 = nodeB.fX;
 				jBar.fY2 = nodeB.fY;
 				jBar.mZ2 = nodeB.mZ;
-
-				/*
-				F1.push([nodeA.fX]);
-				F1.push([nodeA.fY]);
-				F1.push([nodeA.mZ]);
-				F1.push([nodeB.fX]);
-				F1.push([nodeB.fY]);
-				F1.push([nodeB.mZ]);
-				*/
 			}
 
 			//4. Si el apoyo tiene restricción lineal en X
@@ -1142,25 +1053,21 @@ function calculateNodesForces() {
 				jBar.fX2 = nodeB.fX;
 				jBar.fY2 = nodeB.fY;
 				jBar.mZ2 = nodeB.mZ;
+			}
 
-				/*
-				F1.push([nodeA.fX]);
-				F1.push([nodeA.fY]);
-				F1.push([nodeA.mZ]);
-				F1.push([nodeB.fX]);
-				F1.push([nodeB.fY]);
-				F1.push([nodeB.mZ]);
-				*/
+			else {
+				showErrorMessage($('#mp-res-table-container'), 'Fuera del alcance del programa. Barra ' + cont + ' con cargas intermedias y apoyo empotrado móvil.');
+				return false;
 			}
 		}
-
+		cont++;
 	});
+
+	return true;
 }
 
-function calculateF1Reticula() {
-
-	F1 = [];
-
+function calculateNodesForcesForReticula() {
+	var cont = 1;
 	//Para cada barra se analiza el nodo inicial y el nodo final
 	jBars.forEach(jBar => {
 
@@ -1173,87 +1080,75 @@ function calculateF1Reticula() {
 		//I. Si ningún nodo es apoyo
 		if (!jBar.startNode.isSupport && !jBar.endNode.isSupport) {
 
+			//En la tabla del paso 4 (Fuerzas en nodos) se suman las fuerzas a los respectivos nodos (Por eso no se crean instancias)
+
 			//1. A cualquier nodo se conecta sólo una barra
 			if (jBar.startNode.barCount == 1 || jBar.endNode.barCount == 1) {
 
 				//Nodo con una barra
-				var lib = jBar.startNode.barCount == 1 ? copyInstance(jBar.startNode) : copyInstance(jBar.endNode);
+				var lib = jBar.startNode.barCount == 1 ? jBar.startNode : jBar.endNode;
+
 				//Nodo con más de una barra
-				var emp = _.isEqual(lib, jBar.startNode) ? copyInstance(jBar.endNode) : copyInstance(jBar.startNode);
+				var emp = _.isEqual(lib, jBar.startNode) ? jBar.endNode : jBar.startNode;
+
 				//Si el nodo inicial es el nodo empotrado, se utiliza D (Distancia ingresada en la tabla Paso 6), si no se calcula D'
 				jD = _.isEqual(jBar.startNode, emp) ? jD : jL - jD;
 
 				//A
 				if (jDeltaX != 0 && jDeltaY == 0) {
-				  //Si la coordenada x del nodo empotrado es menor que la del nodo libre, wY y pPy no se alteran, si no, se multiplican por -1
-				  var nodeASign = (emp.x < lib.x) ? 1 : -1;
-
-					emp.fZ += jBar.pPz+(jBar.wZ*jL);
+				  	var sign = (emp.x < lib.x) ? 1 : -1;
+					//Para emp
+					emp.fZ += jBar.pPz + (jBar.wZ * jL);
 					emp.mX += jBar.pMx;
 					emp.mY += jBar.pMy;
-					emp.mY += jBar.pPz*jD*nodeASign;
-					emp.mY += (jBar.wZ*jL*jL)/2*nodeASign;
+					emp.mY += jBar.pPz * jD * sign; 
+					emp.mY += ((jBar.wZ * jL * jL) / 2) * sign; 
+					//Para el nodo libre los valores son cero
 				}
 
 				//B
 				else if (jDeltaX == 0 && jDeltaY != 0) {
-					//Si la coordenada y del nodo empotrado es mayor que la del nodo libre, wX y pPx no se alteran, si no, se multiplican por -1
-					var nodeASign = (emp.y > lib.y) ? 1 : -1;
-
-					emp.fZ += jBar.pPz+(jBar.wZ*jL);
+					var sign = (emp.y > lib.y) ? 1 : -1;
+					//Para emp
+					emp.fZ += jBar.pPz + (jBar.wZ * jL);
 					emp.mX += jBar.pMx;
-					emp.mX += jBar.pPz*jD*nodeASign;
-					emp.mX += (jBar.wZ*jL*jL)/2*nodeASign;
+					emp.mX += jBar.pPz * jD * sign; 
+					emp.mX += ((jBar.wZ * jL * jL) / 2) * sign; 
 					emp.mY += jBar.pMy;
-				  //Para el nodo libre los valores son cero
+				  	//Para el nodo libre los valores son cero
 				}
 
 				//C
 				else {
 					var alpha = Math.abs(Math.atan(jDeltaX / jDeltaY));
-					var jDx = jD * Math.cos(alpha);
-					var jDy = jD * Math.sin(alpha);
-					var jLx = jL * Math.cos(alpha);
-					var jLy = jL * Math.sin(alpha);
-
-					//Si la coordenada x del nodo empotrado es menor que la del nodo libre, wY y pPy no se alteran, si no, se multiplican por -1
-					var nodeASign1 = (emp.x < lib.x) ? 1 : -1;
-					//Si la coordenada y del nodo empotrado es mayor que la del nodo libre, wX y pPx no se alteran, si no, se multiplican por -1
-					var nodeASign2 = (emp.y > lib.y) ? 1 : -1;
-
-					emp.fZ += jBar.pPz+(jBar.wZ*jL);
+					var sign = (emp.z > lib.z) ? 1 : -1;
+					//Para emp
+					emp.fZ += jBar.pPz + (jBar.wZ * jL);
 					emp.mX += jBar.pMx;
-					emp.mX += jBar.pPz*jD*(-1*Math.sin(alpha)) * nodeASign1;
-					emp.mX += jBar.wZ*jL*jL/2*(-1*Math.sin(alpha)) * nodeASign1;
+					emp.mX += jBar.pPz * jD * (-1 * Math.sen(alpha)) * sign; 
+					emp.mX += ((jBar.wZ * jL * jL) / 2) * (-1 * Math.sen(alpha)) * sign; 
 					emp.mY += jBar.pMy;
-					emp.mY += jBar.pPz*jD*(1*Math.cos(alpha)) * nodeASign2;
-					emp.mY += jBar.wZ*jL*jL/2*(1*Math.cos(alpha)) * nodeASign2;
+					emp.mY += jBar.pPz * jD * (1 * Math.cos(alpha)) * sign; 
+					emp.mY += ((jBar.wZ * jL * jL) / 2) * (1 * Math.cos(alpha)) * sign; 
 				  	//Para el nodo libre los valores son cero
 				}
-
-				F1.push([lib.fX]);
-				F1.push([lib.fY]);
-				F1.push([lib.mZ]);
-				F1.push([emp.fX]);
-				F1.push([emp.fY]);
-				F1.push([emp.mZ]);
-
 			}
 
 			//2. Si se conectan más de una barra a los nodos
 			else {
+
 				//Se calcula D'
-				var jDc = jL - jD; // D cousin xD
+				var jDc = jL - jD; 
 
 				var nodeA;
 				var nodeB;
 
-				if(jD <= jDc) {
-					nodeA = copyInstance(jBar.startNode);
-					nodeB = copyInstance(jBar.endNode);
+				if (jD <= jDc) {
+					nodeA = jBar.startNode;
+					nodeB = jBar.endNode;
 				} else {
-					nodeA = copyInstance(jBar.endNode);
-					nodeB = copyInstance(jBar.startNode);
+					nodeA = jBar.endNode;
+					nodeB = jBar.startNode;
 				}
 
 				//A
@@ -1263,24 +1158,27 @@ function calculateF1Reticula() {
 					var nodeBSign = jDeltaX > 0 ? -1 : 1;
 					//Si delta x es negativo, las fórmulas con * se multiplican por -1 para el nodo inicial
 					var nodeASign = jDeltaX < 0 ? -1 : 1;
-
 					var aux = 0;
 
-					// Nodo A
-					nodeA.fZ+=((jBar.pPz*jDc*jDc)/(Math.pow(jL,3)))*(jL+2*jD);
-					nodeA.fZ+=jBar.wZ*jL/2;
-					nodeA.mX+=jBar.pMx/2;
-					nodeA.mY+=jBar.pMy/2;
-					nodeA.mY+=((jBar.pPz*jD*jDc*jDc)/(Math.pow(jL,2))) * nodeASign;
-					nodeA.mY+=(jBar.wZ*jL*jL)/12 * nodeASign;
+					//Nodo A
+					nodeA.fZ += ((jBar.pPz*jDc*jDc) / (Math.pow(jL,3))) * ((jL + 2) * jD);
+					nodeA.fZ += jBar.wZ * (jL / 2);
 
-					// Nodo B
-					nodeB.fZ+=((jBar.pPz*jD*jD)/(Math.pow(jL,3)))*(jL+2*jDc);
-					nodeB.fZ+=jBar.wZ*jL/2;
-					nodeB.mX+=jBar.pMx/2;
-					nodeB.mY+=jBar.pMy/2;
-					nodeB.mY+=((jBar.pPz*jD*jD*jDc)/(Math.pow(jL,2))) * nodeBSign;
-					nodeB.mY+=(jBar.wZ*jL*jL)/12 * nodeBSign;
+					nodeA.mX += jBar.pMx / 2;
+
+					nodeA.mY += jBar.pMy / 2;
+					nodeA.mY += (((jBar.pPz * jD * jDc * jDc) / (Math.pow(jL,2)))) * nodeASign; 
+					nodeA.mY += ((jBar.wZ * jL * jL) / 12) * nodeASign; 
+
+					//Nodo B
+					nodeB.fZ += (((jBar.pPz * jD * jD) / (Math.pow(jL,3))) * ((jL + 2) * jDc)) * nodeBSign;
+					nodeB.fZ += (jBar.wZ * jL) / 2;
+
+					nodeB.mX += jBar.pMx / 2;
+
+					nodeB.mY += jBar.pMy / 2;
+					nodeB.mY += (((jBar.pPz * jD * jD * jDc) / (Math.pow(jL,2)))) * nodeBSign; 
+					nodeB.mY += ((jBar.wZ * jL * jL) / 12) * nodeBSign; 
 				}
 
 				//B
@@ -1292,20 +1190,20 @@ function calculateF1Reticula() {
 					var nodeBSign = jDeltaX < 0 ? -1 : 1;
 
 					//Nodo A
-					nodeA.fZ+=((jBar.pPz*jDc*jDc)/(Math.pow(jL,3)))*(jL+2*jD);
-					nodeA.fZ+=jBar.wZ*jL/2;
-					nodeA.mX+=jBar.pMx/2;
-					nodeA.mX+=((jBar.pPz*jD*jDc*jDc)/(Math.pow(jL,2))) * nodeASign;
-					nodeA.mX+=(jBar.wZ*jL*jL)/12 * nodeASign;
-					nodeA.mY+=jBar.pMy/2;
+					nodeA.fZ += ((jBar.pPz*jDc*jDc)/(Math.pow(jL,3)))*(jL+2*jD);
+					nodeA.fZ += jBar.wZ*jL/2;
+					nodeA.mX += jBar.pMx/2;
+					nodeA.mX += ((jBar.pPz*jD*jDc*jDc)/(Math.pow(jL,2))) * nodeASign; 
+					nodeA.mX += (jBar.wZ*jL*jL)/12 * nodeASign; 
+					nodeA.mY += jBar.pMy/2;
 
 					//Nodo B
-					nodeA.fZ+=((jBar.pPz*jD*jD)/(Math.pow(jL,3)))*(jL+2*jDc);
-					nodeA.fZ+=jBar.wZ*jL/2;
-					nodeA.mX+=jBar.pMx/2;
-					nodeA.mX+=((jBar.pPz*jD*jD*jDc)/(Math.pow(jL,2))) * nodeBSign;
-					nodeA.mX+=(jBar.wZ*jL*jL)/12 * nodeBSign;
-					nodeA.mY+=jBar.pMy/2;
+					nodeB.fZ += ((jBar.pPz*jD*jD)/(Math.pow(jL,3)))*(jL+2*jDc);
+					nodeB.fZ += jBar.wZ*jL/2;
+					nodeB.mX += jBar.pMx/2;
+					nodeB.mX += ((jBar.pPz*jD*jD*jDc)/(Math.pow(jL,2))) * nodeBSign; 
+					nodeB.mX += (jBar.wZ*jL*jL)/12 * nodeBSign; 
+					nodeB.mY += jBar.pMy/2;
 				}
 
 				//C
@@ -1323,39 +1221,50 @@ function calculateF1Reticula() {
 					//Si delta y es positivo, las fórmulas con * se multiplican por -1 para el nodo inicial, si no se multiplican por -1 para el nodo final
 					var nodeBSign = jDeltaX > 0 && jDeltaY < 0 ? 1 : -1;
 
-					// Nodo A
-					nodeA.fZ+=((jBar.pPz*jDc*jDc)/(Math.pow(jL,3)))*(jL+2*jD);
-					nodeA.fZ+=jBar.wZ*jL/2;
-					nodeA.mX+=jBar.pMx/2;
-					nodeA.mX+=((jBar.pPz*jD*jDc*jDc)/(Math.pow(jL,2)))*(-1*Math.sin(alpha)) * nodeASign;
-					nodeA.mX+=(jBar.wZ*jL*jL)/12*(-1*Math.sin(alpha)) * nodeASign;
-					nodeA.mY+=jBar.pMy/2;
-					nodeA.mY+=((jBar.pPz*jD*jDc*jDc)/(Math.pow(jL,2)))*( 1*Math.cos(alpha)) * nodeASign;
-					nodeA.mY+=(jBar.wZ*jL*jL)/12*(1*Math.cos(alpha)) * nodeASign;
+					//Nodo A
+					nodeA.fZ += ((jBar.pPz*jDc*jDc)/(Math.pow(jL,3)))*(jL+2*jD);
+					nodeA.fZ += jBar.wZ*jL/2;
 
-					// Nodo B
-					nodeA.fZ+=((jBar.pPz*jD*jD)/(Math.pow(jL,3)))*(jL+2*jDc);
-					nodeA.fZ+=jBar.wZ*jL/2;
-					nodeA.mX+=jBar.pMx/2;
-					nodeA.mX+=((jBar.pPz*jD*jD*jDc)/(Math.pow(jL,2)))*(-1*Math.sin(alpha)) * nodeBSign;
-					nodeA.mX+=(jBar.wZ*jL*jL)/12*(-1*Math.sin(alpha)) * nodeBSign;
-					nodeA.mY+=jBar.pMy/2;
-					nodeA.mY+=((jBar.pPz*jD*jD*jDc)/(Math.pow(jL,2)))*( 1*Math.cos(alpha)) * nodeBSign;
-					nodeA.mY+=(jBar.wZ*jL*jL)/12*(1*Math.cos(alpha)) * nodeBSign;
+					nodeA.mX += jBar.pMx/2;
+					nodeA.mX += ((jBar.pPz*jD*jDc*jDc)/(Math.pow(jL,2)))*(-1*Math.sen(alpha)) * nodeASign; 
+					nodeA.mX += (jBar.wZ*jL*jL)/12*(-1*Math.sen(alpha)) * nodeASign; 
+
+					nodeA.mY += jBar.pMy/2;
+					nodeA.mY += ((jBar.pPz*jD*jDc*jDc)/(Math.pow(jL,2)))*( 1*Math.cos(alpha)) * nodeASign; 
+					nodeA.mY += (jBar.wZ*jL*jL)/12*(1*Math.cos(alpha)) * nodeASign; 
+
+					//Nodo B
+					nodeA.fZ += ((jBar.pPz*jD*jD)/(Math.pow(jL,3)))*(jL+2*jDc);
+					nodeA.fZ += jBar.wZ*jL/2;
+
+					nodeA.mX += jBar.pMx/2;
+					nodeA.mX += ((jBar.pPz*jD*jD*jDc)/(Math.pow(jL,2)))*(-1*Math.sen(alpha)) * nodeBSign; 
+					nodeA.mX += (jBar.wZ*jL*jL)/12*(-1*Math.sen(alpha)) * nodeBSign; 
+
+					nodeA.mY += jBar.pMy/2;
+					nodeA.mY += ((jBar.pPz*jD*jD*jDc)/(Math.pow(jL,2)))*( 1*Math.cos(alpha)) * nodeBSign; 
+					nodeA.mY += (jBar.wZ*jL*jL)/12*(1*Math.cos(alpha)) * nodeBSign; 
 				}
 
-				F1.push([nodeA.fX]);
-				F1.push([nodeA.fY]);
-				F1.push([nodeA.mZ]);
-				F1.push([nodeB.fX]);
-				F1.push([nodeB.fY]);
-				F1.push([nodeB.mZ]);
 			}
-		} else {
-			alert("No se puede calcular porque existe un nodo que es apoyo")
-		}
 
+			//Se guardan las fuerzas de la barra
+			jBar.fX1 = jBar.startNode.fX;
+			jBar.fY1 = jBar.startNode.fY;
+			jBar.mZ1 = jBar.startNode.mZ;
+			jBar.fX2 = jBar.endNode.fX;
+			jBar.fY2 = jBar.endNode.fY;
+			jBar.mZ2 = jBar.endNode.mZ;
+		}
+		//II. Si un nodo es apoyo
+		else {
+			showErrorMessage($('#r-res-table-container'), 'Fuera del alcance del programa. En barra ' + cont + ' existe un nodo que es apoyo.');
+			return false;
+		}
+		cont++;
 	});
+
+	return true;
 }
 
 /**
@@ -2195,7 +2104,6 @@ function getNodesCoordinates() {
 	var inputY = $('#nodes-table-container table input.y');
 	var inputZ = $('#nodes-table-container table input.z');
 	var inputSize = inputX.length;
-	var calculationType = $calculationType.val();
 
 	//Inicializa los arreglos de coordenadas
 	nodeX = [];
@@ -2209,7 +2117,7 @@ function getNodesCoordinates() {
 		nodeY.push(y);
 
 		z = null;
-		if (calculationType === '2' || calculationType === '3' || calculationType === '5') {
+		if (calculationType === '2' || calculationType === '5') {
 			z = parseFloat($(inputZ[i]).val());
 			nodeZ.push(z);
 		}
@@ -2237,7 +2145,6 @@ function getSupports() {
 	var inputRx = $('#supports-table-container table input.rrx');
 	var inputRy = $('#supports-table-container table input.rry');
 	var inputRz = $('#supports-table-container table input.rrz');
-	//var calculationType = $calculationType.val();
 
 	var size = selectS.length;
 	for (i = 0; i < size; i++) {
@@ -2304,7 +2211,6 @@ function getAreas() {
 	for (var i = 0; i < size; i++) {
 		ar = parseFloat($(inputA[i]).val());
 		areas.push(ar);
-
 		jBars[i].area = ar;
 	}
 }
@@ -2313,11 +2219,9 @@ function getElasticity() {
 	var inputE = $('#bars-table-container table input.elasticity');
 	var size = inputE.length;
 	elasticity = [];
-
 	for (var i = 0; i < size; i++) {
 		e = parseFloat($(inputE[i]).val());
 		elasticity.push(e);
-
 		jBars[i].elasticity = e;
 	}
 }
@@ -2326,11 +2230,9 @@ function getI() {
 	var inputI = $('#bars-table-container table input.i');
 	var size = inputI.length;
 	barsI = [];
-
 	for (var j = 0; j < size; j++) {
 		i = parseFloat($(inputI[j]).val());
 		barsI.push(i);
-
 		jBars[j].I = i;
 	}
 }
@@ -2342,7 +2244,6 @@ function getG() {
 	for (var i = 0; i < size; i++) {
 		g = parseFloat($(inputG[i]).val());
 		barsG.push(g);
-
 		jBars[i].G = g;
 	}
 }
@@ -2354,7 +2255,6 @@ function getJ() {
 	for (var i = 0; i < size; i++) {
 		j = parseFloat($(inputJ[i]).val());
 		barsJ.push(j);
-
 		jBars[i].J = j;
 	}
 }
@@ -2423,7 +2323,6 @@ function calculateL() {
 	var nodesIni = $('#bars-table-container table select.ini');
 	var nodesFin = $('#bars-table-container table select.fin');
 	var barsSize = nodesIni.length;
-	var calculationType = $calculationType.val();
 
 	barsIni = [];
 	barsFin = [];
@@ -2455,7 +2354,7 @@ function calculateL() {
 		difY2 = Math.pow(difY, 2);
 		sum = difX2 + difY2;
 
-		if (calculationType === '2' || calculationType === '3' || calculationType === '5') {
+		if (calculationType === '2' || calculationType === '5') {
 			difZ = parseFloat(nodeZ[posFin]) - parseFloat(nodeZ[posIni]);
 			difZ2 = Math.pow(difZ, 2);
 			sum += difZ2;
@@ -2590,7 +2489,6 @@ function calculateA() {
 
 function calculateAFromAi() {
 
-	var calculationType = $calculationType.val();
 	var coordinates = 3;
 	var bars = parseInt($numberOfBars.val());
 	//El número de filas es igual al número de barras por cuatro
@@ -2625,14 +2523,22 @@ function calculateAFromAi() {
 		//Obtiene la posición del nodo final en el arreglo de apoyos
 		indexNodeFin = supports.indexOf(nodeFin);
 
-
 		//Obtiene los valores para las restricciones
 
 		//El nodo inicial es un apoyo, puede tener restricción en x,y,z
 		if (indexNodeIni != -1) {
-			rxNodeIni = restrictionsLx[indexNodeIni];
-			ryNodeIni = restrictionsLy[indexNodeIni];
-			rzNodeIni = restrictionsLz[indexNodeIni];
+			//Retícula
+			if (calculationType === '3') {
+				rxNodeIni = restrictionsRx[indexNodeIni];
+				ryNodeIni = restrictionsRy[indexNodeIni];
+				rzNodeIni = restrictionsLz[indexNodeIni];
+			}
+			//Marco plano
+			else if (calculationType === '4') {
+				rxNodeIni = restrictionsLx[indexNodeIni];
+				ryNodeIni = restrictionsLy[indexNodeIni];
+				rzNodeIni = restrictionsRz[indexNodeIni];
+			}
 		}
 		else {	//No es un apoyo
 			rxNodeIni = ryNodeIni = rzNodeIni = 0;
@@ -2640,9 +2546,18 @@ function calculateAFromAi() {
 
 		//El nodo final es un apoyo
 		if (indexNodeFin != -1) {
-			rxNodeFin = restrictionsLx[indexNodeFin];
-			ryNodeFin = restrictionsLy[indexNodeFin];
-			rzNodeFin = restrictionsLz[indexNodeFin];
+			//Retícula
+			if (calculationType === '3') {
+				rxNodeFin = restrictionsRx[indexNodeFin];
+				ryNodeFin = restrictionsRy[indexNodeFin];
+				rzNodeFin = restrictionsLz[indexNodeFin];
+			}
+			//Marco plano
+			else if (calculationType === '4') {
+				rxNodeFin = restrictionsLx[indexNodeFin];
+				ryNodeFin = restrictionsLy[indexNodeFin];
+				rzNodeFin = restrictionsRz[indexNodeFin];
+			}
 		}
 		else {	//No es un apoyo
 			rxNodeFin = ryNodeFin = rzNodeFin = 0;
@@ -2665,8 +2580,6 @@ function calculateAFromAi() {
 			colIniAi = 3;				//Para el nodo final se toma la segunda parte de la matriz A de la barra
 			copyMatrixA(rowIniA, colIniA, rowIniAi, colIniAi, a[i]);
 		}
-
-
 	}
 
 	//Remueve las columnas que se componen de sólo ceros
@@ -2795,7 +2708,6 @@ function calculatekd() {
 }
 
 function calculatekdByBar() {
-	var calculationType = $calculationType.val();
 	var size = $numberOfBars.val();
 	//Arreglo de matrices
 	kArray = [];
@@ -2810,10 +2722,10 @@ function calculatekdByBar() {
 		switch (calculationType) {
 			//Retícula
 			case '3':
-				ki[0][0] = (2 * elasticity[i] * barsI[i]) / LD[i];
-				ki[1][1] = (2 * elasticity[i] * barsI[i]) / LD[i];
-				ki[2][2] = (2 * elasticity[i] * barsI[i]) / LD[i];
-				ki[3][3] = (barsG[i] * barsJ[i]) / LD[i];
+				ki[0][0] = ( (2 * barsI[i]) / LD[i] ) * 100;
+				ki[1][1] = ( (2 * barsI[i]) / LD[i] ) * 100;
+				ki[2][2] = ( (2 * barsI[i]) / LD[i] ) * 100;
+				ki[3][3] = ( (barsG[i] * barsJ[i]) / LD[i] ) * 100;
 			break;
 			//Marco plano
 			case '4':
@@ -2859,12 +2771,12 @@ function calculatekdFromki() {
 function calculateK() {
 	mAux = math.multiply(At, kd);
 	K = math.multiply(mAux, A);
+	roundMatrix(K);
 	Kt = math.transpose(K);
 }
 
 function getBarPuntualForces() {
 	var selectF = $('#bars-punctual-forces-table-container table select');
-
 	var inputPPx = $('#bars-punctual-forces-table-container table input.ppx');
 	var inputPPy = $('#bars-punctual-forces-table-container table input.ppy');
 	var inputPPz = $('#bars-punctual-forces-table-container table input.ppz');
@@ -2972,12 +2884,9 @@ function getBarPuntualForces() {
 
 function getBarDistributedForces() {
 	var selectF = $('#bars-distributed-forces-table-container table select');
-
 	var inputWx = $('#bars-distributed-forces-table-container table input.wx');
 	var inputWy = $('#bars-distributed-forces-table-container table input.wy');
 	var inputWz = $('#bars-distributed-forces-table-container table input.wz');
-
-	var calculationType = $calculationType.val();
 
 	//Obtiene los nodos que tienen fuerzas aplicadas
 	var size = selectF.length;
@@ -3007,26 +2916,20 @@ function getBarDistributedForces() {
 function getNodesForces() {
 
 	var nodesForces = [];
-
 	var fX = [];
 	var fY = [];
 	var fZ = [];
-
 	var mX = [];
 	var mY = [];
 	var mZ = [];
 
 	var selectF = $('#nodes-forces-table-container table select');
-
 	var inputFx = $('#nodes-forces-table-container table input.fx');
 	var inputFy = $('#nodes-forces-table-container table input.fy');
 	var inputFz = $('#nodes-forces-table-container table input.fz');
-
 	var inputMx = $('#nodes-forces-table-container table input.mx');
 	var inputMy = $('#nodes-forces-table-container table input.my');
 	var inputMz = $('#nodes-forces-table-container table input.mz');
-
-	var calculationType = $calculationType.val();
 
 	//Obtiene los nodos que tienen fuerzas aplicadas
 	var size = selectF.length;
@@ -3122,16 +3025,17 @@ function getNodesForces() {
 						F.push(fy);
 						F.push(fz);
 					break;
+					//Retícula
 					case '3':
-						valfz = (fZ[indexF] === '') ? 0 : fZ[indexF];
 						valmx = (mX[indexF] === '') ? 0 : mX[indexF];
 						valmy = (mY[indexF] === '') ? 0 : mY[indexF];
-						fz = [valfz];
+						valfz = (fZ[indexF] === '') ? 0 : fZ[indexF];
 						mx = [valmx];
 						my = [valmy];
-						F.push(fz);
+						fz = [valfz];
 						F.push(mx);
 						F.push(my);
+						F.push(fz);
 					break;
 					//Marco plano
 					case '4':
@@ -3201,24 +3105,26 @@ function calculateF() {
 }
 
 function calculateF2() {
-	var calculationType = $calculationType.val();
 	var bars = parseInt($numberOfBars.val());
 
 	F2 = [];
 	for (var i = 0; i < bars; i++) {
 		posIniP = i * 4;
+		//Retícula
 		if (calculationType === '3') {
 			f2 = [P[posIniP + 3][0]];
 			F2.push(f2);
 			f2 = [P[posIniP][0] + P[posIniP + 1][0]];
 			F2.push(f2);
 			f2 = [-(P[posIniP][0] + (2 * P[posIniP + 1][0]) + P[posIniP + 2][0]) / L[i]];
+			f2 = [round(f2 * 100, 3)];
 			F2.push(f2);
 			f2 = [P[posIniP + 3][0]];
 			F2.push(f2);
 			f2 = [P[posIniP + 1][0] + P[posIniP + 2][0]];
 			F2.push(f2);
 			f2 = [(P[posIniP][0] + (2 * P[posIniP + 1][0]) + P[posIniP + 2][0]) / L[i]];
+			f2 = [round(f2 * 100, 3)];
 			F2.push(f2);
 		}
 		//Marco plano
@@ -3259,7 +3165,7 @@ function calculateP() {
 	P = math.multiply(kd, e);
 }
 
-function calculateP11() {
+function calculateP1ForBarsDefects() {
 	P1 = [];
 	size = $numberOfBars.val();
 	for (i = 1; i <= size; i++) {
@@ -3272,7 +3178,7 @@ function calculateP11() {
 	}
 }
 
-function calculateP12() {
+function calculateP1ForThermalEffects() {
 
 	P1 = [];
 	var size = areas.length;
@@ -3289,7 +3195,7 @@ function calculateP12() {
 /**
 * Calcula P1 para asentamientos estructurales
 */
-function calculateP13() {
+function calculateP1ForSettlements() {
 
 	//Forma el vector columna e con ceros
 	var numberOfBars = parseInt($numberOfBars.val());
@@ -3387,6 +3293,13 @@ function negative(m) {
 	}
 
 	return m;
+}
+
+function roundMatrix(matrix) {
+	for (var i = 0; i < matrix.length; i++) {
+		for (var j = 0; j < matrix[i].length; j++)
+			matrix[i][j] = round(matrix[i][j], 3); 
+	}
 }
 
 function round(number, decimals) {
