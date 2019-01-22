@@ -1130,8 +1130,8 @@ function calculateNodesForcesForReticula() {
 					//Para emp
 					emp.fZ += jBar.pPz + (jBar.wZ * jL);
 					emp.mX += jBar.pMx;
-					emp.mX += jBar.pPz * jD * (-1 * Math.sen(alpha)) * sign1; 
-					emp.mX += ((jBar.wZ * jL * jL) / 2) * (-1 * Math.sen(alpha)) * sign2; 
+					emp.mX += jBar.pPz * jD * (-1 * Math.sin(alpha)) * sign1; 
+					emp.mX += ((jBar.wZ * jL * jL) / 2) * (-1 * Math.sin(alpha)) * sign2; 
 					emp.mY += jBar.pMy;
 					emp.mY += jBar.pPz * jD * (1 * Math.cos(alpha)) * sign1; 
 					emp.mY += ((jBar.wZ * jL * jL) / 2) * (1 * Math.cos(alpha)) * sign2; 
@@ -1225,8 +1225,8 @@ function calculateNodesForcesForReticula() {
 					nodeA.fZ += jBar.wZ * jL / 2;
 
 					nodeA.mX += jBar.pMx / 2;
-					nodeA.mX += ((jBar.pPz * jD * jDc * jDc) / (Math.pow(jL, 2))) * (-1 * Math.sen(alpha)) * nodeASign; 
-					nodeA.mX += (jBar.wZ * jL * jL) / 12 * (-1 * Math.sen(alpha)) * nodeASign; 
+					nodeA.mX += ((jBar.pPz * jD * jDc * jDc) / (Math.pow(jL, 2))) * (-1 * Math.sin(alpha)) * nodeASign; 
+					nodeA.mX += (jBar.wZ * jL * jL) / 12 * (-1 * Math.sin(alpha)) * nodeASign; 
 
 					nodeA.mY += jBar.pMy / 2;
 					nodeA.mY += ((jBar.pPz * jD * jDc * jDc) / (Math.pow(jL, 2))) * (1 * Math.cos(alpha)) * nodeASign; 
@@ -1237,8 +1237,8 @@ function calculateNodesForcesForReticula() {
 					nodeA.fZ += jBar.wZ *jL / 2;
 
 					nodeA.mX += jBar.pMx / 2;
-					nodeA.mX += ((jBar.pPz * jD * jD * jDc) / (Math.pow(jL, 2))) * (-1 * Math.sen(alpha)) * nodeBSign; 
-					nodeA.mX += (jBar.wZ * jL * jL) / 12 * (-1 * Math.sen(alpha)) * nodeBSign; 
+					nodeA.mX += ((jBar.pPz * jD * jD * jDc) / (Math.pow(jL, 2))) * (-1 * Math.sin(alpha)) * nodeBSign; 
+					nodeA.mX += (jBar.wZ * jL * jL) / 12 * (-1 * Math.sin(alpha)) * nodeBSign; 
 
 					nodeA.mY += jBar.pMy / 2;
 					nodeA.mY += ((jBar.pPz * jD * jD * jDc) / (Math.pow(jL, 2))) * (1 * Math.cos(alpha)) * nodeBSign; 
@@ -1357,8 +1357,8 @@ function calculateNodesForcesForReticula() {
 					nodeA.fZ += jBar.wZ * jL / 2;
 
 					nodeA.mX += jBar.pMx / 2;
-					nodeA.mX += ((jBar.pPz * jD * jDc * jDc) / (Math.pow(jL, 2))) * (-1 * Math.sen(alpha)) * nodeASign; 
-					nodeA.mX += (jBar.wZ * jL * jL) / 12 * (-1 * Math.sen(alpha)) * nodeASign; 
+					nodeA.mX += ((jBar.pPz * jD * jDc * jDc) / (Math.pow(jL, 2))) * (-1 * Math.sin(alpha)) * nodeASign; 
+					nodeA.mX += (jBar.wZ * jL * jL) / 12 * (-1 * Math.sin(alpha)) * nodeASign; 
 
 					nodeA.mY += jBar.pMy / 2;
 					nodeA.mY += ((jBar.pPz * jD * jDc * jDc) / (Math.pow(jL, 2))) * (1 * Math.cos(alpha)) * nodeASign; 
@@ -1369,8 +1369,8 @@ function calculateNodesForcesForReticula() {
 					nodeA.fZ += jBar.wZ *jL / 2;
 
 					nodeA.mX += jBar.pMx / 2;
-					nodeA.mX += ((jBar.pPz * jD * jD * jDc) / (Math.pow(jL, 2))) * (-1 * Math.sen(alpha)) * nodeBSign; 
-					nodeA.mX += (jBar.wZ * jL * jL) / 12 * (-1 * Math.sen(alpha)) * nodeBSign; 
+					nodeA.mX += ((jBar.pPz * jD * jD * jDc) / (Math.pow(jL, 2))) * (-1 * Math.sin(alpha)) * nodeBSign; 
+					nodeA.mX += (jBar.wZ * jL * jL) / 12 * (-1 * Math.sin(alpha)) * nodeBSign; 
 
 					nodeA.mY += jBar.pMy / 2;
 					nodeA.mY += ((jBar.pPz * jD * jD * jDc) / (Math.pow(jL, 2))) * (1 * Math.cos(alpha)) * nodeBSign; 
