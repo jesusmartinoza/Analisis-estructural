@@ -1077,6 +1077,32 @@ function calculateNodesForcesForReticula() {
 		var jDeltaY = jBar.deltaY;
 		var jL = jBar.calculateL;
 
+		//Se obtiene el valor de beta en grados
+		if (jDeltaY > 0) {
+			if (jDeltaX > 0)
+				beta = radiansToDegrees(Math.atan(jDeltaY / jDeltaX));
+			else if (jDeltaX == 0)
+				beta = 90;
+			else if (jDeltaX < 0)
+				beta = 180 + radiansToDegrees(Math.atan(jDeltaY / jDeltaX));
+		}
+		else if (jDeltaY < 0) {
+			if (jDeltaX > 0)
+				beta = 360 + radiansToDegrees(Math.atan(jDeltaY / jDeltaX));
+			else if (jDeltaX == 0)
+				beta = 270;
+			else if (jDeltaX < 0)
+				beta = 180 + radiansToDegrees(Math.atan(jDeltaY / jDeltaX));
+		}
+		else if (jDeltaY == 0) {
+			if (jDeltaX > 0)
+				beta = 0;
+			else if (jDeltaX < 0)
+				beta = 180;
+		}
+		beta = degreesToRadians(beta);
+
+
 		//I. Si ningún nodo es apoyo
 		if (!jBar.startNode.isSupport && !jBar.endNode.isSupport) {
 
@@ -1096,46 +1122,33 @@ function calculateNodesForcesForReticula() {
 
 				//A
 				if (jDeltaX != 0 && jDeltaY == 0) {
-				  	//Si la coordenada x del nodo empotrado es menor que la del nodo libre, wY y pPy no se alteran, si no, se multiplican por -1
-				  	var sign = (emp.x < lib.x) ? 1 : -1;
-					//Para emp
-					emp.fZ += jBar.pPz + (jBar.wZ * jL);
+				  	var nodeASign = (emp.x < lib.x) ? -1 : 1;
+					emp.fZ += jBar.pPz+(jBar.wZ*jL);
 					emp.mX += jBar.pMx;
 					emp.mY += jBar.pMy;
-					emp.mY += jBar.pPz * jD * sign; 
-					emp.mY += ((jBar.wZ * jL * jL) / 2) * sign; 
-					//Para el nodo libre los valores son cero
+					emp.mY += jBar.pPz*jD*nodeASign;
+					emp.mY += (jBar.wZ*jL*jL)/2*nodeASign;
 				}
 
 				//B
 				else if (jDeltaX == 0 && jDeltaY != 0) {
-					//Si la coordenada y del nodo empotrado es mayor que la del nodo libre, wX y pPx no se alteran, si no, se multiplican por -1
-					var sign = (emp.y > lib.y) ? 1 : -1;
-					//Para emp
-					emp.fZ += jBar.pPz + (jBar.wZ * jL);
+					var nodeASign = (emp.y < lib.y) ? 1 : -1;
+					emp.fZ += jBar.pPz+(jBar.wZ*jL);
 					emp.mX += jBar.pMx;
-					emp.mX += jBar.pPz * jD * sign; 
-					emp.mX += ((jBar.wZ * jL * jL) / 2) * sign; 
+					emp.mX += jBar.pPz*jD*nodeASign;
+					emp.mX += (jBar.wZ*jL*jL)/2*nodeASign;
 					emp.mY += jBar.pMy;
-				  	//Para el nodo libre los valores son cero
 				}
 
 				//C
 				else {
-					var alpha = Math.abs(Math.atan(jDeltaX / jDeltaY));
-					//Si la coordenada x del nodo empotrado es menor que la del nodo libre, wY y pPy no se alteran, si no, se multiplican por -1
-					var sign1 = (emp.x < lib.x) ? 1 : -1;
-					//Si la coordenada y del nodo empotrado es mayor que la del nodo libre, wX y pPx no se alteran, si no, se multiplican por -1
-					var sign2 = (emp.y > lib.y) ? 1 : -1;
-					//Para emp
-					emp.fZ += jBar.pPz + (jBar.wZ * jL);
+					emp.fZ += jBar.pPz+(jBar.wZ*jL);
 					emp.mX += jBar.pMx;
-					emp.mX += jBar.pPz * jD * (-1 * Math.sin(alpha)) * sign1; 
-					emp.mX += ((jBar.wZ * jL * jL) / 2) * (-1 * Math.sin(alpha)) * sign2; 
+					emp.mX += jBar.pPz*jD*(1*Math.sin(beta));
+					emp.mX += jBar.wZ*jL*jL/2*(1*Math.sin(beta));
 					emp.mY += jBar.pMy;
-					emp.mY += jBar.pPz * jD * (1 * Math.cos(alpha)) * sign1; 
-					emp.mY += ((jBar.wZ * jL * jL) / 2) * (1 * Math.cos(alpha)) * sign2; 
-				  	//Para el nodo libre los valores son cero
+					emp.mY += jBar.pPz*jD*(-1*Math.cos(beta));
+					emp.mY += jBar.wZ*jL*jL/2*(-1*Math.cos(beta));
 				}
 			}
 
@@ -1159,90 +1172,79 @@ function calculateNodesForcesForReticula() {
 				//A
 				if (jDeltaX != 0 && jDeltaY == 0) {
 
-					//Si delta x es positivo, las fórmulas con * se multiplican por -1 para el nodo final
-					var nodeBSign = jDeltaX > 0 ? -1 : 1;
-					//Si delta x es negativo, las fórmulas con * se multiplican por -1 para el nodo inicial
-					var nodeASign = jDeltaX < 0 ? -1 : 1;
+					//Si delta x es positivo, las fórmulas con * se multiplican por -1 para el nodo inicial
+					var nodeASign = jDeltaX > 0 ? -1 : 1;
+					//Si delta x es negativo, las fórmulas con * se multiplican por -1 para el nodo final
+					var nodeBSign = jDeltaX < 0 ? -1 : 1;
+
 					var aux = 0;
 
-					//Nodo A
-					nodeA.fZ += ((jBar.pPz * jDc * jDc) / (Math.pow(jL,3))) * ((jL + 2) * jD);
-					nodeA.fZ += jBar.wZ * (jL / 2);
+					// Nodo A
+					nodeA.fZ+=((jBar.pPz*jDc*jDc)/(Math.pow(jL,3)))*(jL+2*jD);
+					nodeA.fZ+=jBar.wZ*jL/2;
+					nodeA.mX+=jBar.pMx/2;
+					nodeA.mY+=jBar.pMy/2;
+					nodeA.mY+=((jBar.pPz*jD*jDc*jDc)/(Math.pow(jL,2))) * nodeASign;
+					nodeA.mY+=(jBar.wZ*jL*jL)/12 * nodeASign;
 
-					nodeA.mX += jBar.pMx / 2;
-
-					nodeA.mY += jBar.pMy / 2;
-					nodeA.mY += (((jBar.pPz * jD * jDc * jDc) / (Math.pow(jL,2)))) * nodeASign; 
-					nodeA.mY += ((jBar.wZ * jL * jL) / 12) * nodeASign; 
-
-					//Nodo B
-					nodeB.fZ += (((jBar.pPz * jD * jD) / (Math.pow(jL,3))) * ((jL + 2) * jDc)) * nodeBSign;
-					nodeB.fZ += (jBar.wZ * jL) / 2;
-
-					nodeB.mX += jBar.pMx / 2;
-
-					nodeB.mY += jBar.pMy / 2;
-					nodeB.mY += (((jBar.pPz * jD * jD * jDc) / (Math.pow(jL,2)))) * nodeBSign; 
-					nodeB.mY += ((jBar.wZ * jL * jL) / 12) * nodeBSign; 
+					// Nodo B
+					nodeB.fZ+=((jBar.pPz*jD*jD)/(Math.pow(jL,3)))*(jL+2*jDc);
+					nodeB.fZ+=jBar.wZ*jL/2;
+					nodeB.mX+=jBar.pMx/2;
+					nodeB.mY+=jBar.pMy/2;
+					nodeB.mY+=((jBar.pPz*jD*jD*jDc)/(Math.pow(jL,2))) * nodeBSign;
+					nodeB.mY+=(jBar.wZ*jL*jL)/12 * nodeBSign; 
 				}
 
 				//B
 				else if (jDeltaX == 0 && jDeltaY != 0) {
 
 					//Si delta y es positivo, las fórmulas con * se multiplican por -1 para el nodo inicial
-					var nodeASign = jDeltaY > 0 ? -1 : 1;
+					var nodeASign = jDeltaY > 0 ? 1 : -1;
 					//Si delta y es negativo, las fórmulas con * se multiplican por -1 para el nodo final
-					var nodeBSign = jDeltaX < 0 ? -1 : 1;
+					var nodeBSign = jDeltaY < 0 ? 1 : -1;
 
 					//Nodo A
-					nodeA.fZ += ((jBar.pPz * jDc * jDc) / (Math.pow(jL, 3))) * ((jL + 2) * jD);
-					nodeA.fZ += jBar.wZ * jL /2;
-					nodeA.mX += jBar.pMx / 2;
-					nodeA.mX += ((jBar.pPz * jD * jDc * jDc) / (Math.pow(jL,2))) * nodeASign; 
-					nodeA.mX += (jBar.wZ * jL * jL) / 12 * nodeASign; 
-					nodeA.mY += jBar.pMy / 2;
+					nodeA.fZ+=((jBar.pPz*jDc*jDc)/(Math.pow(jL,3)))*(jL+2*jD);
+					nodeA.fZ+=jBar.wZ*jL/2;
+					nodeA.mX+=jBar.pMx/2;
+					nodeA.mX+=((jBar.pPz*jD*jDc*jDc)/(Math.pow(jL,2))) * nodeASign;
+					nodeA.mX+=(jBar.wZ*jL*jL)/12 * nodeASign;
+					nodeA.mY+=jBar.pMy/2;
 
 					//Nodo B
-					nodeB.fZ += ((jBar.pPz * jD * jD) / (Math.pow(jL, 3))) * (jL + 2 * jDc);
-					nodeB.fZ += jBar.wZ * jL /2;
-					nodeB.mX += jBar.pMx / 2;
-					nodeB.mX += ((jBar.pPz * jD * jD * jDc) / (Math.pow(jL, 2))) * nodeBSign; 
-					nodeB.mX += (jBar.wZ * jL * jL) / 12 * nodeBSign; 
-					nodeB.mY += jBar.pMy / 2;
+					nodeB.fZ+=((jBar.pPz*jD*jD)/(Math.pow(jL,3)))*(jL+2*jDc);
+					nodeB.fZ+=jBar.wZ*jL/2;
+					nodeB.mX+=jBar.pMx/2;
+					nodeB.mX+=((jBar.pPz*jD*jD*jDc)/(Math.pow(jL,2))) * nodeBSign;
+					nodeB.mX+=(jBar.wZ*jL*jL)/12 * nodeBSign;
+					nodeB.mY+=jBar.pMy/2;
 				}
 
 				//C
 				else {
-					var alpha = Math.abs(Math.atan(jDeltaX / jDeltaY));
-					
-					//Si delta x es positivo, las fórmulas con * se multiplican por -1 para el nodo final, si no se multiplican por -1 para el nodo inicial
-					var nodeASign = jDeltaX < 0 && jDeltaY > 0 ? 1 : -1;
-					//Si delta y es positivo, las fórmulas con * se multiplican por -1 para el nodo inicial, si no se multiplican por -1 para el nodo final
-					var nodeBSign = jDeltaX > 0 && jDeltaY < 0 ? 1 : -1;
+					//El nodo final se multiplican por -1 para corregir las direcciones de las reacciones
+					nodeSign = -1;
+			
+					// Nodo A
+					nodeA.fZ+=((jBar.pPz*jDc*jDc)/(Math.pow(jL,3)))*(jL+2*jD);
+					nodeA.fZ+=jBar.wZ*jL/2;
+					nodeA.mX+=jBar.pMx/2;
+					nodeA.mX+=((jBar.pPz*jD*jDc*jDc)/(Math.pow(jL,2)))*(1*Math.sin(beta));
+					nodeA.mX+=(jBar.wZ*jL*jL)/12*(1*Math.sin(beta));
+					nodeA.mY+=jBar.pMy/2;
+					nodeA.mY+=((jBar.pPz*jD*jDc*jDc)/(Math.pow(jL,2)))*( -1*Math.cos(beta));
+					nodeA.mY+=(jBar.wZ*jL*jL)/12*(-1*Math.cos(beta));
 
-					//Nodo A
-					nodeA.fZ += ((jBar.pPz * jDc * jDc) / (Math.pow(jL, 3))) * (jL + 2 * jD);
-					nodeA.fZ += jBar.wZ * jL / 2;
-
-					nodeA.mX += jBar.pMx / 2;
-					nodeA.mX += ((jBar.pPz * jD * jDc * jDc) / (Math.pow(jL, 2))) * (-1 * Math.sin(alpha)) * nodeASign; 
-					nodeA.mX += (jBar.wZ * jL * jL) / 12 * (-1 * Math.sin(alpha)) * nodeASign; 
-
-					nodeA.mY += jBar.pMy / 2;
-					nodeA.mY += ((jBar.pPz * jD * jDc * jDc) / (Math.pow(jL, 2))) * (1 * Math.cos(alpha)) * nodeASign; 
-					nodeA.mY += (jBar.wZ * jL * jL) / 12 * (1 * Math.cos(alpha)) * nodeASign; 
-
-					//Nodo B
-					nodeA.fZ += ((jBar.pPz * jD * jD) / (Math.pow(jL, 3))) * (jL + 2 * jDc);
-					nodeA.fZ += jBar.wZ *jL / 2;
-
-					nodeA.mX += jBar.pMx / 2;
-					nodeA.mX += ((jBar.pPz * jD * jD * jDc) / (Math.pow(jL, 2))) * (-1 * Math.sin(alpha)) * nodeBSign; 
-					nodeA.mX += (jBar.wZ * jL * jL) / 12 * (-1 * Math.sin(alpha)) * nodeBSign; 
-
-					nodeA.mY += jBar.pMy / 2;
-					nodeA.mY += ((jBar.pPz * jD * jD * jDc) / (Math.pow(jL, 2))) * (1 * Math.cos(alpha)) * nodeBSign; 
-					nodeA.mY += (jBar.wZ * jL * jL) / 12 * (1 * Math.cos(alpha)) * nodeBSign; 
+					// Nodo B
+					nodeB.fZ+=((jBar.pPz*jD*jD)/(Math.pow(jL,3)))*(jL+2*jDc);
+					nodeB.fZ+=jBar.wZ*jL/2;
+					nodeB.mX+=jBar.pMx/2;
+					nodeB.mX+=((jBar.pPz*jD*jD*jDc)/(Math.pow(jL,2)))*(1*Math.sin(beta)) * nodeSign;
+					nodeB.mX+=(jBar.wZ*jL*jL)/12*(1*Math.sin(beta)) * nodeSign;
+					nodeB.mY+=jBar.pMy/2;
+					nodeB.mY+=((jBar.pPz*jD*jD*jDc)/(Math.pow(jL,2)))*( -1*Math.cos(beta)) * nodeSign;
+					nodeB.mY+=(jBar.wZ*jL*jL)/12*(-1*Math.cos(beta)) * nodeSign;
 				}
 
 			}
@@ -1291,90 +1293,79 @@ function calculateNodesForcesForReticula() {
 				//A
 				if (jDeltaX != 0 && jDeltaY == 0) {
 
-					//Si delta x es positivo, las fórmulas con * se multiplican por -1 para el nodo final
-					var nodeBSign = jDeltaX > 0 ? -1 : 1;
-					//Si delta x es negativo, las fórmulas con * se multiplican por -1 para el nodo inicial
-					var nodeASign = jDeltaX < 0 ? -1 : 1;
+					//Si delta x es positivo, las fórmulas con * se multiplican por -1 para el nodo inicial
+					var nodeASign = jDeltaX > 0 ? -1 : 1;
+					//Si delta x es negativo, las fórmulas con * se multiplican por -1 para el nodo final
+					var nodeBSign = jDeltaX < 0 ? -1 : 1;
+
 					var aux = 0;
 
-					//Nodo A
-					nodeA.fZ += ((jBar.pPz * jDc * jDc) / (Math.pow(jL,3))) * ((jL + 2) * jD);
-					nodeA.fZ += jBar.wZ * (jL / 2);
+					// Nodo A
+					nodeA.fZ+=((jBar.pPz*jDc*jDc)/(Math.pow(jL,3)))*(jL+2*jD);
+					nodeA.fZ+=jBar.wZ*jL/2;
+					nodeA.mX+=jBar.pMx/2;
+					nodeA.mY+=jBar.pMy/2;
+					nodeA.mY+=((jBar.pPz*jD*jDc*jDc)/(Math.pow(jL,2))) * nodeASign;
+					nodeA.mY+=(jBar.wZ*jL*jL)/12 * nodeASign;
 
-					nodeA.mX += jBar.pMx / 2;
-
-					nodeA.mY += jBar.pMy / 2;
-					nodeA.mY += (((jBar.pPz * jD * jDc * jDc) / (Math.pow(jL,2)))) * nodeASign; 
-					nodeA.mY += ((jBar.wZ * jL * jL) / 12) * nodeASign; 
-
-					//Nodo B
-					nodeB.fZ += (((jBar.pPz * jD * jD) / (Math.pow(jL,3))) * ((jL + 2) * jDc)) * nodeBSign;
-					nodeB.fZ += (jBar.wZ * jL) / 2;
-
-					nodeB.mX += jBar.pMx / 2;
-
-					nodeB.mY += jBar.pMy / 2;
-					nodeB.mY += (((jBar.pPz * jD * jD * jDc) / (Math.pow(jL,2)))) * nodeBSign; 
-					nodeB.mY += ((jBar.wZ * jL * jL) / 12) * nodeBSign; 
+					// Nodo B
+					nodeB.fZ+=((jBar.pPz*jD*jD)/(Math.pow(jL,3)))*(jL+2*jDc);
+					nodeB.fZ+=jBar.wZ*jL/2;
+					nodeB.mX+=jBar.pMx/2;
+					nodeB.mY+=jBar.pMy/2;
+					nodeB.mY+=((jBar.pPz*jD*jD*jDc)/(Math.pow(jL,2))) * nodeBSign;
+					nodeB.mY+=(jBar.wZ*jL*jL)/12 * nodeBSign;
 				}
 
 				//B
 				else if (jDeltaX == 0 && jDeltaY != 0) {
 
 					//Si delta y es positivo, las fórmulas con * se multiplican por -1 para el nodo inicial
-					var nodeASign = jDeltaY > 0 ? -1 : 1;
+					var nodeASign = jDeltaY > 0 ? 1 : -1;
 					//Si delta y es negativo, las fórmulas con * se multiplican por -1 para el nodo final
-					var nodeBSign = jDeltaX < 0 ? -1 : 1;
+					var nodeBSign = jDeltaY < 0 ? 1 : -1;
 
 					//Nodo A
-					nodeA.fZ += ((jBar.pPz * jDc * jDc) / (Math.pow(jL, 3))) * ((jL + 2) * jD);
-					nodeA.fZ += jBar.wZ * jL /2;
-					nodeA.mX += jBar.pMx / 2;
-					nodeA.mX += ((jBar.pPz * jD * jDc * jDc) / (Math.pow(jL,2))) * nodeASign; 
-					nodeA.mX += (jBar.wZ * jL * jL) / 12 * nodeASign; 
-					nodeA.mY += jBar.pMy / 2;
+					nodeA.fZ+=((jBar.pPz*jDc*jDc)/(Math.pow(jL,3)))*(jL+2*jD);
+					nodeA.fZ+=jBar.wZ*jL/2;
+					nodeA.mX+=jBar.pMx/2;
+					nodeA.mX+=((jBar.pPz*jD*jDc*jDc)/(Math.pow(jL,2))) * nodeASign;
+					nodeA.mX+=(jBar.wZ*jL*jL)/12 * nodeASign;
+					nodeA.mY+=jBar.pMy/2;
 
 					//Nodo B
-					nodeB.fZ += ((jBar.pPz * jD * jD) / (Math.pow(jL, 3))) * (jL + 2 * jDc);
-					nodeB.fZ += jBar.wZ * jL /2;
-					nodeB.mX += jBar.pMx / 2;
-					nodeB.mX += ((jBar.pPz * jD * jD * jDc) / (Math.pow(jL, 2))) * nodeBSign; 
-					nodeB.mX += (jBar.wZ * jL * jL) / 12 * nodeBSign; 
-					nodeB.mY += jBar.pMy / 2;
+					nodeB.fZ+=((jBar.pPz*jD*jD)/(Math.pow(jL,3)))*(jL+2*jDc);
+					nodeB.fZ+=jBar.wZ*jL/2;
+					nodeB.mX+=jBar.pMx/2;
+					nodeB.mX+=((jBar.pPz*jD*jD*jDc)/(Math.pow(jL,2))) * nodeBSign;
+					nodeB.mX+=(jBar.wZ*jL*jL)/12 * nodeBSign;
+					nodeB.mY+=jBar.pMy/2;
 				}
 
 				//C
 				else {
-					var alpha = Math.abs(Math.atan(jDeltaX / jDeltaY));
-					
-					//Si delta x es positivo, las fórmulas con * se multiplican por -1 para el nodo final, si no se multiplican por -1 para el nodo inicial
-					var nodeASign = jDeltaX < 0 && jDeltaY > 0 ? 1 : -1;
-					//Si delta y es positivo, las fórmulas con * se multiplican por -1 para el nodo inicial, si no se multiplican por -1 para el nodo final
-					var nodeBSign = jDeltaX > 0 && jDeltaY < 0 ? 1 : -1;
+					//El nodo final se multiplican por -1 para corregir las direcciones de las reacciones
+					nodeSign = -1;
+			
+					// Nodo A
+					nodeA.fZ+=((jBar.pPz*jDc*jDc)/(Math.pow(jL,3)))*(jL+2*jD);
+					nodeA.fZ+=jBar.wZ*jL/2;
+					nodeA.mX+=jBar.pMx/2;
+					nodeA.mX+=((jBar.pPz*jD*jDc*jDc)/(Math.pow(jL,2)))*(1*Math.sin(beta));
+					nodeA.mX+=(jBar.wZ*jL*jL)/12*(1*Math.sin(beta));
+					nodeA.mY+=jBar.pMy/2;
+					nodeA.mY+=((jBar.pPz*jD*jDc*jDc)/(Math.pow(jL,2)))*( -1*Math.cos(beta));
+					nodeA.mY+=(jBar.wZ*jL*jL)/12*(-1*Math.cos(beta));
 
-					//Nodo A
-					nodeA.fZ += ((jBar.pPz * jDc * jDc) / (Math.pow(jL, 3))) * (jL + 2 * jD);
-					nodeA.fZ += jBar.wZ * jL / 2;
-
-					nodeA.mX += jBar.pMx / 2;
-					nodeA.mX += ((jBar.pPz * jD * jDc * jDc) / (Math.pow(jL, 2))) * (-1 * Math.sin(alpha)) * nodeASign; 
-					nodeA.mX += (jBar.wZ * jL * jL) / 12 * (-1 * Math.sin(alpha)) * nodeASign; 
-
-					nodeA.mY += jBar.pMy / 2;
-					nodeA.mY += ((jBar.pPz * jD * jDc * jDc) / (Math.pow(jL, 2))) * (1 * Math.cos(alpha)) * nodeASign; 
-					nodeA.mY += (jBar.wZ * jL * jL) / 12 * (1 * Math.cos(alpha)) * nodeASign; 
-
-					//Nodo B
-					nodeA.fZ += ((jBar.pPz * jD * jD) / (Math.pow(jL, 3))) * (jL + 2 * jDc);
-					nodeA.fZ += jBar.wZ *jL / 2;
-
-					nodeA.mX += jBar.pMx / 2;
-					nodeA.mX += ((jBar.pPz * jD * jD * jDc) / (Math.pow(jL, 2))) * (-1 * Math.sin(alpha)) * nodeBSign; 
-					nodeA.mX += (jBar.wZ * jL * jL) / 12 * (-1 * Math.sin(alpha)) * nodeBSign; 
-
-					nodeA.mY += jBar.pMy / 2;
-					nodeA.mY += ((jBar.pPz * jD * jD * jDc) / (Math.pow(jL, 2))) * (1 * Math.cos(alpha)) * nodeBSign; 
-					nodeA.mY += (jBar.wZ * jL * jL) / 12 * (1 * Math.cos(alpha)) * nodeBSign; 
+					// Nodo B
+					nodeB.fZ+=((jBar.pPz*jD*jD)/(Math.pow(jL,3)))*(jL+2*jDc);
+					nodeB.fZ+=jBar.wZ*jL/2;
+					nodeB.mX+=jBar.pMx/2;
+					nodeB.mX+=((jBar.pPz*jD*jD*jDc)/(Math.pow(jL,2)))*(1*Math.sin(beta)) * nodeSign;
+					nodeB.mX+=(jBar.wZ*jL*jL)/12*(1*Math.sin(beta)) * nodeSign;
+					nodeB.mY+=jBar.pMy/2;
+					nodeB.mY+=((jBar.pPz*jD*jD*jDc)/(Math.pow(jL,2)))*( -1*Math.cos(beta)) * nodeSign;
+					nodeB.mY+=(jBar.wZ*jL*jL)/12*(-1*Math.cos(beta)) * nodeSign; 
 				}
 
 				//El nodo A es el nodo inicial y el nodo B el final
