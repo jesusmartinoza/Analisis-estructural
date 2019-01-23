@@ -297,7 +297,7 @@ function calculateNodesForcesForMarcoPlano() {
 
 				//C
 				else {
-					var alpha = Math.abs(Math.atan(jDeltaX / jDeltaY));
+					var alpha = Math.atan(Math.abs(jDeltaY / jDeltaX));
 					var jDx = jD * Math.cos(alpha);
 					var jDy = jD * Math.sin(alpha);
 					var jLx = jL * Math.cos(alpha);
@@ -393,7 +393,7 @@ function calculateNodesForcesForMarcoPlano() {
 
 				//C
 				else {
-					var alpha = Math.abs(Math.atan(jDeltaX / jDeltaY));
+					var alpha = Math.atan(Math.abs(jDeltaY / jDeltaX));
 					var jDx = jD * Math.cos(alpha);
 					var jDy = jD * Math.sin(alpha);
 					var jLx = jL * Math.cos(alpha);
@@ -535,7 +535,7 @@ function calculateNodesForcesForMarcoPlano() {
 
 				//C
 				else {
-					var alpha = Math.abs(Math.atan(jDeltaX / jDeltaY));
+					var alpha = Math.atan(Math.abs(jDeltaY / jDeltaX));
 					var jDx = jD * Math.cos(alpha);
 					var jDy = jD * Math.sin(alpha);
 					var jLx = jL * Math.cos(alpha);
@@ -674,7 +674,7 @@ function calculateNodesForcesForMarcoPlano() {
 				//C
 				else {
 
-					var alpha = Math.abs(Math.atan(jDeltaX / jDeltaY));
+					var alpha = Math.atan(Math.abs(jDeltaY / jDeltaX));
 					var jDx = jD * Math.cos(alpha);
 					var jDy = jD * Math.sin(alpha);
 					var jLx = jL * Math.cos(alpha);
@@ -826,7 +826,7 @@ function calculateNodesForcesForMarcoPlano() {
 				//C
 				else {
 
-					var alpha = Math.abs(Math.atan(jDeltaX / jDeltaY));
+					var alpha = Math.atan(Math.abs(jDeltaY / jDeltaX));
 					var jDx = jD * Math.cos(alpha);
 					var jDy = jD * Math.sin(alpha);
 					var jLx = jL * Math.cos(alpha);
@@ -958,7 +958,7 @@ function calculateNodesForcesForMarcoPlano() {
 				//C
 				else {
 
-					var alpha = Math.abs(Math.atan(jDeltaX / jDeltaY));
+					var alpha = Math.atan(Math.abs(jDeltaY / jDeltaX));
 					var jDx = jD * Math.cos(alpha);
 					var jDy = jD * Math.sin(alpha);
 					var jLx = jL * Math.cos(alpha);
@@ -1417,7 +1417,7 @@ function calculate3dFrame() {
 
 					//C
 					else {
-						var alpha = Math.abs(Math.atan(jDeltaX / jDeltaY));
+						var alpha = Math.atan(Math.abs(jDeltaY / jDeltaX));
 						var jDx = jD * Math.cos(alpha);
 						var jDy = jD * Math.sin(alpha);
 						var jLx = jL * Math.cos(alpha);
@@ -1523,7 +1523,7 @@ function calculate3dFrame() {
 
 					//C
 					else {
-						var alpha = Math.abs(Math.atan(jDeltaX / jDeltaY));
+						var alpha = Math.atan(Math.abs(jDeltaY / jDeltaX));
 						var jDx = jD * Math.cos(alpha);
 						var jDy = jD * Math.sin(alpha);
 						var jLx = jL * Math.cos(alpha);
@@ -1672,7 +1672,7 @@ function calculate3dFrame() {
 
 					//C
 					else {
-						var alpha = Math.abs(Math.atan(jDeltaX / jDeltaY));
+						var alpha = Math.atan(Math.abs(jDeltaY / jDeltaX));
 						var jDx = jD * Math.cos(alpha);
 						var jDy = jD * Math.sin(alpha);
 						var jLx = jL * Math.cos(alpha);
@@ -1813,7 +1813,7 @@ function calculate3dFrame() {
 					//C
 					else {
 
-						var alpha = Math.abs(Math.atan(jDeltaX / jDeltaY));
+						var alpha = Math.atan(Math.abs(jDeltaY / jDeltaX));
 						var jDx = jD * Math.cos(alpha);
 						var jDy = jD * Math.sin(alpha);
 						var jLx = jL * Math.cos(alpha);
@@ -1966,7 +1966,7 @@ function calculate3dFrame() {
 					//C
 					else {
 
-						var alpha = Math.abs(Math.atan(jDeltaX / jDeltaY));
+						var alpha = Math.atan(Math.abs(jDeltaY / jDeltaX));
 						var jDx = jD * Math.cos(alpha);
 						var jDy = jD * Math.sin(alpha);
 						var jLx = jL * Math.cos(alpha);
@@ -2101,7 +2101,7 @@ function calculate3dFrame() {
 					//C
 					else {
 
-						var alpha = Math.abs(Math.atan(jDeltaX / jDeltaY));
+						var alpha = Math.atan(Math.abs(jDeltaY / jDeltaX));
 						var jDx = jD * Math.cos(alpha);
 						var jDy = jD * Math.sin(alpha);
 						var jLx = jL * Math.cos(alpha);
