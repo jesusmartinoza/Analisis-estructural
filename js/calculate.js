@@ -325,17 +325,9 @@ function calculateNodesForcesForMarcoPlano() {
 				//Se calcula D'
 				var jDc = jL - jD; 
 
-				var nodeA;
-				var nodeB;
-
-				if (jD <= jDc) {
-					nodeA = jBar.startNode;
-					nodeB = jBar.endNode;
-				} else {
-					nodeA = jBar.endNode;
-					nodeB = jBar.startNode;
-				}
-
+				var nodeA = jBar.startNode;
+				var	nodeB = jBar.endNode;
+				
 				//A
 				if (jDeltaX != 0 && jDeltaY == 0) {
 
@@ -473,16 +465,8 @@ function calculateNodesForcesForMarcoPlano() {
 			//1. Si el apoyo tiene restricciones en X, Y y Z se realiza el mismo procedimiento que en I.2
 			if (art.lX && art.lY && art.rZ) {
 
-				var nodeA;
-				var nodeB;
-
-				if (jD <= jDc) {
-					nodeA = (jBar.startNode.isSupport) ? copyInstance(jBar.startNode) : jBar.startNode;
-					nodeB = (jBar.endNode.isSupport) ? copyInstance(jBar.endNode) : jBar.endNode;
-				} else {
-					nodeA = (jBar.endNode.isSupport) ? copyInstance(jBar.endNode) : jBar.endNode;
-					nodeB = (jBar.startNode.isSupport) ? copyInstance(jBar.startNode) : jBar.startNode;
-				}
+				var nodeA = (jBar.startNode.isSupport) ? copyInstance(jBar.startNode) : jBar.startNode;
+				var nodeB = (jBar.endNode.isSupport) ? copyInstance(jBar.endNode) : jBar.endNode;
 
 				//A
 				if (jDeltaX != 0 && jDeltaY == 0) {
@@ -593,25 +577,14 @@ function calculateNodesForcesForMarcoPlano() {
 				}
 
 				//El nodo A es el nodo inicial y el nodo B el final
-				if (jD <= jDc) {
-					//Se guardan las fuerzas de la barra
-					jBar.fX1 = nodeA.fX;
-					jBar.fY1 = nodeA.fY;
-					jBar.mZ1 = nodeA.mZ;
-					jBar.fX2 = nodeB.fX;
-					jBar.fY2 = nodeB.fY;
-					jBar.mZ2 = nodeB.mZ;
-				}
-				//El nodo B es el nodo inicial y el nodo A el final
-				else {
-					//Se guardan las fuerzas de la barra
-					jBar.fX1 = nodeB.fX;
-					jBar.fY1 = nodeB.fY;
-					jBar.mZ1 = nodeB.mZ;
-					jBar.fX2 = nodeA.fX;
-					jBar.fY2 = nodeA.fY;
-					jBar.mZ2 = nodeA.mZ;
-				}
+				//Se guardan las fuerzas de la barra
+				jBar.fX1 = nodeA.fX;
+				jBar.fY1 = nodeA.fY;
+				jBar.mZ1 = nodeA.mZ;
+				jBar.fX2 = nodeB.fX;
+				jBar.fY2 = nodeB.fY;
+				jBar.mZ2 = nodeB.mZ;
+				
 			}
 
 			//2. Si el apoyo tiene restricciones en X y Y  
@@ -1157,17 +1130,8 @@ function calculateNodesForcesForReticula() {
 
 				//Se calcula D'
 				var jDc = jL - jD; 
-
-				var nodeA;
-				var nodeB;
-
-				if (jD <= jDc) {
-					nodeA = jBar.startNode;
-					nodeB = jBar.endNode;
-				} else {
-					nodeA = jBar.endNode;
-					nodeB = jBar.startNode;
-				}
+				var	nodeA = jBar.startNode;
+				var	nodeB = jBar.endNode;
 
 				//A
 				if (jDeltaX != 0 && jDeltaY == 0) {
@@ -1279,16 +1243,8 @@ function calculateNodesForcesForReticula() {
 			//1. Si el apoyo tiene restricciones en X, Y y Z se realiza el mismo procedimiento que en I.2
 			if (art.lX && art.lY && art.rZ) {
 
-				var nodeA;
-				var nodeB;
-
-				if (jD <= jDc) {
-					nodeA = jBar.startNode;
-					nodeB = jBar.endNode;
-				} else {
-					nodeA = jBar.endNode;
-					nodeB = jBar.startNode;
-				}
+				var nodeA = jBar.startNode;
+				var	nodeB = jBar.endNode;
 
 				//A
 				if (jDeltaX != 0 && jDeltaY == 0) {
@@ -1369,25 +1325,14 @@ function calculateNodesForcesForReticula() {
 				}
 
 				//El nodo A es el nodo inicial y el nodo B el final
-				if (jD <= jDc) {
-					//Se guardan las fuerzas de la barra
-					jBar.fX1 = nodeA.fX;
-					jBar.fY1 = nodeA.fY;
-					jBar.mZ1 = nodeA.mZ;
-					jBar.fX2 = nodeB.fX;
-					jBar.fY2 = nodeB.fY;
-					jBar.mZ2 = nodeB.mZ;
-				}
-				//El nodo B es el nodo inicial y el nodo A el final
-				else {
-					//Se guardan las fuerzas de la barra
-					jBar.fX1 = nodeB.fX;
-					jBar.fY1 = nodeB.fY;
-					jBar.mZ1 = nodeB.mZ;
-					jBar.fX2 = nodeA.fX;
-					jBar.fY2 = nodeA.fY;
-					jBar.mZ2 = nodeA.mZ;
-				}
+				//Se guardan las fuerzas de la barra
+				jBar.fX1 = nodeA.fX;
+				jBar.fY1 = nodeA.fY;
+				jBar.mZ1 = nodeA.mZ;
+				jBar.fX2 = nodeB.fX;
+				jBar.fY2 = nodeB.fY;
+				jBar.mZ2 = nodeB.mZ;
+				
 			}
 			else {
 				showErrorMessage($('#r-res-table-container'), 'Advertencia: Este programa sólo contempla apoyos totalmente empotrados para el cálculo de fuerzas intermedias en las barras.');
