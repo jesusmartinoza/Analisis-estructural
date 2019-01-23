@@ -234,11 +234,10 @@ function calculateF1() {
 }
 
 function calculateT(jBar) {
-
 	var T = []
-	var alpha = Math.abs(Math.atan(jBar.deltaX / jBar.deltaY));
-	T.push([Math.cos(alpha), Math.sin(alpha), 0]);
-	T.push([-Math.sin(alpha), Math.cos(alpha), 0]);
+	var beta = Math.atan(Math.abs(jBar.deltaY / jBar.deltaX));
+	T.push([Math.cos(beta), Math.sin(beta), 0]);
+	T.push([-Math.sin(beta), Math.cos(beta), 0]);
 	T.push([0, 0, 1]);
 	return T;
 }
