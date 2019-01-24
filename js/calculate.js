@@ -137,14 +137,14 @@ function calculate() {
 	}
 	//Retícula
 	else if (calculationType === '3') {
+		getNodesForces();
+  		getBarDistributedForces();
+		getBarPuntualForces();
   		calculatekdByBar();
   		calculatekdFromki();
   		calculateAByBar();
   		calculateAFromAi();
   		calculateK();
-  		getNodesForces();
-  		getBarDistributedForces();
-		getBarPuntualForces();
 		if (calculateNodesForcesForReticula()) {
 			updateF();
 			calculated();
@@ -159,14 +159,14 @@ function calculate() {
 	}
 	//Marco Plano
 	else if (calculationType === '4') {
+		getNodesForces();
+		getBarDistributedForces();
+		getBarPuntualForces();
 		calculatekdByBar();
 		calculatekdFromki();
 		calculateAByBar();
 		calculateAFromAi();
 		calculateK();
-		getNodesForces();
-		getBarDistributedForces();
-		getBarPuntualForces();
 		if (calculateNodesForcesForMarcoPlano()) {
 			updateF();
 			calculated();
@@ -181,11 +181,27 @@ function calculate() {
 	}
 	//Marco 3D
 	else if (calculationType === '5') {
-		/*
 		getNodesForces();
 		getBarDistributedForces();
 		getBarPuntualForces();
-		calculate3dFrame();
+		calculatekdByBar();
+		calculatekdFromki();
+
+		/*
+		calculateAByBar();
+		calculateAFromAi();
+		calculateK();
+		if (calculateNodesForcesForMarcoPlano()) {
+			updateF();
+			calculated();
+			calculatee();
+			calculateP();
+			calculateF2();
+			calculateF1();
+			calculateFSol();
+			//Resultado
+			createResMarcoPlanoTable();
+		}
 		*/
 	}
 }
@@ -2792,51 +2808,80 @@ function calculatekdByBar() {
 	//Para cada barra
 	for (var i = 0; i < size; i++) {
 		ki = [];
-		for (var j = 0; j < 4; j++) {
-			ki.push([0, 0, 0, 0]);
-		}
-
 		//Calcula la diagonal
 		switch (calculationType) {
 			//Retícula
 			case '3':
+				for (var j = 0; j < 4; j++) 
+					ki.push([0, 0, 0, 0]);
 				ki[0][0] = ( (2 * barsI[i]) / LD[i] ) * 100;
 				ki[1][1] = ( (2 * barsI[i]) / LD[i] ) * 100;
 				ki[2][2] = ( (2 * barsI[i]) / LD[i] ) * 100;
 				ki[3][3] = ( (barsG[i] * barsJ[i]) / LD[i] ) * 100;
+				ki[0][0] = round(ki[0][0], 3);
+				ki[1][1] = round(ki[1][1], 3);
+				ki[2][2] = round(ki[2][2], 3);
+				ki[3][3] = round(ki[3][3], 3);
 			break;
 			//Marco plano
 			case '4':
+				for (var j = 0; j < 4; j++) 
+					ki.push([0, 0, 0, 0]);
 				ki[0][0] = ( (2 * elasticity[i] * barsI[i]) / LD[i] ) * 100;
 				ki[1][1] = ( ((2 * elasticity[i] * barsI[i]) * (1 - (2 * barsC[i]))) / (LD[i] * (1 + (4 * barsC[i]))) ) * 100;
 				ki[2][2] = ( (2 * elasticity[i] * barsI[i]) / LD[i] ) * 100;
 				ki[3][3] = ( (elasticity[i] * areas[i]) / LD[i] ) * 100;
+				ki[0][0] = round(ki[0][0], 3);
+				ki[1][1] = round(ki[1][1], 3);
+				ki[2][2] = round(ki[2][2], 3);
+				ki[3][3] = round(ki[3][3], 3);
+			break;
+			//Marco 3D
+			case '5':
+				for (var j = 0; j < 8; j++) 
+					ki.push([0, 0, 0, 0, 0, 0, 0, 0]);
+				ki[0][0] = ( (2 * elasticity[i] * barsI[i]) / LD[i] ) * 100;
+				ki[1][1] = ( (2 * elasticity[i] * barsI[i]) / LD[i] ) * 100;
+				ki[2][2] = ( (2 * elasticity[i] * barsI[i]) / LD[i] ) * 100;
+				ki[3][3] = ( (2 * elasticity[i] * barsI[i]) / LD[i] ) * 100;
+				ki[4][4] = ( (2 * elasticity[i] * barsI[i]) / LD[i] ) * 100;
+				ki[5][5] = ( (2 * elasticity[i] * barsI[i]) / LD[i] ) * 100;
+				ki[6][6] = ( (areas[i] * elasticity[i]) / LD[i] ) * 100;
+				ki[7][7] = ( (barsG[i] * barsJ[i]) / LD[i] ) * 100;
+				ki[0][0] = round(ki[0][0], 3);
+				ki[1][1] = round(ki[1][1], 3);
+				ki[2][2] = round(ki[2][2], 3);
+				ki[3][3] = round(ki[3][3], 3);
+				ki[4][4] = round(ki[4][4], 3);
+				ki[5][5] = round(ki[5][5], 3);
+				ki[6][6] = round(ki[6][6], 3);
+				ki[7][7] = round(ki[7][7], 3);
 			break;
 		}
-		ki[0][0] = round(ki[0][0], 3);
-		ki[1][1] = round(ki[1][1], 3);
-		ki[2][2] = round(ki[2][2], 3);
-		ki[3][3] = round(ki[3][3], 3);
 		kArray.push(ki);
 	}
 }
 
 function calculatekdFromki() {
+	
 	var bars = parseInt($numberOfBars.val());
-	var size = bars * 4;
+	var sizeByBar = (calculationType === '5') ? 8 : 4;
+	var size = bars * sizeByBar;
+	
 	kd = [];
-	//Forma la matriz con ceros
+	//Forma la matriz cuadrada con ceros
 	for (var i = 0; i < size; i++) {
 		ki = [];
 		for (var j = 0; j < size; j++)
 			ki.push(0);
 		kd.push(ki);
 	}
+	
 	//Calcula la diagonal
 	var pos = 0;
 	for (i = 0; i < bars; i++) {
-		for (var j = 0; j < 4; j++) {
-			for (var l = 0; l < 4; l++) {
+		for (var j = 0; j < sizeByBar; j++) {
+			for (var l = 0; l < sizeByBar; l++) {
 				if (j === l) {
 					kd[pos][pos] = kArray[i][j][l];
 					pos++;
