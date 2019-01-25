@@ -186,6 +186,8 @@ function calculate() {
 		getBarPuntualForces();
 		calculatekdByBar();
 		calculatekdFromki();
+		calculateU();
+		calculateAByBarForMarco3D();
 
 		/*
 		calculateAByBar();
@@ -204,6 +206,141 @@ function calculate() {
 		}
 		*/
 	}
+}
+
+
+
+function calculateAByBarForMarco3D() {
+	var size = $numberOfBars.val();
+	a = [];
+	//Para cada barra
+	for (var i = 0; i < size; i++) {
+		//Forma una matriz de continuidad con ceros para la barra
+		ai = [];
+		for (var j = 0; j < 8; j++)
+			ai.push([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+
+		ai[0][0] = round((-jBars[i].uZx / L[i].calculateL3D) * 100, 3);
+		ai[0][1] = round((-jBars[i].uZy / L[i].calculateL3D) * 100, 3);
+		ai[0][2] = round((-jBars[i].uZz / L[i].calculateL3D) * 100, 3);
+		ai[0][3] = round(jBars.uYx, 3);
+		ai[0][4] = round(jBars.uYy, 3);
+		ai[0][5] = round(jBars.uYz, 3);
+		ai[0][6] = round((jBars[i].uZx / L[i].calculateL3D) * 100, 3);
+		ai[0][7] = round((jBars[i].uZy / L[i].calculateL3D) * 100, 3);
+		ai[0][8] = round((jBars[i].uZz / L[i].calculateL3D) * 100, 3);
+		ai[0][9] = 0;
+		ai[0][10] = 0;
+		ai[0][11] = 0;
+
+		ai[1][0] = round(((-2 * jBars[i].uZx) / L[i].calculateL3D) * 100, 3);
+		ai[1][1] = round(((-2 * jBars[i].uZy) / L[i].calculateL3D) * 100, 3);
+		ai[1][2] = round(((-2 * jBars[i].uZz) / L[i].calculateL3D) * 100, 3);
+		ai[1][3] = ai[0][3];
+		ai[1][4] = ai[0][4];
+		ai[1][5] = ai[0][5];
+		ai[1][6] = round(((2 * jBars[i].uZx) / L[i].calculateL3D) * 100, 3);
+		ai[1][7] = round(((2 * jBars[i].uZy) / L[i].calculateL3D) * 100, 3);
+		ai[1][8] = round(((2 * jBars[i].uZz) / L[i].calculateL3D) * 100, 3);
+		ai[1][9] = ai[0][3];
+		ai[1][10] = ai[0][4];
+		ai[1][11] = ai[0][5];
+
+		ai[2][0] = ai[0][0];
+		ai[2][1] = ai[0][1];
+		ai[2][2] = ai[0][2];
+		ai[2][3] = 0;
+		ai[2][4] = 0;
+		ai[2][5] = 0;
+		ai[2][6] = ai[0][6];
+		ai[2][7] = ai[0][7];
+		ai[2][8] = ai[0][8];
+		ai[2][9] = ai[0][3];
+		ai[2][10] = ai[0][4];
+		ai[2][11] = ai[0][5];
+
+		ai[3][0] = round((jBars[i].uYx / L[i].calculateL3D) * 100, 3);
+		ai[3][1] = round((jBars[i].uYy / L[i].calculateL3D) * 100, 3);
+		ai[3][2] = round((jBars[i].uYz / L[i].calculateL3D) * 100, 3);
+		ai[3][3] = round(jBars.uZx, 3);
+		ai[3][4] = round(jBars.uZy, 3);
+		ai[3][5] = round(jBars.uZz, 3);
+		ai[3][6] = round(((-jBars[i].uYx) / L[i].calculateL3D) * 100, 3);
+		ai[3][7] = round(((-jBars[i].uYy) / L[i].calculateL3D) * 100, 3);
+		ai[3][8] = round(((-jBars[i].uYz) / L[i].calculateL3D) * 100, 3);
+		ai[3][9] = 0;
+		ai[3][10] = 0;
+		ai[3][11] = 0;
+
+		ai[4][0] = round(((2 * jBars[i].uYx) / L[i].calculateL3D) * 100, 3);
+		ai[4][1] = round(((2 * jBars[i].uYy) / L[i].calculateL3D) * 100, 3);
+		ai[4][2] = round(((2 * jBars[i].uYz) / L[i].calculateL3D) * 100, 3);
+		ai[4][3] = ai[3][3];
+		ai[4][4] = ai[3][4];
+		ai[4][5] = ai[3][5];
+		ai[4][6] = round(((-2 * jBars[i].uYx) / L[i].calculateL3D) * 100, 3);
+		ai[4][7] = round(((-2 * jBars[i].uYy) / L[i].calculateL3D) * 100, 3);
+		ai[4][8] = round(((-2 * jBars[i].uYz) / L[i].calculateL3D) * 100, 3);
+		ai[4][9] = ai[3][3];
+		ai[4][10] = ai[3][4];
+		ai[4][11] = ai[3][5];
+
+		ai[5][0] = ai[3][0];
+		ai[5][1] = ai[3][1];
+		ai[5][2] = ai[3][2];
+		ai[5][3] = 0;
+		ai[5][4] = 0;
+		ai[5][5] = 0;
+		ai[5][6] = ai[3][6];
+		ai[5][7] = ai[3][7];
+		ai[5][8] = ai[3][8];
+		ai[5][9] = ai[3][3];
+		ai[5][10] = ai[3][4];
+		ai[5][11] = ai[3][5];
+
+		ai[6][0] = round(-jBars.uXx, 3);
+		ai[6][1] = round(-jBars.uXy, 3);
+		ai[6][2] = round(-jBars.uXz, 3);
+		ai[6][3] = 0; 
+		ai[6][4] = 0; 
+		ai[6][5] = 0; 
+		ai[6][6] = round(jBars.uXx, 3);
+		ai[6][7] = round(jBars.uXy, 3);
+		ai[6][8] = round(jBars.uXz, 3);
+		ai[6][9] = 0; 
+		ai[6][10] = 0; 
+		ai[6][11] = 0; 
+
+		ai[7][0] = 0; 
+		ai[7][1] = 0; 
+		ai[7][2] = 0; 
+		ai[7][3] = ai[6][0];
+		ai[7][4] = ai[6][1];
+		ai[7][5] = ai[6][2];
+		ai[7][6] = 0; 
+		ai[7][7] = 0; 
+		ai[7][8] = 0;
+		ai[7][9] = ai[6][6];
+		ai[7][10] = ai[6][7];
+		ai[7][11] = ai[6][8];
+
+		a.push(ai);
+	}
+}
+
+function calculateU() {
+    jBars.forEach(jBar => {
+        jBar.uXx = (jBar.deltaX / jBar.calculateL3D) * 100;
+        jBar.uXy = (jBar.deltaY / jBar.calculateL3D) * 100;
+        jBar.uXz = (jBar.deltaZ / jBar.calculateL3D) * 100;
+        var v = Math.sqrt(Math.pow(jBar.uXy, 2) + Math.pow(jBar.uXx, 2)); 
+        jBar.uYx = -jBar.uXy / v;
+        jBar.uYy = -jBar.uXx / v;
+        jBar.uYz = 0;
+        jBar.uZx = (jBar.uXy * jBar.uYz) - (jBar.uYy * jBar.uXz);
+        jBar.uZy = (jBar.uXz * jBar.uYx) - (jBar.uYz * jBar.uXx);
+        jBar.uZz = (jBar.uXx * jBar.uYy) - (jBar.uYx * jBar.uXy);
+    });
 }
 
 function updateF() {
