@@ -188,23 +188,19 @@ function calculate() {
 		calculatekdFromki();
 		calculateU();
 		calculateAByBarForMarco3D();
-
-		/*
-		calculateAByBar();
 		calculateAFromAi();
 		calculateK();
-		if (calculateNodesForcesForMarcoPlano()) {
+		//if (calculateNodesForcesForMarco3D()) {
 			updateF();
 			calculated();
 			calculatee();
 			calculateP();
-			calculateF2();
-			calculateF1();
+			//calculateF2();
+			//calculateF1();
 			calculateFSol();
 			//Resultado
-			createResMarcoPlanoTable();
+			//createResMarcoPlanoTable();
 		}
-		*/
 	}
 }
 
@@ -2720,10 +2716,17 @@ function calculateA() {
 
 function calculateAFromAi() {
 
-	var coordinates = 3;
+	//var coordinates = 3;
+	var coordinates = (calculationType === '5') ? 6 : 3;
+	
 	var bars = parseInt($numberOfBars.val());
+	
 	//El número de filas es igual al número de barras por cuatro
-	var rows = bars * 4;
+	//var rows = bars * 4;
+
+	var rowsByBar = (calculationType === '5') ? 8 : 4;
+	var rows = bars * rowsByBar;
+
 	//El número de columnas es igual al número de nodos por la cantidad de coordenadas (x, y, x)
 	var cols = parseInt($numberOfNodes.val()) * coordinates;
 	A = [];
@@ -2770,9 +2773,21 @@ function calculateAFromAi() {
 				ryNodeIni = restrictionsLy[indexNodeIni];
 				rzNodeIni = restrictionsRz[indexNodeIni];
 			}
+			//Marco 3D
+			else if (calculationType === '5') {
+				lrxNodeIni = restrictionsLx[indexNodeIni];
+				lryNodeIni = restrictionsLy[indexNodeIni];
+				lrzNodeIni = restrictionsLz[indexNodeIni];
+				rrxNodeIni = restrictionsRx[indexNodeIni];
+				rryNodeIni = restrictionsRy[indexNodeIni];
+				rrzNodeIni = restrictionsRz[indexNodeIni];
+			}
 		}
 		else {	//No es un apoyo
-			rxNodeIni = ryNodeIni = rzNodeIni = 0;
+			if (calculationType === '5')
+				lrxNodeIni = lryNodeIni = lrzNodeIni = rrxNodeIni = rryNodeIni = rrzNodeIni = 0;
+			else
+				rxNodeIni = ryNodeIni = rzNodeIni = 0;
 		}
 
 		//El nodo final es un apoyo
@@ -2789,27 +2804,43 @@ function calculateAFromAi() {
 				ryNodeFin = restrictionsLy[indexNodeFin];
 				rzNodeFin = restrictionsRz[indexNodeFin];
 			}
+			//Marco 3D
+			else if (calculationType === '5') {
+				lrxNodeFin = restrictionsLx[indexNodeFin];
+				lryNodeFin = restrictionsLy[indexNodeFin];
+				lrzNodeFin = restrictionsLz[indexNodeFin];
+				rrxNodeFin = restrictionsRx[indexNodeFin];
+				rryNodeFin = restrictionsRy[indexNodeFin];
+				rrzNodeFin = restrictionsRz[indexNodeFin];
+			}
 		}
 		else {	//No es un apoyo
-			rxNodeFin = ryNodeFin = rzNodeFin = 0;
+			
+			if (calculationType === '5')
+				lrxNodeFin = lryNodeFin = lrzNodeFin = rrxNodeFin = rryNodeFin = rrzNodeFin = 0;
+			else
+				rxNodeFin = ryNodeFin = rzNodeFin = 0;
 		}
 
 		//El nodo inicial no tiene alguna restricción
-		if (rxNodeIni === 0 || ryNodeIni === 0 || rzNodeIni === 0) {
-			rowIniA = i * 4;			//i es el índice de la barra y 4 porque son 4 filas por barra
-			colIniA = posIni * 3;		//posIni es el índice del nodo y 3 porque son 3 coordenadas
+		if ( (calculationType === '5' && (lrxNodeIni === 0 || lryNodeIni === 0 || lrzNodeIni === 0 || rrxNodeIni === 0 || rryNodeIni === 0 || rrzNodeIni === 0)) 
+			|| ((calculationType != '5' && (rxNodeIni === 0 || ryNodeIni === 0 || rzNodeIni === 0)) ) {
+			rowIniA = i * rowsByBar;			//i es el índice de la barra y rowsByBar el númeor de filas por barra
+			colIniA = posIni * coordinates;		//posIni es el índice del nodo y coordinates las coordenadas
 			rowIniAi = 0;				//En la matriz A de la barra siempre se toma desde la fila 0
 			colIniAi = 0;				//Para el nodo inicial se toma la primera parte de la matriz A de la barra
-			copyMatrixA(rowIniA, colIniA, rowIniAi, colIniAi, a[i]);
+			copyMatrixA(rowIniA, colIniA, rowIniAi, colIniAi, a[i], rowsByBar, coordinates);
 		}
 
 		//El nodo final no tiene alguna restricción
-		if (rxNodeFin === 0 || ryNodeFin === 0 || rzNodeFin === 0) {
-			rowIniA = i * 4;			//i es el índice de la barra y 4 porque son 4 filas por barra
-			colIniA = posFin * 3;		//posIni es el índice del nodo y 3 porque son 3 coordenadas
+		//if (rxNodeFin === 0 || ryNodeFin === 0 || rzNodeFin === 0) {
+		if ( (calculationType === '5' && (lrxNodeFin === 0 || lryNodeFin === 0 || lrzNodeFin === 0 || rrxNodeFin === 0 || rryNodeFin === 0 || rrzNodeFin === 0)) 
+			|| ((calculationType != '5' && (rxNodeFin === 0 || ryNodeFin === 0 || rzNodeFin === 0)) ) {
+			rowIniA = i * rowsByBar;			//i es el índice de la barra y rowsByBar el númeor de filas por barra
+			colIniA = posFin * coordinates;		//posIni es el índice del nodo y coordinates las coordenadas
 			rowIniAi = 0;				//En la matriz A de la barra siempre se toma desde la fila 0
-			colIniAi = 3;				//Para el nodo final se toma la segunda parte de la matriz A de la barra
-			copyMatrixA(rowIniA, colIniA, rowIniAi, colIniAi, a[i]);
+			colIniAi = coordinates;				//Para el nodo final se toma la segunda parte de la matriz A de la barra
+			copyMatrixA(rowIniA, colIniA, rowIniAi, colIniAi, a[i], rowsByBar, coordinates);
 		}
 	}
 
@@ -2836,11 +2867,10 @@ function calculateAFromAi() {
 	At = math.transpose(A);
 }
 
-function copyMatrixA(rowIniA, colIniA, rowIniAi, colIniAi, Ai) {
+function copyMatrixA(rowIniA, colIniA, rowIniAi, colIniAi, Ai, rows, cols) {
 
-	for (var i = 0; i < 4; i++) {		//4 filas por barra
-		for (var j = 0; j < 3; j++) {	//3 dx por nodo
-
+	for (var i = 0; i < rows; i++) {		//4 filas por barra
+		for (var j = 0; j < cols; j++) {	//3 dx por nodo
 			rowA = rowIniA + i;
 			colA = colIniA + j;
 			rowAi = rowIniAi + i;
