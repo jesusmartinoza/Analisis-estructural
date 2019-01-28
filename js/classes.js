@@ -72,9 +72,15 @@ class Bar {
         //Fuerzas en barras
         this.fX1 = 0;
         this.fY1 = 0;
+        this.fZ1 = 0;
+        this.mX1 = 0;
+        this.mY1 = 0;
         this.mZ1 = 0;
         this.fX2 = 0;
         this.fY2 = 0;
+        this.fZ2 = 0;
+        this.mX2 = 0;
+        this.mY2 = 0;
         this.mZ2 = 0;
 
         this.uXx = 0;

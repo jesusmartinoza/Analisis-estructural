@@ -151,6 +151,11 @@ function initCalculation(op) {
       addForcesContainer($('#m3d-paso-4'));
       addDistributedForcesContainer($('#m3d-paso-5'));
       addPunctualForcesContainer($('#m3d-paso-6'));
+      $('#m3d-paso-7').html(
+        '<div class="row">' +
+        '<div class="col-md-12" id="m3d-res-table-container"></div>' +
+        '</div>'
+      );
       $('#marco-3d').show();
       $('#marco-3d').smartWizard();
       setMarco3dEvents();
@@ -2030,6 +2035,62 @@ function createResMarcoPlanoTable() {
           '</table> ';
 
   $('#mp-res-table-container').html(html);
+}
+
+function createResMarco3DTable() {
+
+  var bars = parseInt($numberOfBars.val());
+
+/*
+  var html = '<table class="table table-bordered">' +
+            '<thead>' +
+
+            '<tr>' +
+            '<th scope="col"></th>' +
+            '<th scope="col" colspan="6" class="text-center">Tabla de Resultados</th>' +
+            '</tr>' +
+
+            '<tr>' +
+            '<th scope="col">Barra</th>' +
+            '<th scope="col">Fuerza Normal (N)</th>' +
+            '<th scope="col">Fuerza Cortante (V)</th>' +
+            '<th scope="col">Momento Flector (Mz)</th>' +
+            '<th scope="col">Fuerza Normal (N)</th>' +
+            '<th scope="col">Fuerza Cortante (V)</th>' +
+            '<th scope="col">Momento Flector (Mz)</th>' +
+            '</tr>' +
+
+            '</thead>' +
+            '<tbody>';
+
+  for (var i = 0; i < bars; i++) {
+
+    posIniFSol = i * 6;
+    number = i + 1;
+
+    html += '<tr>' +
+            '<th scope="row">' + number + '</th>' +
+            '<td>' + round(FSol[posIniFSol][0], 3) + '</td>' +
+            '<td>' + round(FSol[posIniFSol + 1][0], 3) + '</td>' +
+            '<td>' + round(FSol[posIniFSol + 2][0], 3) + '</td>' +
+            '<td>' + round(FSol[posIniFSol + 3][0], 3) + '</td>' +
+            '<td>' + round(FSol[posIniFSol + 4][0], 3) + '</td>' +
+            '<td>' + round(FSol[posIniFSol + 5][0], 3) + '</td>' +
+            '</tr>' +
+
+            '<tr>' +
+            '<th scope="row"></th>' +
+            '<td colspan="3">Nodo ' + barsIni[i] + '</td>' +
+            '<td colspan="3">Nodo ' + barsFin[i] + '</td>' +
+            '</tr>'
+            ;
+  }
+
+  html += '</tbody>' +
+          '</table> ';
+*/
+
+  $('#m3d-res-table-container').html(html);
 }
 
 function showErrorMessage(container, message) {

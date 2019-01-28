@@ -196,10 +196,10 @@ function calculate() {
 			calculatee();
 			calculateP();
 			calculateF2();
-			//calculateF1();
+			calculateF1();
 			calculateFSol();
 			//Resultado
-			//createResMarco3DTable();
+			createResMarco3DTable();
 		}
 	}
 }
@@ -364,22 +364,35 @@ function updateF() {
 }
 
 function calculateF1() {
-
 	F1 = [];
-
 	//Para cada barra se analiza el nodo inicial y el nodo final
 	jBars.forEach(jBar => {
-		var t = calculateT(jBar);
-		var f1 = math.multiply(t, [[jBar.fX1], [jBar.fY1], [jBar.mZ1]]);
-		var f2 = math.multiply(t, [[jBar.fX2], [jBar.fY2], [jBar.mZ2]]);
-		F1.push([f1[0][0]]);  
-		F1.push([f1[1][0]]);  
-		F1.push([f1[2][0]]);  
-		F1.push([f2[0][0]]);  
-		F1.push([f2[1][0]]);  
-		F1.push([f2[2][0]]);  
+		if (calculationType === '5') {
+			F1.push([jBar.fX1]);
+			F1.push([jBar.fY1]);
+			F1.push([jBar.fZ1]);
+			F1.push([jBar.mX1]);
+			F1.push([jBar.mY1]);
+			F1.push([jBar.mZ1]);
+			F1.push([jBar.fX2]);
+			F1.push([jBar.fY2]);
+			F1.push([jBar.fZ2]);
+			F1.push([jBar.mX2]);
+			F1.push([jBar.mY2]);
+			F1.push([jBar.mZ2]);
+		}
+		else {
+			var t = calculateT(jBar);
+			var f1 = math.multiply(t, [[jBar.fX1], [jBar.fY1], [jBar.mZ1]]);
+			var f2 = math.multiply(t, [[jBar.fX2], [jBar.fY2], [jBar.mZ2]]);
+			F1.push([f1[0][0]]);  
+			F1.push([f1[1][0]]);  
+			F1.push([f1[2][0]]);  
+			F1.push([f2[0][0]]);  
+			F1.push([f2[1][0]]);  
+			F1.push([f2[2][0]]);  
+		}
 	});
-
 }
 
 function calculateT(jBar) {
@@ -1755,12 +1768,21 @@ function calculateNodesForcesForMarco3D() {
 					emp.mZ+=jBar.wX*jL*jL/2*(1*Math.cos(betaYZ));
 				}
 
-				F1.push([lib.fX]);
-				F1.push([lib.fY]);
-				F1.push([lib.mZ]);
-				F1.push([emp.fX]);
-				F1.push([emp.fY]);
-				F1.push([emp.mZ]);
+				//Se guardan las fuerzas de la barra
+				jBar.fX1 = jBar.startNode.fX;
+				jBar.fY1 = jBar.startNode.fY;
+				jBar.fZ1 = jBar.startNode.fZ;
+				jBar.mX1 = jBar.startNode.mX;
+				jBar.mY1 = jBar.startNode.mY;
+				jBar.mZ1 = jBar.startNode.mZ;
+
+				jBar.fX2 = jBar.endNode.fX;
+				jBar.fY2 = jBar.endNode.fY;
+				jBar.fZ2 = jBar.endNode.fZ;
+				jBar.mX2 = jBar.endNode.mX;
+				jBar.mY2 = jBar.endNode.mY;
+				jBar.mZ2 = jBar.endNode.mZ;
+
 			}
 
 			//2. Si se conectan más de una barra a los nodos
