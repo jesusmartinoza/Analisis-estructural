@@ -2303,7 +2303,7 @@ function calculateAFromAi() {
 
 		//El nodo inicial no tiene alguna restricción
 		if ( (calculationType === '5' && (lrxNodeIni === 0 || lryNodeIni === 0 || lrzNodeIni === 0 || rrxNodeIni === 0 || rryNodeIni === 0 || rrzNodeIni === 0)) 
-			|| ((calculationType != '5' && (rxNodeIni === 0 || ryNodeIni === 0 || rzNodeIni === 0)) ) {
+			|| ((calculationType != '5' && (rxNodeIni === 0 || ryNodeIni === 0 || rzNodeIni === 0))) ) {
 			rowIniA = i * rowsByBar;			//i es el índice de la barra y rowsByBar el númeor de filas por barra
 			colIniA = posIni * coordinates;		//posIni es el índice del nodo y coordinates las coordenadas
 			rowIniAi = 0;				//En la matriz A de la barra siempre se toma desde la fila 0
@@ -2314,7 +2314,7 @@ function calculateAFromAi() {
 		//El nodo final no tiene alguna restricción
 		//if (rxNodeFin === 0 || ryNodeFin === 0 || rzNodeFin === 0) {
 		if ( (calculationType === '5' && (lrxNodeFin === 0 || lryNodeFin === 0 || lrzNodeFin === 0 || rrxNodeFin === 0 || rryNodeFin === 0 || rrzNodeFin === 0)) 
-			|| ((calculationType != '5' && (rxNodeFin === 0 || ryNodeFin === 0 || rzNodeFin === 0)) ) {
+			|| ((calculationType != '5' && (rxNodeFin === 0 || ryNodeFin === 0 || rzNodeFin === 0))) ) {
 			rowIniA = i * rowsByBar;			//i es el índice de la barra y rowsByBar el númeor de filas por barra
 			colIniA = posFin * coordinates;		//posIni es el índice del nodo y coordinates las coordenadas
 			rowIniAi = 0;				//En la matriz A de la barra siempre se toma desde la fila 0
