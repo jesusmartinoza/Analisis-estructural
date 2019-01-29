@@ -204,8 +204,6 @@ function calculate() {
 	}
 }
 
-
-
 function calculateAByBarForMarco3D() {
 	var size = $numberOfBars.val();
 	a = [];
@@ -216,28 +214,28 @@ function calculateAByBarForMarco3D() {
 		for (var j = 0; j < 8; j++)
 			ai.push([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
 
-		ai[0][0] = round((-jBars[i].uZx / L[i].calculateL3D) * 100, 3);
-		ai[0][1] = round((-jBars[i].uZy / L[i].calculateL3D) * 100, 3);
-		ai[0][2] = round((-jBars[i].uZz / L[i].calculateL3D) * 100, 3);
-		ai[0][3] = round(jBars.uYx, 3);
-		ai[0][4] = round(jBars.uYy, 3);
-		ai[0][5] = round(jBars.uYz, 3);
-		ai[0][6] = round((jBars[i].uZx / L[i].calculateL3D) * 100, 3);
-		ai[0][7] = round((jBars[i].uZy / L[i].calculateL3D) * 100, 3);
-		ai[0][8] = round((jBars[i].uZz / L[i].calculateL3D) * 100, 3);
+		ai[0][0] = round((-jBars[i].uZx / jBars[i].calculateL3D) * 100, 3);
+		ai[0][1] = round((-jBars[i].uZy / jBars[i].calculateL3D) * 100, 3);
+		ai[0][2] = round((-jBars[i].uZz / jBars[i].calculateL3D) * 100, 3);
+		ai[0][3] = round(jBars[i].uYx, 3);
+		ai[0][4] = round(jBars[i].uYy, 3);
+		ai[0][5] = round(jBars[i].uYz, 3);
+		ai[0][6] = round((jBars[i].uZx / jBars[i].calculateL3D) * 100, 3);
+		ai[0][7] = round((jBars[i].uZy / jBars[i].calculateL3D) * 100, 3);
+		ai[0][8] = round((jBars[i].uZz / jBars[i].calculateL3D) * 100, 3);
 		ai[0][9] = 0;
 		ai[0][10] = 0;
 		ai[0][11] = 0;
 
-		ai[1][0] = round(((-2 * jBars[i].uZx) / L[i].calculateL3D) * 100, 3);
-		ai[1][1] = round(((-2 * jBars[i].uZy) / L[i].calculateL3D) * 100, 3);
-		ai[1][2] = round(((-2 * jBars[i].uZz) / L[i].calculateL3D) * 100, 3);
+		ai[1][0] = round(((-2 * jBars[i].uZx) / jBars[i].calculateL3D) * 100, 3);
+		ai[1][1] = round(((-2 * jBars[i].uZy) / jBars[i].calculateL3D) * 100, 3);
+		ai[1][2] = round(((-2 * jBars[i].uZz) / jBars[i].calculateL3D) * 100, 3);
 		ai[1][3] = ai[0][3];
 		ai[1][4] = ai[0][4];
 		ai[1][5] = ai[0][5];
-		ai[1][6] = round(((2 * jBars[i].uZx) / L[i].calculateL3D) * 100, 3);
-		ai[1][7] = round(((2 * jBars[i].uZy) / L[i].calculateL3D) * 100, 3);
-		ai[1][8] = round(((2 * jBars[i].uZz) / L[i].calculateL3D) * 100, 3);
+		ai[1][6] = round(((2 * jBars[i].uZx) / jBars[i].calculateL3D) * 100, 3);
+		ai[1][7] = round(((2 * jBars[i].uZy) / jBars[i].calculateL3D) * 100, 3);
+		ai[1][8] = round(((2 * jBars[i].uZz) / jBars[i].calculateL3D) * 100, 3);
 		ai[1][9] = ai[0][3];
 		ai[1][10] = ai[0][4];
 		ai[1][11] = ai[0][5];
@@ -255,28 +253,28 @@ function calculateAByBarForMarco3D() {
 		ai[2][10] = ai[0][4];
 		ai[2][11] = ai[0][5];
 
-		ai[3][0] = round((jBars[i].uYx / L[i].calculateL3D) * 100, 3);
-		ai[3][1] = round((jBars[i].uYy / L[i].calculateL3D) * 100, 3);
-		ai[3][2] = round((jBars[i].uYz / L[i].calculateL3D) * 100, 3);
-		ai[3][3] = round(jBars.uZx, 3);
-		ai[3][4] = round(jBars.uZy, 3);
-		ai[3][5] = round(jBars.uZz, 3);
-		ai[3][6] = round(((-jBars[i].uYx) / L[i].calculateL3D) * 100, 3);
-		ai[3][7] = round(((-jBars[i].uYy) / L[i].calculateL3D) * 100, 3);
-		ai[3][8] = round(((-jBars[i].uYz) / L[i].calculateL3D) * 100, 3);
+		ai[3][0] = round((jBars[i].uYx / jBars[i].calculateL3D) * 100, 3);
+		ai[3][1] = round((jBars[i].uYy / jBars[i].calculateL3D) * 100, 3);
+		ai[3][2] = round((jBars[i].uYz / jBars[i].calculateL3D) * 100, 3);
+		ai[3][3] = round(jBars[i].uZx, 3);
+		ai[3][4] = round(jBars[i].uZy, 3);
+		ai[3][5] = round(jBars[i].uZz, 3);
+		ai[3][6] = round(((-jBars[i].uYx) / jBars[i].calculateL3D) * 100, 3);
+		ai[3][7] = round(((-jBars[i].uYy) / jBars[i].calculateL3D) * 100, 3);
+		ai[3][8] = round(((-jBars[i].uYz) / jBars[i].calculateL3D) * 100, 3);
 		ai[3][9] = 0;
 		ai[3][10] = 0;
 		ai[3][11] = 0;
 
-		ai[4][0] = round(((2 * jBars[i].uYx) / L[i].calculateL3D) * 100, 3);
-		ai[4][1] = round(((2 * jBars[i].uYy) / L[i].calculateL3D) * 100, 3);
-		ai[4][2] = round(((2 * jBars[i].uYz) / L[i].calculateL3D) * 100, 3);
+		ai[4][0] = round(((2 * jBars[i].uYx) / jBars[i].calculateL3D) * 100, 3);
+		ai[4][1] = round(((2 * jBars[i].uYy) / jBars[i].calculateL3D) * 100, 3);
+		ai[4][2] = round(((2 * jBars[i].uYz) / jBars[i].calculateL3D) * 100, 3);
 		ai[4][3] = ai[3][3];
 		ai[4][4] = ai[3][4];
 		ai[4][5] = ai[3][5];
-		ai[4][6] = round(((-2 * jBars[i].uYx) / L[i].calculateL3D) * 100, 3);
-		ai[4][7] = round(((-2 * jBars[i].uYy) / L[i].calculateL3D) * 100, 3);
-		ai[4][8] = round(((-2 * jBars[i].uYz) / L[i].calculateL3D) * 100, 3);
+		ai[4][6] = round(((-2 * jBars[i].uYx) / jBars[i].calculateL3D) * 100, 3);
+		ai[4][7] = round(((-2 * jBars[i].uYy) / jBars[i].calculateL3D) * 100, 3);
+		ai[4][8] = round(((-2 * jBars[i].uYz) / jBars[i].calculateL3D) * 100, 3);
 		ai[4][9] = ai[3][3];
 		ai[4][10] = ai[3][4];
 		ai[4][11] = ai[3][5];
@@ -294,15 +292,15 @@ function calculateAByBarForMarco3D() {
 		ai[5][10] = ai[3][4];
 		ai[5][11] = ai[3][5];
 
-		ai[6][0] = round(-jBars.uXx, 3);
-		ai[6][1] = round(-jBars.uXy, 3);
-		ai[6][2] = round(-jBars.uXz, 3);
+		ai[6][0] = round(-jBars[i].uXx, 3);
+		ai[6][1] = round(-jBars[i].uXy, 3);
+		ai[6][2] = round(-jBars[i].uXz, 3);
 		ai[6][3] = 0; 
 		ai[6][4] = 0; 
 		ai[6][5] = 0; 
-		ai[6][6] = round(jBars.uXx, 3);
-		ai[6][7] = round(jBars.uXy, 3);
-		ai[6][8] = round(jBars.uXz, 3);
+		ai[6][6] = round(jBars[i].uXx, 3);
+		ai[6][7] = round(jBars[i].uXy, 3);
+		ai[6][8] = round(jBars[i].uXz, 3);
 		ai[6][9] = 0; 
 		ai[6][10] = 0; 
 		ai[6][11] = 0; 
@@ -356,6 +354,14 @@ function updateF() {
 				case '4':
 					F.push([jNode.fX]);
 					F.push([jNode.fY]);
+					F.push([jNode.mZ]);
+				break;
+				case '5':
+					F.push([jNode.fX]);
+					F.push([jNode.fY]);
+					F.push([jNode.fZ]);
+					F.push([jNode.mX]);
+					F.push([jNode.mY]);
 					F.push([jNode.mZ]);
 				break;
 			}

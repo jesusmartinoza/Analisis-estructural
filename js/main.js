@@ -2040,24 +2040,28 @@ function createResMarcoPlanoTable() {
 function createResMarco3DTable() {
 
   var bars = parseInt($numberOfBars.val());
-
-/*
   var html = '<table class="table table-bordered">' +
             '<thead>' +
 
             '<tr>' +
             '<th scope="col"></th>' +
-            '<th scope="col" colspan="6" class="text-center">Tabla de Resultados</th>' +
+            '<th scope="col" colspan="12" class="text-center">Tabla de Resultados</th>' +
             '</tr>' +
 
             '<tr>' +
             '<th scope="col">Barra</th>' +
             '<th scope="col">Fuerza Normal (N)</th>' +
-            '<th scope="col">Fuerza Cortante (V)</th>' +
-            '<th scope="col">Momento Flector (Mz)</th>' +
+            '<th scope="col">Fuerza Cortante en Y (Vy)</th>' +
+            '<th scope="col">Fuerza Cortante en Z (Vz)</th>' +
+            '<th scope="col">Momento Torsionante (MT)</th>' +
+            '<th scope="col">Momento Flector en Y (MFy)</th>' +
+            '<th scope="col">Momento Flector en Z (MFz)</th>' +
             '<th scope="col">Fuerza Normal (N)</th>' +
-            '<th scope="col">Fuerza Cortante (V)</th>' +
-            '<th scope="col">Momento Flector (Mz)</th>' +
+            '<th scope="col">Fuerza Cortante en Y (Vy)</th>' +
+            '<th scope="col">Fuerza Cortante en Z (Vz)</th>' +
+            '<th scope="col">Momento Torsionante (MT)</th>' +
+            '<th scope="col">Momento Flector en Y (MFy)</th>' +
+            '<th scope="col">Momento Flector en Z (MFz)</th>' +
             '</tr>' +
 
             '</thead>' +
@@ -2065,7 +2069,7 @@ function createResMarco3DTable() {
 
   for (var i = 0; i < bars; i++) {
 
-    posIniFSol = i * 6;
+    posIniFSol = i * 12;
     number = i + 1;
 
     html += '<tr>' +
@@ -2076,19 +2080,24 @@ function createResMarco3DTable() {
             '<td>' + round(FSol[posIniFSol + 3][0], 3) + '</td>' +
             '<td>' + round(FSol[posIniFSol + 4][0], 3) + '</td>' +
             '<td>' + round(FSol[posIniFSol + 5][0], 3) + '</td>' +
+            '<td>' + round(FSol[posIniFSol + 6][0], 3) + '</td>' +
+            '<td>' + round(FSol[posIniFSol + 7][0], 3) + '</td>' +
+            '<td>' + round(FSol[posIniFSol + 8][0], 3) + '</td>' +
+            '<td>' + round(FSol[posIniFSol + 9][0], 3) + '</td>' +
+            '<td>' + round(FSol[posIniFSol + 10][0], 3) + '</td>' +
+            '<td>' + round(FSol[posIniFSol + 11][0], 3) + '</td>' +
             '</tr>' +
 
             '<tr>' +
             '<th scope="row"></th>' +
-            '<td colspan="3">Nodo ' + barsIni[i] + '</td>' +
-            '<td colspan="3">Nodo ' + barsFin[i] + '</td>' +
+            '<td colspan="6">Nodo ' + barsIni[i] + '</td>' +
+            '<td colspan="6">Nodo ' + barsFin[i] + '</td>' +
             '</tr>'
             ;
   }
 
   html += '</tbody>' +
           '</table> ';
-*/
 
   $('#m3d-res-table-container').html(html);
 }
